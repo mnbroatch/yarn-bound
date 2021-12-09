@@ -1,0 +1,17 @@
+{
+  "name": "yarn-wrapped",
+  "version": "1.0.0",
+  "description": "Quality of life wrapper around bondage.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Matthew Broatch",
+  "license": "ISC",
+  "dependencies": {
+    "bondage": "file:/./lib/bondage-2.2.0.tgz"
+  },
+  "devDependencies": {
+    "jest": "^27.4.3"
+  }
+}
