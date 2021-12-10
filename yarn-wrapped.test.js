@@ -11,15 +11,14 @@ describe('constructor', () => {
     })
     expect(runner.combineTextAndOptionNodes).toBe(false)
   })
-  test('should set a custom handleCommand function', () => {
-  })
-  test('should set a custom handleCommand function', () => {
+  test('should set a default handleCommand function', () => {
     const runner = new YarnWrapped()
-    expect(runner.).toBe(true)
+    expect(runner.handleCommand).toBe(true)
   })
-  test('should set a default onDialogueEnd function', () => {
-  })
-  test('should set a custom onDialogueEnd function', () => {
+  test('should set a custom handleCommand function', () => {
+    const handleCommand = jest.fn()
+    const runner = new YarnWrapped({ handleCommand })
+    expect(runner.handleCommand).toBe(handleCommand)
   })
 })
 

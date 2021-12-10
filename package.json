@@ -8,10 +8,10 @@
   },
   "author": "Matthew Broatch",
   "license": "ISC",
-  "dependencies": {
-    "bondage": "file:/./lib/bondage-2.2.0.tgz"
-  },
   "devDependencies": {
     "jest": "^27.4.3"
+  },
+  "dependencies": {
+    "bondage": "git@github.com:alforno/bondage.js.git"
   }
 }

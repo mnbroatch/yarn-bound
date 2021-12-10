@@ -7,11 +7,11 @@ export default class YarnWrapped {
   constructor ({
     dialogue,
     startAt,
-    combineTextAndOptionNodes = true,
     variableStorage,
     functions,
     handleCommand,
-    onDialogueEnd
+    onDialogueEnd,
+    combineTextAndOptionNodes = true,
   }) {
     this.handleCommand = handleCommand
     this.onDialogueEnd = onDialogueEnd
@@ -25,7 +25,7 @@ export default class YarnWrapped {
         : dialogue
     )
     if (variableStorage) {
-      variableStorage.display ||= variableStorage.get
+      variableStorage.display = variableStorage.display || variableStorage.get
       runner.setVariableStorage(variableStorage)
     }
     if (functions) {
@@ -51,7 +51,7 @@ export default class YarnWrapped {
     let buffered = null
 
     while (next instanceof bondage.CommandResult) {
-      this.handleCommand?.(next)
+      if (this.handleCommand) this.handleCommand(next)
       next = this.generator.next().value
     }
 
@@ -72,6 +72,8 @@ export default class YarnWrapped {
 
     this.currentNode = next
     this.bufferedNode = buffered
-    if (this.currentNode.isDialogueEnd) this.onDialogueEnd?.()
+    if (this.currentNode.isDialogueEnd && this.onDialogueEnd) {
+      this.onDialogueEnd()
+    }
   }
 }
