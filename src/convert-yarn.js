@@ -5,6 +5,8 @@ https://github.com/YarnSpinnerTool/YarnEditor/blob/master/src/js/classes/data.js
 
 Including as a dependency would not tree-shake well and would be subject to breakage, so we copy it instead.
 
+I guess this counts as a "substantial portion" (?), so:
+
 --------------
 
 Copyright (c) 2015 Infinite Ammo Inc. and Yarn Contributors
@@ -18,9 +20,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 export default function convertYarn (content) {
   const objects = []
-  var lines = content.split(/\r?\n/)
-  var obj = null
-  var readingBody = false
+  const lines = content.split(/\r?\n/)
+  let obj = null
+  let readingBody = false
   for (let i = 0; i < lines.length; i++) {
     if (lines[i].trim() === '===') {
       readingBody = false

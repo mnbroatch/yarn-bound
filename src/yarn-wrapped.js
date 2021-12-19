@@ -6,17 +6,19 @@ import convertYarn from './convert-yarn'
 export default class YarnWrapped {
   constructor ({
     dialogue,
-    startAt,
     variableStorage,
     functions,
     handleCommand,
     onDialogueEnd,
     combineTextAndOptionNodes = true,
+    startAt = 'Start'
   }) {
     this.handleCommand = handleCommand
     this.onDialogueEnd = onDialogueEnd
     this.combineTextAndOptionNodes = combineTextAndOptionNodes
     this.bondage = bondage
+    this.bufferedNode = null
+    this.currentNode = null
 
     const runner = new bondage.Runner()
     runner.load(
@@ -33,16 +35,16 @@ export default class YarnWrapped {
         runner.registerFunction(...entry)
       })
     }
+
     this.generator = runner.run(startAt)
-    this.bufferedNode = null
     this.advance()
   }
 
   advance (optionIndex) {
     if (
-      typeof optionIndex !== 'undefined'
-      && this.currentNode
-      && this.currentNode.select
+      typeof optionIndex !== 'undefined' &&
+        this.currentNode &&
+        this.currentNode.select
     ) {
       this.currentNode.select(optionIndex)
     }
@@ -60,10 +62,10 @@ export default class YarnWrapped {
     if (!(next instanceof bondage.OptionsResult)) {
       buffered = this.generator.next().value
       if (
-        this.combineTextAndOptionNodes
-        && buffered instanceof bondage.OptionsResult
+        this.combineTextAndOptionNodes &&
+          buffered instanceof bondage.OptionsResult
       ) {
-        next = { ...next, ...buffered, select: buffered.select.bind(buffered) }
+        next = Object.assign(buffered, next)
         buffered = null
       } else if (!buffered) {
         next = { ...next, isDialogueEnd: true }

@@ -4,12 +4,15 @@
   "description": "Quality of life wrapper around bondage.js",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --coverage --verbose false"
   },
   "author": "Matthew Broatch",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^27.4.3"
+    "@babel/preset-env": "^7.16.5",
+    "babel-jest": "^27.4.4",
+    "jest": "^27.4.3",
+    "standard": "^16.0.4"
   },
   "dependencies": {
     "bondage": "git@github.com:alforno/bondage.js.git"
