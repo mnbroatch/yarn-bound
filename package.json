@@ -15,6 +15,6 @@
     "standard": "^16.0.4"
   },
   "dependencies": {
-    "bondage": "git@github.com:alforno/bondage.js.git"
+    "bondage": "git@github.com:mnbroatch/bondage.js.git"
   }
 }

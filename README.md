@@ -1,3 +1,5 @@
+**WIP**
+
 # What is YarnWrapped?
 
 YarnWrapped is a quality-of-life wrapper around bondage.js, a javascript parser for the [Yarn language](https://yarnspinner.dev/).
@@ -14,71 +16,17 @@ The added quality-of-life features are:
 
 # What version of bondage.js does this use?
 
-YarnWrapped is a wrapper around a specific [forked version of bondage.js](https://github.com/alforno/bondage.js).
+YarnWrapped is a wrapper around a specific [forked version of bondage.js](https://github.com/mnbroatch/bondage.js).
 
-Development around the [original project](https://github.com/hylyh/bondage.js) has slowed and this forked version supports a very important feature: Inline expressions. Some caveats are detailed below.
+This is a fork of [another fork](https://github.com/alforno/bondage.js), which added support for inline expressions. The mnbroatch version fixes some bugs with that implementation and migrates the syntax toward Yarn 2.0 .
+
+Development around the [original project](https://github.com/hylyh/bondage.js) has slowed and issues/PRs have been rotting, hence the parallel development.
 
 
 # What limitations still remain?
 
-Most limitations of YarnWrapped are going to be limitations of the underlying bondage.js library (it is, after all, much more complex than this one). Here is a non-exhaustive list of bugs and unsupported yarn features in the version of bondage.js being used:
+Here is a non-exhaustive list of bugs and unsupported yarn features in the version of bondage.js being used:
 
 - No #hashtags
-- No [format functions]
 - No arbitrary:metadata
-- No \\{escaping\\} curly brackets
-- No { functions() in inline expressions }.
-  - Set function call() to a variable inside a command instead  
-
-- Inline expressions eat subsequent space characters. So,
-
-```javascript
-You have to add an {"extra"}  space yourself.
-```
-
-- Shortcut options without a followup are broken. So,
-
-```javascript
-This
--> Will
-  Work
--> Just
-  Fine
-```
-but
-
-```javascript
-This
--> Will
--> Not
-  Work
-
-```
-
-and 
-
-```javascript
-This
--> Will
-  Not
--> Work
-```
-
-
-- Indentation breaks conditional options
-
-So, instead of
-```javascript
-<<if $thing is true>>
-    [[Don't do this|SomeNode]]
-<<endif>>
-```
-
-do this:
-
-```javascript
-<<if $thing is true>>
-[[Do this|SomeNode]]
-<<endif>>
-```
-
+- No // comments
