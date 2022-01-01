@@ -1,17 +1,14 @@
 /* eslint-env jest */
 
-// WIP
-
-
-import YarnWrapped from './src/yarn-wrapped'
-import bondage from 'bondage'
+import YarnWrapped from './index'
+import { OptionsResult } from 'bondage'
 
 describe('functional test', () => {
   const dialogue = `title:Start
 ---
 I am a line
 1 + 1 is {1 + 1}
--> I should not appear <<if false is true>>
+-> I should be disabled<<if false is true>>
   X
 -> I am a choice
   oh
@@ -28,8 +25,14 @@ I am a line
     expect(yarnWrapped.currentNode.text).toBe('I am a line')
     yarnWrapped.advance()
     expect(yarnWrapped.currentNode.text).toBe('1 + 1 is 2')
-    expect(yarnWrapped.currentNode.options).toBe(['I am a choice', 'I am another choice'])
-    yarnWrapped.advance(1)
+    expect(yarnWrapped.currentNode.options).toEqual(
+      new OptionsResult([
+        { text: 'I should be disabled', isAvailable: false },
+        { text: 'I am a choice' },
+        { text: 'I am another choice' }
+      ]).options
+    )
+    yarnWrapped.advance(2)
     expect(yarnWrapped.currentNode.text).toBe('I am the node after a choice')
   })
 })

@@ -68,7 +68,7 @@ export default class YarnWrapped {
         next = Object.assign(buffered, next)
         buffered = null
       } else if (!buffered) {
-        next = { ...next, isDialogueEnd: true }
+        next = Object.assign(next, { isDialogueEnd: true })
       }
     }
 
