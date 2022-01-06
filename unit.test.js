@@ -3,7 +3,6 @@
 
 import YarnWrapped from './src/yarn-wrapped'
 import bondage from 'bondage'
-import convertYarn from './src/convert-yarn' // eslint-disable-line no-unused-vars
 
 jest.mock('bondage')
 bondage.Runner.prototype.run.mockImplementation(function * () {

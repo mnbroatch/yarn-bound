@@ -1,5 +1,3 @@
-// API wrapper for bondage.js
-
 import bondage from 'bondage'
 
 export default class YarnWrapped {
