@@ -22,14 +22,6 @@ describe('constructor', () => {
       .toHaveBeenCalledWith(dialogue)
   })
 
-  test('should transform and load a dialogue string into the runner', () => {
-    const mockDialogue = dialogue // add mock- prefix for jest
-    jest.mock('./src/convert-yarn', () => () => mockDialogue)
-    new YarnWrapped({ dialogue: '' })
-    expect(bondage.Runner.prototype.load)
-      .toHaveBeenCalledWith(dialogue)
-  })
-
   test('should set the variable storage if provided', () => {
     const variableStorage = new Map()
     new YarnWrapped({ variableStorage })
