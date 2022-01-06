@@ -1,7 +1,6 @@
 // API wrapper for bondage.js
 
 import bondage from 'bondage'
-import convertYarn from './convert-yarn'
 
 export default class YarnWrapped {
   constructor ({
@@ -21,11 +20,7 @@ export default class YarnWrapped {
     this.currentNode = null
 
     const runner = new bondage.Runner()
-    runner.load(
-      typeof dialogue === 'string'
-        ? convertYarn(dialogue)
-        : dialogue
-    )
+    runner.load(dialogue)
     if (variableStorage) {
       variableStorage.display = variableStorage.display || variableStorage.get
       runner.setVariableStorage(variableStorage)
