@@ -1,6 +1,6 @@
 {
-  "name": "yarn-wrapped",
-  "version": "1.0.0",
+  "name": "@mnbroatch/yarn-wrapped",
+  "version": "0.0.1",
   "description": "Quality of life wrapper around bondage.js",
   "main": "index.js",
   "scripts": {
@@ -15,6 +15,14 @@
     "standard": "^16.0.4"
   },
   "dependencies": {
-    "bondage": "git@github.com:mnbroatch/bondage.js.git"
-  }
+    "@mnbroatch/bondage": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mnbroatch/yarn-wrapped.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mnbroatch/yarn-wrapped/issues"
+  },
+  "homepage": "https://github.com/mnbroatch/yarn-wrapped#readme"
 }

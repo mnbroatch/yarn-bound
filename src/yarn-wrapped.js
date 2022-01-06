@@ -1,4 +1,4 @@
-import bondage from 'bondage'
+import bondage from '@mnbroatch/bondage'
 
 export default class YarnWrapped {
   constructor ({

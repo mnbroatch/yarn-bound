@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
 import YarnWrapped from './index'
-import { OptionsResult } from 'bondage'
+import { OptionsResult } from '@mnbroatch/bondage'
 
 describe('functional test', () => {
   const dialogue = `title:Start

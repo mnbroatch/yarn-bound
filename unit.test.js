@@ -2,14 +2,14 @@
 /* eslint-disable no-new */
 
 import YarnWrapped from './src/yarn-wrapped'
-import bondage from 'bondage'
+import bondage from '@mnbroatch/bondage'
 
-jest.mock('bondage')
+jest.mock('@mnbroatch/bondage')
 bondage.Runner.prototype.run.mockImplementation(function * () {
   while (true) yield new bondage.TextResult()
 })
 // It's convenient to make actual results objects in test
-const actualBondage = jest.requireActual('bondage')
+const actualBondage = jest.requireActual('@mnbroatch/bondage')
 bondage.TextResult = actualBondage.TextResult
 bondage.OptionsResult = actualBondage.OptionsResult
 bondage.CommandResult = actualBondage.CommandResult
