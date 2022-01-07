@@ -4,7 +4,8 @@ import YarnWrapped from './index'
 import { OptionsResult } from '@mnbroatch/bondage'
 
 describe('functional test', () => {
-  const dialogue = `title:Start
+  const dialogue = `
+title:Start
 ---
 I am a line
 1 + 1 is {1 + 1}
@@ -15,9 +16,6 @@ I am a line
 -> I am another choice
   I am the node after a choice
 ===
-
-
-
 `
 
   test('should load a dialogue object into the runner', () => {
@@ -25,6 +23,7 @@ I am a line
     expect(yarnWrapped.currentNode.text).toBe('I am a line')
     yarnWrapped.advance()
     expect(yarnWrapped.currentNode.text).toBe('1 + 1 is 2')
+    yarnWrapped.advance()
     expect(yarnWrapped.currentNode.options).toEqual(
       new OptionsResult([
         { text: 'I should be disabled', isAvailable: false },

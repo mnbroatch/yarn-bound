@@ -97,14 +97,14 @@ describe('advance', () => {
       })
     })
 
-    test('should set currentNode to an Options object with the text attached', () => {
-      const wrappedRunner = new YarnWrapped({})
+    test('should set currentNode to an Options object with the text attached if combineTextAndOptionNodes is false', () => {
+      const wrappedRunner = new YarnWrapped({ combineTextAndOptionNodes: true })
       expect(wrappedRunner.currentNode).toEqual({ ...mockOptionsResult, ...mockTextResult1 })
       expect(wrappedRunner.currentNode).toBeInstanceOf(bondage.OptionsResult)
     })
 
-    test('should not set currentNode to an Options object with the text attached if combineTextAndOptionNodes is false', () => {
-      const wrappedRunner = new YarnWrapped({ combineTextAndOptionNodes: false })
+    test('should not set currentNode to an Options object with the text attached', () => {
+      const wrappedRunner = new YarnWrapped({})
       expect(wrappedRunner.currentNode).toBe(mockTextResult1)
       wrappedRunner.advance()
       expect(wrappedRunner.currentNode).toBe(mockOptionsResult)
@@ -112,7 +112,10 @@ describe('advance', () => {
 
     test('should select the option with the index passed in, if there is one', () => {
       const wrappedRunner = new YarnWrapped({})
+      expect(wrappedRunner.currentNode).toBe(mockTextResult1)
+      wrappedRunner.advance()
       const currentNode = wrappedRunner.currentNode
+      expect(wrappedRunner.currentNode).toBe(mockOptionsResult)
       jest.spyOn(currentNode, 'select')
       wrappedRunner.advance(1)
       expect(currentNode.select).toHaveBeenCalledWith(1)
@@ -130,8 +133,15 @@ describe('advance', () => {
       })
     })
 
-    test('should set currentNode to the next non-command result', () => {
+    test('should set currentNode to the command result if handleCommand is not supplied', () => {
       const wrappedRunner = new YarnWrapped({})
+      expect(wrappedRunner.currentNode).toBe(mockCommandResult1)
+      wrappedRunner.advance()
+      expect(wrappedRunner.currentNode).toBe(mockCommandResult2)
+    })
+
+    test('should set currentNode to the next non-command result if handleCommand is supplied', () => {
+      const wrappedRunner = new YarnWrapped({ handleCommand: () => {} })
       expect(wrappedRunner.currentNode).toBe(mockTextResult1)
     })
 

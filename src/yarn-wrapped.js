@@ -7,7 +7,7 @@ export default class YarnWrapped {
     functions,
     handleCommand,
     onDialogueEnd,
-    combineTextAndOptionNodes = true,
+    combineTextAndOptionNodes,
     startAt = 'Start'
   }) {
     this.handleCommand = handleCommand
@@ -45,22 +45,27 @@ export default class YarnWrapped {
     let next = this.bufferedNode || this.generator.next().value
     let buffered = null
 
-    while (next instanceof bondage.CommandResult) {
-      if (this.handleCommand) this.handleCommand(next)
-      next = this.generator.next().value
+    // We either return the command as normal or, if a handler
+    // is supplied, use that and don't bother the consuming app
+    if (this.handleCommand) {
+      while (next instanceof bondage.CommandResult) {
+        this.handleCommand(next)
+        next = this.generator.next().value
+      }
     }
 
     // Lookahead for combining text + options, and for end of dialogue.
     // Can't look ahead of option nodes (what would you look ahead at?)
-    if (!(next instanceof bondage.OptionsResult)) {
-      buffered = this.generator.next().value
+    if (next instanceof bondage.TextResult) {
+      const upcoming = this.generator.next()
+      buffered = upcoming.value
       if (
         this.combineTextAndOptionNodes &&
           buffered instanceof bondage.OptionsResult
       ) {
         next = Object.assign(buffered, next)
         buffered = null
-      } else if (!buffered) {
+      } else if (upcoming.done) {
         next = Object.assign(next, { isDialogueEnd: true })
       }
     }

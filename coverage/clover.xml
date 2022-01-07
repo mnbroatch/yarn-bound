@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1641498908261" clover="3.2.0">
-  <project timestamp="1641498908261" name="All files">
-    <metrics statements="35" coveredstatements="35" conditionals="29" coveredconditionals="29" methods="3" coveredmethods="3" elements="67" coveredelements="67" complexity="0" loc="35" ncloc="35" packages="2" files="2" classes="2"/>
+<coverage generated="1641525104891" clover="3.2.0">
+  <project timestamp="1641525104891" name="All files">
+    <metrics statements="37" coveredstatements="37" conditionals="28" coveredconditionals="28" methods="3" coveredmethods="3" elements="68" coveredelements="68" complexity="0" loc="37" ncloc="37" packages="2" files="2" classes="2"/>
     <package name="yarn-wrapped">
       <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="index.js" path="/home/matt/Programming/yarn-wrapped/index.js">
@@ -10,43 +10,45 @@
       </file>
     </package>
     <package name="yarn-wrapped.src">
-      <metrics statements="34" coveredstatements="34" conditionals="29" coveredconditionals="29" methods="3" coveredmethods="3"/>
+      <metrics statements="36" coveredstatements="36" conditionals="28" coveredconditionals="28" methods="3" coveredmethods="3"/>
       <file name="yarn-wrapped.js" path="/home/matt/Programming/yarn-wrapped/src/yarn-wrapped.js">
-        <metrics statements="34" coveredstatements="34" conditionals="29" coveredconditionals="29" methods="3" coveredmethods="3"/>
-        <line num="13" count="16" type="stmt"/>
-        <line num="14" count="16" type="stmt"/>
-        <line num="15" count="16" type="stmt"/>
-        <line num="16" count="16" type="stmt"/>
-        <line num="17" count="16" type="stmt"/>
-        <line num="18" count="16" type="stmt"/>
-        <line num="20" count="16" type="stmt"/>
-        <line num="21" count="16" type="stmt"/>
-        <line num="22" count="16" type="cond" truecount="2" falsecount="0"/>
+        <metrics statements="36" coveredstatements="36" conditionals="28" coveredconditionals="28" methods="3" coveredmethods="3"/>
+        <line num="13" count="17" type="stmt"/>
+        <line num="14" count="17" type="stmt"/>
+        <line num="15" count="17" type="stmt"/>
+        <line num="16" count="17" type="stmt"/>
+        <line num="17" count="17" type="stmt"/>
+        <line num="18" count="17" type="stmt"/>
+        <line num="20" count="17" type="stmt"/>
+        <line num="21" count="17" type="stmt"/>
+        <line num="22" count="17" type="cond" truecount="2" falsecount="0"/>
         <line num="23" count="1" type="cond" truecount="2" falsecount="0"/>
         <line num="24" count="1" type="stmt"/>
-        <line num="26" count="16" type="cond" truecount="2" falsecount="0"/>
+        <line num="26" count="17" type="cond" truecount="2" falsecount="0"/>
         <line num="27" count="2" type="stmt"/>
         <line num="28" count="4" type="stmt"/>
-        <line num="32" count="16" type="stmt"/>
-        <line num="33" count="16" type="stmt"/>
-        <line num="37" count="20" type="cond" truecount="2" falsecount="0"/>
+        <line num="32" count="17" type="stmt"/>
+        <line num="33" count="17" type="stmt"/>
+        <line num="37" count="24" type="cond" truecount="2" falsecount="0"/>
         <line num="42" count="2" type="stmt"/>
-        <line num="45" count="20" type="cond" truecount="2" falsecount="0"/>
-        <line num="46" count="20" type="stmt"/>
-        <line num="48" count="20" type="stmt"/>
-        <line num="49" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="50" count="4" type="stmt"/>
-        <line num="55" count="20" type="cond" truecount="2" falsecount="0"/>
-        <line num="56" count="19" type="stmt"/>
-        <line num="57" count="19" type="cond" truecount="2" falsecount="0"/>
-        <line num="61" count="3" type="stmt"/>
-        <line num="62" count="3" type="stmt"/>
-        <line num="63" count="16" type="cond" truecount="2" falsecount="0"/>
-        <line num="64" count="2" type="stmt"/>
-        <line num="68" count="20" type="stmt"/>
-        <line num="69" count="20" type="stmt"/>
-        <line num="70" count="20" type="cond" truecount="4" falsecount="0"/>
-        <line num="71" count="1" type="stmt"/>
+        <line num="45" count="24" type="cond" truecount="2" falsecount="0"/>
+        <line num="46" count="24" type="stmt"/>
+        <line num="50" count="24" type="cond" truecount="2" falsecount="0"/>
+        <line num="51" count="2" type="stmt"/>
+        <line num="52" count="4" type="stmt"/>
+        <line num="53" count="4" type="stmt"/>
+        <line num="59" count="24" type="cond" truecount="2" falsecount="0"/>
+        <line num="60" count="19" type="stmt"/>
+        <line num="61" count="19" type="stmt"/>
+        <line num="62" count="19" type="cond" truecount="2" falsecount="0"/>
+        <line num="66" count="1" type="stmt"/>
+        <line num="67" count="1" type="stmt"/>
+        <line num="68" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="69" count="3" type="stmt"/>
+        <line num="73" count="24" type="stmt"/>
+        <line num="74" count="24" type="stmt"/>
+        <line num="75" count="24" type="cond" truecount="4" falsecount="0"/>
+        <line num="76" count="1" type="stmt"/>
       </file>
     </package>
   </project>
