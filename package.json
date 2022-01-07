@@ -1,6 +1,6 @@
 {
   "name": "@mnbroatch/yarn-wrapped",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Quality of life wrapper around bondage.js",
   "main": "index.js",
   "scripts": {
