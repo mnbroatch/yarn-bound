@@ -1,8 +1,8 @@
 {
   "name": "yarn-bound",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Quality of life wrapper around bondage.js",
-  "main": "index.js",
+  "main": "dist/yarn-bound.js",
   "scripts": {
     "test": "jest --verbose false",
     "test:coverage": "jest --coverage --verbose false",
