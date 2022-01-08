@@ -1,7 +1,7 @@
 /* eslint-env jest */
 /* eslint-disable no-new */
 
-import YarnWrapped from './src/yarn-wrapped'
+import YarnBound from './src/yarn-bound'
 import bondage from '@mnbroatch/bondage'
 
 jest.mock('@mnbroatch/bondage')
@@ -17,14 +17,14 @@ bondage.CommandResult = actualBondage.CommandResult
 describe('constructor', () => {
   const dialogue = []
   test('should load a dialogue object into the runner', () => {
-    new YarnWrapped({ dialogue })
+    new YarnBound({ dialogue })
     expect(bondage.Runner.prototype.load)
       .toHaveBeenCalledWith(dialogue)
   })
 
   test('should set the variable storage if provided', () => {
     const variableStorage = new Map()
-    new YarnWrapped({ variableStorage })
+    new YarnBound({ variableStorage })
     expect(bondage.Runner.prototype.setVariableStorage)
       .toHaveBeenCalledWith(variableStorage)
   })
@@ -34,7 +34,7 @@ describe('constructor', () => {
       functionOne: () => {},
       functionTwo: () => {}
     }
-    new YarnWrapped({ functions })
+    new YarnBound({ functions })
     Object.entries(functions).forEach(([key, func]) => {
       expect(bondage.Runner.prototype.registerFunction)
         .toHaveBeenCalledWith(key, func)
@@ -46,7 +46,7 @@ describe('constructor', () => {
       functionOne: () => {},
       functionTwo: () => {}
     }
-    new YarnWrapped({ functions })
+    new YarnBound({ functions })
     Object.entries(functions).forEach(([key, func]) => {
       expect(bondage.Runner.prototype.registerFunction)
         .toHaveBeenCalledWith(key, func)
@@ -55,24 +55,24 @@ describe('constructor', () => {
 
   test('should start the generator at the node with the provided "startAt" title', () => {
     const startAt = 'someStartingNode'
-    new YarnWrapped({ startAt })
+    new YarnBound({ startAt })
     expect(bondage.Runner.prototype.run).toHaveBeenCalledWith(startAt)
   })
 
   test('should start the generator at the "Start" node if startAt is undefined', () => {
-    new YarnWrapped({})
+    new YarnBound({})
     expect(bondage.Runner.prototype.run).toHaveBeenCalledWith('Start')
   })
 
   test('should attach the generator to the instance', () => {
-    const runner = new YarnWrapped({})
+    const runner = new YarnBound({})
     expect(runner.generator).toBe(bondage.Runner.prototype.run.mock.results[0].value)
   })
 
   test('should advance the generator', () => {
-    jest.spyOn(YarnWrapped.prototype, 'advance')
-    new YarnWrapped({})
-    expect(YarnWrapped.prototype.advance).toHaveBeenCalled()
+    jest.spyOn(YarnBound.prototype, 'advance')
+    new YarnBound({})
+    expect(YarnBound.prototype.advance).toHaveBeenCalled()
   })
 })
 
@@ -98,28 +98,28 @@ describe('advance', () => {
     })
 
     test('should set currentNode to an Options object with the text attached if combineTextAndOptionNodes is false', () => {
-      const wrappedRunner = new YarnWrapped({ combineTextAndOptionNodes: true })
-      expect(wrappedRunner.currentNode).toEqual({ ...mockOptionsResult, ...mockTextResult1 })
-      expect(wrappedRunner.currentNode).toBeInstanceOf(bondage.OptionsResult)
+      const runner = new YarnBound({ combineTextAndOptionNodes: true })
+      expect(runner.currentNode).toEqual({ ...mockOptionsResult, ...mockTextResult1 })
+      expect(runner.currentNode).toBeInstanceOf(bondage.OptionsResult)
     })
 
     test('should not set currentNode to an Options object with the text attached', () => {
-      const wrappedRunner = new YarnWrapped({})
-      expect(wrappedRunner.currentNode).toBe(mockTextResult1)
-      wrappedRunner.advance()
-      expect(wrappedRunner.currentNode).toBe(mockOptionsResult)
+      const runner = new YarnBound({})
+      expect(runner.currentNode).toBe(mockTextResult1)
+      runner.advance()
+      expect(runner.currentNode).toBe(mockOptionsResult)
     })
 
     test('should select the option with the index passed in, if there is one', () => {
-      const wrappedRunner = new YarnWrapped({})
-      expect(wrappedRunner.currentNode).toBe(mockTextResult1)
-      wrappedRunner.advance()
-      const currentNode = wrappedRunner.currentNode
-      expect(wrappedRunner.currentNode).toBe(mockOptionsResult)
+      const runner = new YarnBound({})
+      expect(runner.currentNode).toBe(mockTextResult1)
+      runner.advance()
+      const currentNode = runner.currentNode
+      expect(runner.currentNode).toBe(mockOptionsResult)
       jest.spyOn(currentNode, 'select')
-      wrappedRunner.advance(1)
+      runner.advance(1)
       expect(currentNode.select).toHaveBeenCalledWith(1)
-      expect(wrappedRunner.currentNode).toBe(mockTextResult2)
+      expect(runner.currentNode).toBe(mockTextResult2)
     })
   })
 
@@ -134,20 +134,20 @@ describe('advance', () => {
     })
 
     test('should set currentNode to the command result if handleCommand is not supplied', () => {
-      const wrappedRunner = new YarnWrapped({})
-      expect(wrappedRunner.currentNode).toBe(mockCommandResult1)
-      wrappedRunner.advance()
-      expect(wrappedRunner.currentNode).toBe(mockCommandResult2)
+      const runner = new YarnBound({})
+      expect(runner.currentNode).toBe(mockCommandResult1)
+      runner.advance()
+      expect(runner.currentNode).toBe(mockCommandResult2)
     })
 
     test('should set currentNode to the next non-command result if handleCommand is supplied', () => {
-      const wrappedRunner = new YarnWrapped({ handleCommand: () => {} })
-      expect(wrappedRunner.currentNode).toBe(mockTextResult1)
+      const runner = new YarnBound({ handleCommand: () => {} })
+      expect(runner.currentNode).toBe(mockTextResult1)
     })
 
     test('should call the command handler with the correct arguments for each command result', () => {
       const handleCommand = jest.fn()
-      new YarnWrapped({ handleCommand })
+      new YarnBound({ handleCommand })
       expect(handleCommand).toHaveBeenNthCalledWith(1, {
         name: mockCommandName1,
         args: mockCommandArgs1
@@ -167,13 +167,13 @@ describe('advance', () => {
     })
 
     test('should include an "isDialogueEnd" property on the currentNode', () => {
-      const wrappedRunner = new YarnWrapped({})
-      expect(wrappedRunner.currentNode).toEqual({ ...mockTextResult1, isDialogueEnd: true })
+      const runner = new YarnBound({})
+      expect(runner.currentNode).toEqual({ ...mockTextResult1, isDialogueEnd: true })
     })
 
     test('should call the onDialogueEnd handler, if provided', () => {
       const onDialogueEnd = jest.fn()
-      new YarnWrapped({ onDialogueEnd })
+      new YarnBound({ onDialogueEnd })
       expect(onDialogueEnd).toHaveBeenCalled()
     })
   })
