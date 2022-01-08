@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import YarnWrapped from './src/index'
+import YarnBound from './src/index'
 import { OptionsResult } from '@mnbroatch/bondage'
 
 describe('functional test', () => {
@@ -19,19 +19,19 @@ I am a line
 `
 
   test('should load a dialogue object into the runner', () => {
-    const yarnWrapped = new YarnWrapped({ dialogue })
-    expect(yarnWrapped.currentNode.text).toBe('I am a line')
-    yarnWrapped.advance()
-    expect(yarnWrapped.currentNode.text).toBe('1 + 1 is 2')
-    yarnWrapped.advance()
-    expect(yarnWrapped.currentNode.options).toEqual(
+    const yarnBound = new YarnBound({ dialogue })
+    expect(yarnBound.currentNode.text).toBe('I am a line')
+    yarnBound.advance()
+    expect(yarnBound.currentNode.text).toBe('1 + 1 is 2')
+    yarnBound.advance()
+    expect(yarnBound.currentNode.options).toEqual(
       new OptionsResult([
         { text: 'I should be disabled', isAvailable: false },
         { text: 'I am a choice' },
         { text: 'I am another choice' }
       ]).options
     )
-    yarnWrapped.advance(2)
-    expect(yarnWrapped.currentNode.text).toBe('I am the node after a choice')
+    yarnBound.advance(2)
+    expect(yarnBound.currentNode.text).toBe('I am the node after a choice')
   })
 })

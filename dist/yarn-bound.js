@@ -3554,7 +3554,7 @@ var _bondage = _interopRequireDefault(__webpack_require__(706));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-class YarnWrapped {
+class YarnBound {
   constructor(_ref) {
     let {
       dialogue,
@@ -3631,7 +3631,7 @@ class YarnWrapped {
 
 }
 
-exports["default"] = YarnWrapped;
+exports["default"] = YarnBound;
 module.exports = exports.default;
 
 /***/ })

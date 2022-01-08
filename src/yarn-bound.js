@@ -1,6 +1,6 @@
 import bondage from '@mnbroatch/bondage'
 
-export default class YarnWrapped {
+export default class YarnBound {
   constructor ({
     dialogue,
     variableStorage,
