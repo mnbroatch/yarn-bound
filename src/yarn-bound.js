@@ -1,4 +1,4 @@
-import bondage from '@mnbroatch/bondage'
+import bondage, { OptionsResult, TextResult, CommandResult } from '@mnbroatch/bondage'
 
 export default class YarnBound {
   constructor ({
@@ -6,18 +6,27 @@ export default class YarnBound {
     variableStorage,
     functions,
     handleCommand,
-    onDialogueEnd,
-    combineTextAndOptionNodes,
+    combineTextAndOptionsResults,
     startAt = 'Start'
   }) {
     this.handleCommand = handleCommand
-    this.onDialogueEnd = onDialogueEnd
-    this.combineTextAndOptionNodes = combineTextAndOptionNodes
+    this.combineTextAndOptionsResults = combineTextAndOptionsResults
     this.bondage = bondage
     this.bufferedNode = null
-    this.currentNode = null
+    this.currentResult = null
 
     const runner = new bondage.Runner()
+    
+    // To make template string dialogues more convenient, we will allow and strip
+    // uniform leading whitespace. The header delimiter will set the baseline.
+    if (typeof dialogue === 'string') {
+      const lines = dialogue.split('\n')
+      const baselineWhitespace = lines.find(line => line.trim() === '---')
+        .match(/\s*/)[0]
+      dialogue = lines.map((line) => line.replace(baselineWhitespace, ''))
+        .join('\n')
+    }
+
     runner.load(dialogue)
     if (variableStorage) {
       variableStorage.display = variableStorage.display || variableStorage.get
@@ -36,10 +45,10 @@ export default class YarnBound {
   advance (optionIndex) {
     if (
       typeof optionIndex !== 'undefined' &&
-        this.currentNode &&
-        this.currentNode.select
+        this.currentResult &&
+        this.currentResult.select
     ) {
-      this.currentNode.select(optionIndex)
+      this.currentResult.select(optionIndex)
     }
 
     let next = this.bufferedNode || this.generator.next().value
@@ -56,11 +65,12 @@ export default class YarnBound {
 
     // Lookahead for combining text + options, and for end of dialogue.
     // Can't look ahead of option nodes (what would you look ahead at?)
-    if (next instanceof bondage.TextResult) {
+    if (!(next instanceof bondage.OptionsResult)) {
       const upcoming = this.generator.next()
       buffered = upcoming.value
       if (
-        this.combineTextAndOptionNodes &&
+        next instanceof bondage.TextResult &&
+        this.combineTextAndOptionsResults &&
           buffered instanceof bondage.OptionsResult
       ) {
         next = Object.assign(buffered, next)
@@ -70,10 +80,9 @@ export default class YarnBound {
       }
     }
 
-    this.currentNode = next
+    this.currentResult = next
     this.bufferedNode = buffered
-    if (this.currentNode.isDialogueEnd && this.onDialogueEnd) {
-      this.onDialogueEnd()
-    }
   }
 }
+
+export { OptionsResult, TextResult, CommandResult }

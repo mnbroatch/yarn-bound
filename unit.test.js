@@ -22,6 +22,24 @@ describe('constructor', () => {
       .toHaveBeenCalledWith(dialogue)
   })
 
+  test('should strip leading whitespace up to the header delimiter and load a dialogue into the runner', () => {
+    const dialogueWithLeadingWhitespace = `
+      title:Start
+      ---
+      text
+      ===
+    `
+    const dialogueWithNoLeadingWhitespace = `
+title:Start
+---
+text
+===
+    `
+    new YarnBound({ dialogue: dialogueWithLeadingWhitespace })
+    expect(bondage.Runner.prototype.load)
+      .toHaveBeenCalledWith(dialogueWithNoLeadingWhitespace)
+  })
+
   test('should set the variable storage if provided', () => {
     const variableStorage = new Map()
     new YarnBound({ variableStorage })
@@ -97,29 +115,29 @@ describe('advance', () => {
       })
     })
 
-    test('should set currentNode to an Options object with the text attached if combineTextAndOptionNodes is false', () => {
-      const runner = new YarnBound({ combineTextAndOptionNodes: true })
-      expect(runner.currentNode).toEqual({ ...mockOptionsResult, ...mockTextResult1 })
-      expect(runner.currentNode).toBeInstanceOf(bondage.OptionsResult)
+    test('should set currentResult to an Options object with the text attached if combineTextAndOptionsResults is false', () => {
+      const runner = new YarnBound({ combineTextAndOptionsResults: true })
+      expect(runner.currentResult).toEqual({ ...mockOptionsResult, ...mockTextResult1 })
+      expect(runner.currentResult).toBeInstanceOf(bondage.OptionsResult)
     })
 
-    test('should not set currentNode to an Options object with the text attached', () => {
+    test('should not set currentResult to an Options object with the text attached', () => {
       const runner = new YarnBound({})
-      expect(runner.currentNode).toBe(mockTextResult1)
+      expect(runner.currentResult).toBe(mockTextResult1)
       runner.advance()
-      expect(runner.currentNode).toBe(mockOptionsResult)
+      expect(runner.currentResult).toBe(mockOptionsResult)
     })
 
     test('should select the option with the index passed in, if there is one', () => {
       const runner = new YarnBound({})
-      expect(runner.currentNode).toBe(mockTextResult1)
+      expect(runner.currentResult).toBe(mockTextResult1)
       runner.advance()
-      const currentNode = runner.currentNode
-      expect(runner.currentNode).toBe(mockOptionsResult)
-      jest.spyOn(currentNode, 'select')
+      const currentResult = runner.currentResult
+      expect(runner.currentResult).toBe(mockOptionsResult)
+      jest.spyOn(currentResult, 'select')
       runner.advance(1)
-      expect(currentNode.select).toHaveBeenCalledWith(1)
-      expect(runner.currentNode).toBe(mockTextResult2)
+      expect(currentResult.select).toHaveBeenCalledWith(1)
+      expect(runner.currentResult).toBe(mockTextResult2)
     })
   })
 
@@ -133,16 +151,16 @@ describe('advance', () => {
       })
     })
 
-    test('should set currentNode to the command result if handleCommand is not supplied', () => {
+    test('should set currentResult to the command result if handleCommand is not supplied', () => {
       const runner = new YarnBound({})
-      expect(runner.currentNode).toBe(mockCommandResult1)
+      expect(runner.currentResult).toBe(mockCommandResult1)
       runner.advance()
-      expect(runner.currentNode).toBe(mockCommandResult2)
+      expect(runner.currentResult).toBe(mockCommandResult2)
     })
 
-    test('should set currentNode to the next non-command result if handleCommand is supplied', () => {
+    test('should set currentResult to the next non-command result if handleCommand is supplied', () => {
       const runner = new YarnBound({ handleCommand: () => {} })
-      expect(runner.currentNode).toBe(mockTextResult1)
+      expect(runner.currentResult).toBe(mockTextResult1)
     })
 
     test('should call the command handler with the correct arguments for each command result', () => {
@@ -166,15 +184,9 @@ describe('advance', () => {
       })
     })
 
-    test('should include an "isDialogueEnd" property on the currentNode', () => {
+    test('should include an "isDialogueEnd" property on the currentResult', () => {
       const runner = new YarnBound({})
-      expect(runner.currentNode).toEqual({ ...mockTextResult1, isDialogueEnd: true })
-    })
-
-    test('should call the onDialogueEnd handler, if provided', () => {
-      const onDialogueEnd = jest.fn()
-      new YarnBound({ onDialogueEnd })
-      expect(onDialogueEnd).toHaveBeenCalled()
+      expect(runner.currentResult).toEqual({ ...mockTextResult1, isDialogueEnd: true })
     })
   })
 })

@@ -3540,7 +3540,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 424:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
@@ -3548,11 +3548,31 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
+Object.defineProperty(exports, "CommandResult", ({
+  enumerable: true,
+  get: function get() {
+    return _bondage.CommandResult;
+  }
+}));
+Object.defineProperty(exports, "OptionsResult", ({
+  enumerable: true,
+  get: function get() {
+    return _bondage.OptionsResult;
+  }
+}));
+Object.defineProperty(exports, "TextResult", ({
+  enumerable: true,
+  get: function get() {
+    return _bondage.TextResult;
+  }
+}));
 exports["default"] = void 0;
 
-var _bondage = _interopRequireDefault(__webpack_require__(706));
+var _bondage = _interopRequireWildcard(__webpack_require__(706));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 class YarnBound {
   constructor(_ref) {
@@ -3561,17 +3581,23 @@ class YarnBound {
       variableStorage,
       functions,
       handleCommand,
-      onDialogueEnd,
-      combineTextAndOptionNodes,
+      combineTextAndOptionsResults,
       startAt = 'Start'
     } = _ref;
     this.handleCommand = handleCommand;
-    this.onDialogueEnd = onDialogueEnd;
-    this.combineTextAndOptionNodes = combineTextAndOptionNodes;
+    this.combineTextAndOptionsResults = combineTextAndOptionsResults;
     this.bondage = _bondage.default;
     this.bufferedNode = null;
-    this.currentNode = null;
-    const runner = new _bondage.default.Runner();
+    this.currentResult = null;
+    const runner = new _bondage.default.Runner(); // To make template string dialogues more convenient, we will allow and strip
+    // uniform leading whitespace. The header delimiter will set the baseline.
+
+    if (typeof dialogue === 'string') {
+      const lines = dialogue.split('\n');
+      const baselineWhitespace = lines.find(line => line.trim() === '---').match(/\s*/)[0];
+      dialogue = lines.map(line => line.replace(baselineWhitespace, '')).join('\n');
+    }
+
     runner.load(dialogue);
 
     if (variableStorage) {
@@ -3590,8 +3616,8 @@ class YarnBound {
   }
 
   advance(optionIndex) {
-    if (typeof optionIndex !== 'undefined' && this.currentNode && this.currentNode.select) {
-      this.currentNode.select(optionIndex);
+    if (typeof optionIndex !== 'undefined' && this.currentResult && this.currentResult.select) {
+      this.currentResult.select(optionIndex);
     }
 
     let next = this.bufferedNode || this.generator.next().value;
@@ -3607,11 +3633,11 @@ class YarnBound {
     // Can't look ahead of option nodes (what would you look ahead at?)
 
 
-    if (next instanceof _bondage.default.TextResult) {
+    if (!(next instanceof _bondage.default.OptionsResult)) {
       const upcoming = this.generator.next();
       buffered = upcoming.value;
 
-      if (this.combineTextAndOptionNodes && buffered instanceof _bondage.default.OptionsResult) {
+      if (next instanceof _bondage.default.TextResult && this.combineTextAndOptionsResults && buffered instanceof _bondage.default.OptionsResult) {
         next = Object.assign(buffered, next);
         buffered = null;
       } else if (upcoming.done) {
@@ -3621,18 +3647,13 @@ class YarnBound {
       }
     }
 
-    this.currentNode = next;
+    this.currentResult = next;
     this.bufferedNode = buffered;
-
-    if (this.currentNode.isDialogueEnd && this.onDialogueEnd) {
-      this.onDialogueEnd();
-    }
   }
 
 }
 
 exports["default"] = YarnBound;
-module.exports = exports.default;
 
 /***/ })
 
