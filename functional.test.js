@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-import YarnWrapped from './index'
+import YarnWrapped from './src/index'
 import { OptionsResult } from '@mnbroatch/bondage'
 
 describe('functional test', () => {
