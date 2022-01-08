@@ -3,7 +3,7 @@ const common = {
   output: {
     filename: 'yarn-bound.min.js',
     library: {
-      name: 'yarn-bound',
+      name: 'YarnBound',
       type: 'umd',
     },
     globalObject: 'this',
