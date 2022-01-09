@@ -28,9 +28,15 @@ Install with `npm i -S yarn-bound` or grab `yarn-bound.js` from the `/dist/` fol
 For information on how to write Yarn, visit the [official documentation](https://docs.yarnspinner.dev/). Start there! YarnBound is useful after you have a yarn dialogue written and in string format.
 
 
-To get started, create a new instance of Yarn.
+To get started, import and create a new instance of Yarn.
 
 ```javascript
+import YarnBound from 'yarn-bound'
+// or node: 
+// const bondage = require('yarn-bound')
+// or in a script tag:
+// <script src="path-to-file/yarn-bound.js"></script>
+
 const runner = new YarnBound(options)
 ```
 
@@ -160,10 +166,6 @@ Let's start with this code:
 
 ```javascript
 import YarnBound from 'yarn-bound';
-// or node: 
-// const bondage = require('yarn-bound')
-// or in a script tag:
-// <script src="path-to-file/yarn-bound.js"></script>
  
 // empty lines and uniform leading whitespace is trimmed
 // so you can write your nodes in template strings neatly.
