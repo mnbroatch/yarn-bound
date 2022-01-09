@@ -28,7 +28,7 @@
 
   },
   "dependencies": {
-    "@mnbroatch/bondage": "^3.0.27"
+    "@mnbroatch/bondage": "^3.0.32"
   },
   "repository": {
     "type": "git",

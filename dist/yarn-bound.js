@@ -354,7 +354,9 @@ class Lexer {
       return 'EndOfLine';
     }
 
-    return this.lexNextTokenOnCurrentLine();
+    let x = this.lexNextTokenOnCurrentLine(); // console.log('x', x)
+
+    return x;
   }
 
   advanceLine() {
@@ -539,7 +541,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 304:
-/***/ ((module, exports, __nested_webpack_require_15770__) => {
+/***/ ((module, exports, __nested_webpack_require_15809__) => {
 
 
 
@@ -548,7 +550,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 
-var _lexerState = _interopRequireDefault(__nested_webpack_require_15770__(269));
+var _lexerState = _interopRequireDefault(__nested_webpack_require_15809__(269));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -559,8 +561,8 @@ function makeStates() {
   return {
     base: new _lexerState.default().addTransition('EscapedCharacter', null, true).addTransition('Comment', null, true).addTransition('Hashtag', null, true).addTransition('BeginCommand', 'command', true).addTransition('BeginInlineExp', 'inlineExpression', true).addTransition('ShortcutOption', 'shortcutOption').addTextRule('Text'),
     shortcutOption: new _lexerState.default().setTrackNextIndentation(true).addTransition('EscapedCharacter', null, true).addTransition('Comment', null, true).addTransition('Hashtag', null, true).addTransition('BeginCommand', 'expression', true).addTransition('BeginInlineExp', 'inlineExpressionInShortcut', true).addTextRule('Text', 'base'),
-    command: new _lexerState.default().addTransition('If', 'expression').addTransition('Else').addTransition('ElseIf', 'expression').addTransition('EndIf').addTransition('Set', 'assignment').addTransition('Declare', 'declare').addTransition('Jump', 'jump').addTransition('Stop', 'stop').addTransition('EndCommand', 'base', true).addTransition('Identifier', 'commandArg', true).addTextRule('Text'),
-    commandArg: new _lexerState.default().addTransition('BeginInlineExp', 'inlineExpressionInCommand', true).addTransition('EndCommand', 'base', true).addTransition('LeftParen', 'commandParenArgOrExpression').addTransition('Variable').addTransition('Number').addTransition('String').addTransition('True').addTransition('False').addTransition('Identifier').addTransition('Comma').addTransition('RightParen'),
+    command: new _lexerState.default().addTransition('If', 'expression').addTransition('Else').addTransition('ElseIf', 'expression').addTransition('EndIf').addTransition('Set', 'assignment').addTransition('Declare', 'declare').addTransition('Jump', 'jump').addTransition('Stop', 'stop').addTransition('BeginInlineExp', 'inlineExpressionInCommand', true).addTransition('EndCommand', 'base', true).addTextRule('Text'),
+    commandArg: new _lexerState.default().addTextRule('Text'),
     commandParenArgOrExpression: new _lexerState.default().addTransition('EndCommand', 'base', true).addTransition('LeftParen', 'expression').addTransition('Variable', 'expression').addTransition('Number', 'expression').addTransition('String').addTransition('True').addTransition('False').addTransition('Null').addTransition('RightParen'),
     assignment: new _lexerState.default().addTransition('Variable').addTransition('EqualToOrAssign', 'expression'),
     declare: new _lexerState.default().addTransition('Variable').addTransition('EndCommand', 'base').addTransition('EqualToOrAssign', 'expression'),
@@ -573,7 +575,7 @@ function makeStates() {
     // I'm just not familiar enough yet to know how to
     // transition from inline expression back to base OR command
     // states depending on how we got there
-    inlineExpressionInCommand: new _lexerState.default().addTransition('EndInlineExp', 'commandArg').addTransition('Number').addTransition('String').addTransition('LeftParen').addTransition('RightParen').addTransition('EqualTo').addTransition('EqualToOrAssign').addTransition('NotEqualTo').addTransition('GreaterThanOrEqualTo').addTransition('GreaterThan').addTransition('LessThanOrEqualTo').addTransition('LessThan').addTransition('Add').addTransition('UnaryMinus').addTransition('Minus').addTransition('Exponent').addTransition('Multiply').addTransition('Divide').addTransition('Modulo').addTransition('And').addTransition('Or').addTransition('Xor').addTransition('Not').addTransition('Variable').addTransition('Comma').addTransition('True').addTransition('False').addTransition('Null').addTransition('Identifier').addTextRule('Text', 'base'),
+    inlineExpressionInCommand: new _lexerState.default().addTransition('EndInlineExp', 'command').addTransition('Number').addTransition('String').addTransition('LeftParen').addTransition('RightParen').addTransition('EqualTo').addTransition('EqualToOrAssign').addTransition('NotEqualTo').addTransition('GreaterThanOrEqualTo').addTransition('GreaterThan').addTransition('LessThanOrEqualTo').addTransition('LessThan').addTransition('Add').addTransition('UnaryMinus').addTransition('Minus').addTransition('Exponent').addTransition('Multiply').addTransition('Divide').addTransition('Modulo').addTransition('And').addTransition('Or').addTransition('Xor').addTransition('Not').addTransition('Variable').addTransition('Comma').addTransition('True').addTransition('False').addTransition('Null').addTransition('Identifier').addTextRule('Text', 'base'),
     inlineExpressionInShortcut: new _lexerState.default().addTransition('EndInlineExp', 'shortcutOption').addTransition('Number').addTransition('String').addTransition('LeftParen').addTransition('RightParen').addTransition('EqualTo').addTransition('EqualToOrAssign').addTransition('NotEqualTo').addTransition('GreaterThanOrEqualTo').addTransition('GreaterThan').addTransition('LessThanOrEqualTo').addTransition('LessThan').addTransition('Add').addTransition('UnaryMinus').addTransition('Minus').addTransition('Exponent').addTransition('Multiply').addTransition('Divide').addTransition('Modulo').addTransition('And').addTransition('Or').addTransition('Xor').addTransition('Not').addTransition('Variable').addTransition('Comma').addTransition('True').addTransition('False').addTransition('Null').addTransition('Identifier').addTextRule('Text', 'base')
   };
 }
@@ -748,59 +750,55 @@ var o = function o(k, v, _o, l) {
     $V2 = [1, 12],
     $V3 = [1, 18],
     $V4 = [1, 17],
-    $V5 = [5, 18, 19, 24, 35, 37, 80],
+    $V5 = [5, 18, 19, 24, 35, 37, 78],
     $V6 = [1, 24],
     $V7 = [1, 25],
     $V8 = [1, 27],
     $V9 = [1, 28],
-    $Va = [5, 14, 16, 22, 24, 35, 37],
-    $Vb = [5, 14, 16, 18, 19, 22, 24, 35, 37, 80],
-    $Vc = [1, 31],
-    $Vd = [1, 32],
-    $Ve = [1, 35],
-    $Vf = [1, 36],
-    $Vg = [1, 37],
-    $Vh = [1, 38],
-    $Vi = [5, 14, 16, 18, 22, 24, 35, 37, 80],
-    $Vj = [1, 42],
-    $Vk = [1, 52],
-    $Vl = [1, 51],
-    $Vm = [1, 46],
-    $Vn = [1, 47],
-    $Vo = [1, 48],
-    $Vp = [1, 53],
-    $Vq = [1, 54],
-    $Vr = [1, 55],
-    $Vs = [1, 56],
-    $Vt = [1, 57],
-    $Vu = [5, 16, 18, 19, 24, 35, 37, 80],
-    $Vv = [1, 68],
-    $Vw = [1, 79],
-    $Vx = [1, 80],
-    $Vy = [1, 81],
-    $Vz = [1, 82],
-    $VA = [1, 83],
-    $VB = [1, 84],
-    $VC = [1, 85],
-    $VD = [1, 86],
-    $VE = [1, 87],
-    $VF = [1, 88],
-    $VG = [1, 89],
-    $VH = [1, 90],
-    $VI = [1, 91],
-    $VJ = [1, 92],
-    $VK = [1, 93],
-    $VL = [27, 50, 55, 57, 58, 59, 60, 61, 62, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 81],
-    $VM = [27, 38, 50, 55, 57, 58, 59, 60, 61, 62, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 75, 76, 77, 78, 79, 80, 81],
-    $VN = [27, 38, 75, 76, 77, 78, 79, 80],
-    $VO = [27, 50, 55, 57, 58, 59, 60, 61, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 81],
-    $VP = [27, 50, 55, 74, 81],
-    $VQ = [1, 132],
-    $VR = [1, 133],
-    $VS = [27, 50, 55, 57, 58, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 81],
-    $VT = [27, 50, 55, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 81],
-    $VU = [55, 74],
-    $VV = [16, 18, 19, 24, 35, 80];
+    $Va = [5, 14, 16, 18, 19, 22, 24, 35, 37, 78],
+    $Vb = [1, 31],
+    $Vc = [1, 35],
+    $Vd = [1, 36],
+    $Ve = [1, 37],
+    $Vf = [1, 38],
+    $Vg = [5, 14, 16, 18, 19, 22, 24, 27, 35, 37, 78],
+    $Vh = [5, 14, 16, 18, 22, 24, 27, 35, 37, 78],
+    $Vi = [1, 42],
+    $Vj = [1, 52],
+    $Vk = [1, 51],
+    $Vl = [1, 46],
+    $Vm = [1, 47],
+    $Vn = [1, 48],
+    $Vo = [1, 53],
+    $Vp = [1, 54],
+    $Vq = [1, 55],
+    $Vr = [1, 56],
+    $Vs = [1, 57],
+    $Vt = [5, 16, 18, 19, 24, 35, 37, 78],
+    $Vu = [1, 74],
+    $Vv = [1, 75],
+    $Vw = [1, 76],
+    $Vx = [1, 77],
+    $Vy = [1, 78],
+    $Vz = [1, 79],
+    $VA = [1, 80],
+    $VB = [1, 81],
+    $VC = [1, 82],
+    $VD = [1, 83],
+    $VE = [1, 84],
+    $VF = [1, 85],
+    $VG = [1, 86],
+    $VH = [1, 87],
+    $VI = [1, 88],
+    $VJ = [27, 47, 52, 54, 55, 56, 57, 58, 59, 61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 79],
+    $VK = [27, 47, 52, 54, 55, 56, 57, 58, 61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 79],
+    $VL = [27, 47, 52, 71, 79],
+    $VM = [1, 125],
+    $VN = [1, 126],
+    $VO = [27, 47, 52, 54, 55, 61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 79],
+    $VP = [27, 47, 52, 61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 79],
+    $VQ = [52, 71],
+    $VR = [16, 18, 19, 24, 35, 78];
 
 var parser = {
   trace: function trace() {},
@@ -842,50 +840,48 @@ var parser = {
     "ShortcutOption": 35,
     "Indent": 36,
     "Dedent": 37,
-    "Identifier": 38,
-    "genericCommandArguments": 39,
-    "genericCommandArgument": 40,
-    "literal": 41,
-    "Jump": 42,
-    "Stop": 43,
-    "setCommandInner": 44,
-    "declareCommandInner": 45,
-    "Set": 46,
-    "Variable": 47,
-    "EqualToOrAssign": 48,
-    "Declare": 49,
-    "As": 50,
-    "ExplicitType": 51,
-    "functionArgument": 52,
-    "functionCall": 53,
-    "LeftParen": 54,
-    "RightParen": 55,
-    "UnaryMinus": 56,
-    "Add": 57,
-    "Minus": 58,
-    "Exponent": 59,
-    "Multiply": 60,
-    "Divide": 61,
-    "Modulo": 62,
-    "Not": 63,
-    "Or": 64,
-    "And": 65,
-    "Xor": 66,
-    "EqualTo": 67,
-    "NotEqualTo": 68,
-    "GreaterThan": 69,
-    "GreaterThanOrEqualTo": 70,
-    "LessThan": 71,
-    "LessThanOrEqualTo": 72,
-    "parenExpressionArgs": 73,
-    "Comma": 74,
-    "True": 75,
-    "False": 76,
-    "Number": 77,
-    "String": 78,
-    "Null": 79,
-    "BeginInlineExp": 80,
-    "EndInlineExp": 81,
+    "Jump": 38,
+    "Identifier": 39,
+    "Stop": 40,
+    "setCommandInner": 41,
+    "declareCommandInner": 42,
+    "Set": 43,
+    "Variable": 44,
+    "EqualToOrAssign": 45,
+    "Declare": 46,
+    "As": 47,
+    "ExplicitType": 48,
+    "functionArgument": 49,
+    "functionCall": 50,
+    "LeftParen": 51,
+    "RightParen": 52,
+    "UnaryMinus": 53,
+    "Add": 54,
+    "Minus": 55,
+    "Exponent": 56,
+    "Multiply": 57,
+    "Divide": 58,
+    "Modulo": 59,
+    "Not": 60,
+    "Or": 61,
+    "And": 62,
+    "Xor": 63,
+    "EqualTo": 64,
+    "NotEqualTo": 65,
+    "GreaterThan": 66,
+    "GreaterThanOrEqualTo": 67,
+    "LessThan": 68,
+    "LessThanOrEqualTo": 69,
+    "parenExpressionArgs": 70,
+    "Comma": 71,
+    "literal": 72,
+    "True": 73,
+    "False": 74,
+    "Number": 75,
+    "String": 76,
+    "Null": 77,
+    "BeginInlineExp": 78,
+    "EndInlineExp": 79,
     "$accept": 0,
     "$end": 1
   },
@@ -906,44 +902,44 @@ var parser = {
     35: "ShortcutOption",
     36: "Indent",
     37: "Dedent",
-    38: "Identifier",
-    42: "Jump",
-    43: "Stop",
-    46: "Set",
-    47: "Variable",
-    48: "EqualToOrAssign",
-    49: "Declare",
-    50: "As",
-    51: "ExplicitType",
-    54: "LeftParen",
-    55: "RightParen",
-    56: "UnaryMinus",
-    57: "Add",
-    58: "Minus",
-    59: "Exponent",
-    60: "Multiply",
-    61: "Divide",
-    62: "Modulo",
-    63: "Not",
-    64: "Or",
-    65: "And",
-    66: "Xor",
-    67: "EqualTo",
-    68: "NotEqualTo",
-    69: "GreaterThan",
-    70: "GreaterThanOrEqualTo",
-    71: "LessThan",
-    72: "LessThanOrEqualTo",
-    74: "Comma",
-    75: "True",
-    76: "False",
-    77: "Number",
-    78: "String",
-    79: "Null",
-    80: "BeginInlineExp",
-    81: "EndInlineExp"
+    38: "Jump",
+    39: "Identifier",
+    40: "Stop",
+    43: "Set",
+    44: "Variable",
+    45: "EqualToOrAssign",
+    46: "Declare",
+    47: "As",
+    48: "ExplicitType",
+    51: "LeftParen",
+    52: "RightParen",
+    53: "UnaryMinus",
+    54: "Add",
+    55: "Minus",
+    56: "Exponent",
+    57: "Multiply",
+    58: "Divide",
+    59: "Modulo",
+    60: "Not",
+    61: "Or",
+    62: "And",
+    63: "Xor",
+    64: "EqualTo",
+    65: "NotEqualTo",
+    66: "GreaterThan",
+    67: "GreaterThanOrEqualTo",
+    68: "LessThan",
+    69: "LessThanOrEqualTo",
+    71: "Comma",
+    73: "True",
+    74: "False",
+    75: "Number",
+    76: "String",
+    77: "Null",
+    78: "BeginInlineExp",
+    79: "EndInlineExp"
   },
-  productions_: [0, [3, 2], [4, 1], [4, 2], [4, 1], [4, 2], [7, 1], [7, 1], [7, 1], [7, 1], [7, 1], [7, 1], [7, 2], [7, 2], [7, 2], [17, 1], [17, 1], [17, 2], [17, 2], [20, 1], [8, 1], [8, 1], [8, 2], [15, 1], [15, 2], [23, 4], [6, 6], [6, 4], [6, 2], [30, 3], [30, 2], [32, 4], [32, 2], [29, 5], [29, 5], [29, 3], [34, 2], [34, 3], [34, 2], [34, 2], [34, 3], [34, 2], [9, 1], [9, 5], [10, 3], [10, 4], [39, 1], [39, 2], [40, 1], [40, 1], [40, 1], [12, 4], [12, 4], [13, 3], [11, 3], [11, 3], [44, 4], [45, 4], [45, 6], [26, 1], [26, 1], [26, 3], [26, 2], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 2], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [53, 3], [53, 4], [73, 3], [73, 1], [52, 1], [52, 1], [52, 1], [41, 1], [41, 1], [41, 1], [41, 1], [41, 1], [21, 3]],
+  productions_: [0, [3, 2], [4, 1], [4, 2], [4, 1], [4, 2], [7, 1], [7, 1], [7, 1], [7, 1], [7, 1], [7, 1], [7, 2], [7, 2], [7, 2], [17, 1], [17, 1], [17, 2], [17, 2], [20, 1], [8, 1], [8, 1], [8, 2], [15, 1], [15, 2], [23, 4], [6, 6], [6, 4], [6, 2], [30, 3], [30, 2], [32, 4], [32, 2], [29, 5], [29, 5], [29, 3], [34, 2], [34, 3], [34, 2], [34, 2], [34, 3], [34, 2], [9, 1], [9, 5], [10, 3], [12, 4], [12, 4], [13, 3], [11, 3], [11, 3], [41, 4], [42, 4], [42, 6], [26, 1], [26, 1], [26, 3], [26, 2], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 2], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [26, 3], [50, 3], [50, 4], [70, 3], [70, 1], [49, 1], [49, 1], [49, 1], [72, 1], [72, 1], [72, 1], [72, 1], [72, 1], [21, 3]],
   performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate
   /* action[1] */
   , $$
@@ -967,8 +963,7 @@ var parser = {
       case 10:
       case 11:
       case 21:
-      case 46:
-      case 82:
+      case 76:
         this.$ = [$$[$0]];
         break;
 
@@ -977,12 +972,11 @@ var parser = {
         break;
 
       case 5:
-      case 47:
         this.$ = $$[$0 - 1].concat([$$[$0]]);
         break;
 
       case 6:
-      case 60:
+      case 54:
         this.$ = $$[$0];
         break;
 
@@ -991,8 +985,8 @@ var parser = {
       case 28:
       case 31:
       case 32:
-      case 54:
-      case 61:
+      case 48:
+      case 55:
         this.$ = $$[$0 - 1];
         break;
 
@@ -1003,11 +997,9 @@ var parser = {
         break;
 
       case 15:
-      case 48:
-      case 49:
-      case 59:
-      case 83:
-      case 84:
+      case 53:
+      case 77:
+      case 78:
         this.$ = $$[$0];
         break;
 
@@ -1108,146 +1100,138 @@ var parser = {
         break;
 
       case 44:
-        this.$ = new yy.FunctionResultNode($$[$0 - 1], [], this._$);
+        this.$ = new yy.GenericCommandNode($$[$0 - 1], this._$);
         break;
 
       case 45:
-        this.$ = new yy.FunctionResultNode($$[$0 - 2], $$[$0 - 1], this._$);
+      case 46:
+        this.$ = new yy.JumpCommandNode($$[$0 - 1]);
         break;
 
-      case 50:
-        this.$ = new yy.TextNode($$[$0]);
+      case 47:
+        this.$ = new yy.StopCommandNode();
         break;
 
-      case 51:
-      case 52:
-        this.$ = new yy.JumpNode($$[$0 - 1]);
-        break;
-
-      case 53:
-        this.$ = new yy.StopNode();
-        break;
-
-      case 55:
+      case 49:
         this.$ = null;
         break;
 
-      case 56:
+      case 50:
         this.$ = new yy.SetVariableEqualToNode($$[$0 - 2].substring(1), $$[$0]);
         break;
 
-      case 57:
+      case 51:
         this.$ = null;
         yy.registerDeclaration($$[$0 - 2].substring(1), $$[$0]);
         break;
 
-      case 58:
+      case 52:
         this.$ = null;
         yy.registerDeclaration($$[$0 - 4].substring(1), $$[$0 - 2], $$[$0]);
         break;
 
-      case 62:
+      case 56:
         this.$ = new yy.UnaryMinusExpressionNode($$[$0]);
         break;
 
-      case 63:
+      case 57:
         this.$ = new yy.ArithmeticExpressionAddNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 64:
+      case 58:
         this.$ = new yy.ArithmeticExpressionMinusNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 65:
+      case 59:
         this.$ = new yy.ArithmeticExpressionExponentNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 66:
+      case 60:
         this.$ = new yy.ArithmeticExpressionMultiplyNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 67:
+      case 61:
         this.$ = new yy.ArithmeticExpressionDivideNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 68:
+      case 62:
         this.$ = new yy.ArithmeticExpressionModuloNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 69:
+      case 63:
         this.$ = new yy.NegatedBooleanExpressionNode($$[$0]);
         break;
 
-      case 70:
+      case 64:
         this.$ = new yy.BooleanOrExpressionNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 71:
+      case 65:
         this.$ = new yy.BooleanAndExpressionNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 72:
+      case 66:
         this.$ = new yy.BooleanXorExpressionNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 73:
+      case 67:
         this.$ = new yy.EqualToExpressionNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 74:
+      case 68:
         this.$ = new yy.NotEqualToExpressionNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 75:
+      case 69:
         this.$ = new yy.GreaterThanExpressionNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 76:
+      case 70:
         this.$ = new yy.GreaterThanOrEqualToExpressionNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 77:
+      case 71:
         this.$ = new yy.LessThanExpressionNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 78:
+      case 72:
         this.$ = new yy.LessThanOrEqualToExpressionNode($$[$0 - 2], $$[$0]);
         break;
 
-      case 79:
+      case 73:
         this.$ = new yy.FunctionResultNode($$[$0 - 2], []);
         break;
 
-      case 80:
+      case 74:
         this.$ = new yy.FunctionResultNode($$[$0 - 3], $$[$0 - 1]);
         break;
 
-      case 81:
+      case 75:
         this.$ = $$[$0 - 2].concat([$$[$0]]);
         break;
 
-      case 85:
+      case 79:
         this.$ = new yy.VariableNode($$[$0].substring(1));
         break;
 
-      case 86:
-      case 87:
+      case 80:
+      case 81:
         this.$ = new yy.BooleanLiteralNode($$[$0]);
         break;
 
-      case 88:
+      case 82:
         this.$ = new yy.NumericLiteralNode($$[$0]);
         break;
 
-      case 89:
+      case 83:
         this.$ = new yy.StringLiteralNode($$[$0]);
         break;
 
-      case 90:
+      case 84:
         this.$ = new yy.NullLiteralNode($$[$0]);
         break;
 
-      case 91:
+      case 85:
         this.$ = new yy.InlineExpressionNode($$[$0 - 1], this._$);
         break;
     }
@@ -1272,7 +1256,7 @@ var parser = {
     24: $V2,
     34: 15,
     35: $V3,
-    80: $V4
+    78: $V4
   }, {
     1: [3]
   }, {
@@ -1294,7 +1278,7 @@ var parser = {
     24: $V2,
     34: 15,
     35: $V3,
-    80: $V4
+    78: $V4
   }, o($V5, [2, 2], {
     16: $V6
   }), o($V5, [2, 4], {
@@ -1304,47 +1288,53 @@ var parser = {
     22: $V9
   }), {
     16: [1, 29]
-  }, o($Va, [2, 6], {
+  }, o([5, 14, 16, 22, 24, 35, 37], [2, 6], {
     20: 13,
     21: 14,
     17: 16,
     8: 30,
     18: $V0,
     19: $V1,
-    80: $V4
-  }), o($Vb, [2, 7]), o($Vb, [2, 8]), o($Vb, [2, 9]), o($Vb, [2, 10]), o($Vb, [2, 11]), {
-    25: $Vc,
-    38: $Vd,
-    42: $Ve,
-    43: $Vf,
-    44: 33,
-    45: 34,
-    46: $Vg,
-    49: $Vh
-  }, o($Vb, [2, 20]), o($Vb, [2, 21]), o($V5, [2, 42], {
+    78: $V4
+  }), o($Va, [2, 7]), o($Va, [2, 8]), o($Va, [2, 9]), o($Va, [2, 10]), o($Va, [2, 11]), {
+    8: 32,
+    17: 16,
+    18: $V0,
+    19: $V1,
+    20: 13,
+    21: 14,
+    25: $Vb,
+    38: $Vc,
+    40: $Vd,
+    41: 33,
+    42: 34,
+    43: $Ve,
+    46: $Vf,
+    78: $V4
+  }, o($Vg, [2, 20]), o($Vg, [2, 21]), o($V5, [2, 42], {
     15: 40,
     14: [1, 41],
     16: [1, 39],
     22: $V9
-  }), o($Vi, [2, 19], {
-    19: $Vj
+  }), o($Vh, [2, 19], {
+    19: $Vi
   }), {
     21: 49,
     26: 43,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     8: 58,
     17: 16,
@@ -1352,8 +1342,8 @@ var parser = {
     19: $V1,
     20: 13,
     21: 14,
-    80: $V4
-  }, o($Vb, [2, 15]), o([5, 14, 16, 22, 24, 35, 37, 80], [2, 16], {
+    78: $V4
+  }, o($Vg, [2, 15]), o([5, 14, 16, 22, 24, 27, 35, 37, 78], [2, 16], {
     17: 59,
     18: $V0,
     19: $V1
@@ -1366,7 +1356,7 @@ var parser = {
     14: $V7,
     16: $V8,
     22: $V9
-  }), o($Vu, [2, 28]), o($Vb, [2, 12]), o($Vb, [2, 13]), o($Vb, [2, 14]), o([5, 14, 16, 18, 19, 24, 35, 37, 80], [2, 23], {
+  }), o($Vt, [2, 28]), o($Va, [2, 12]), o($Va, [2, 13]), o($Va, [2, 14]), o([5, 14, 16, 18, 19, 24, 35, 37, 78], [2, 23], {
     15: 60,
     22: $V9
   }), {
@@ -1388,146 +1378,142 @@ var parser = {
     24: $V2,
     34: 15,
     35: $V3,
-    80: $V4
-  }, o($Va, [2, 22], {
+    78: $V4
+  }, o([5, 14, 16, 22, 24, 27, 35, 37], [2, 22], {
     20: 13,
     21: 14,
     17: 16,
     8: 30,
     18: $V0,
     19: $V1,
-    80: $V4
+    78: $V4
   }), {
     21: 49,
     26: 62,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
-    21: 66,
+    8: 30,
+    17: 16,
+    18: $V0,
+    19: $V1,
+    20: 13,
+    21: 14,
     27: [1, 63],
-    38: $Vv,
-    39: 64,
-    40: 65,
-    41: 67,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    78: $V4
   }, {
-    27: [1, 69]
+    27: [1, 64]
   }, {
-    27: [1, 70]
+    27: [1, 65]
   }, {
-    21: 72,
-    38: [1, 71],
-    80: $V4
+    21: 67,
+    39: [1, 66],
+    78: $V4
   }, {
-    27: [1, 73]
+    27: [1, 68]
   }, {
-    47: [1, 74]
+    44: [1, 69]
   }, {
-    47: [1, 75]
-  }, o($Vb, [2, 41], {
-    36: [1, 76]
-  }), o([5, 16, 18, 19, 22, 24, 35, 37, 80], [2, 38], {
-    14: [1, 77]
-  }), o($Vb, [2, 39]), o($Vb, [2, 17]), {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
+    44: [1, 70]
+  }, o($Va, [2, 41], {
+    36: [1, 71]
+  }), o([5, 16, 18, 19, 22, 24, 35, 37, 78], [2, 38], {
+    14: [1, 72]
+  }), o($Va, [2, 39]), o($Vg, [2, 17]), {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
     61: $VA,
     62: $VB,
-    64: $VC,
-    65: $VD,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK,
-    81: [1, 78]
-  }, o($VL, [2, 59]), o($VL, [2, 60]), {
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI,
+    79: [1, 73]
+  }, o($VJ, [2, 53]), o($VJ, [2, 54]), {
     21: 49,
-    26: 94,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    26: 89,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     21: 49,
-    26: 95,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    26: 90,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     21: 49,
-    26: 96,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
-  }, o($VL, [2, 83]), o($VL, [2, 84]), o($VL, [2, 85]), {
-    54: [1, 97]
-  }, o($VM, [2, 86]), o($VM, [2, 87]), o($VM, [2, 88]), o($VM, [2, 89]), o($VM, [2, 90]), o([5, 14, 16, 22, 35, 37], [2, 36], {
+    26: 91,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
+  }, o($VJ, [2, 77]), o($VJ, [2, 78]), o($VJ, [2, 79]), {
+    51: [1, 92]
+  }, o($VJ, [2, 80]), o($VJ, [2, 81]), o($VJ, [2, 82]), o($VJ, [2, 83]), o($VJ, [2, 84]), o([5, 14, 16, 22, 35, 37], [2, 36], {
     20: 13,
     21: 14,
     17: 16,
     8: 30,
-    23: 98,
+    23: 93,
     18: $V0,
     19: $V1,
-    24: [1, 99],
-    80: $V4
-  }), o($Vi, [2, 18], {
-    19: $Vj
-  }), o($Vb, [2, 24]), {
+    24: [1, 94],
+    78: $V4
+  }), o($Vh, [2, 18], {
+    19: $Vi
+  }), o($Va, [2, 24]), {
     6: 22,
     7: 23,
     8: 6,
@@ -1542,52 +1528,40 @@ var parser = {
     20: 13,
     21: 14,
     23: 5,
-    24: [1, 100],
-    29: 101,
-    30: 102,
-    32: 103,
+    24: [1, 95],
+    29: 96,
+    30: 97,
+    32: 98,
     34: 15,
     35: $V3,
-    80: $V4
+    78: $V4
   }, {
-    27: [1, 104],
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
+    27: [1, 99],
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
     61: $VA,
     62: $VB,
-    64: $VC,
-    65: $VD,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
-  }, o($Vb, [2, 44]), {
-    21: 66,
-    27: [1, 105],
-    38: $Vv,
-    40: 106,
-    41: 67,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
-  }, o($VN, [2, 46]), o($VN, [2, 48]), o($VN, [2, 49]), o($VN, [2, 50]), o($Vb, [2, 54]), o($Vb, [2, 55]), {
-    27: [1, 107]
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
+  }, o($Va, [2, 44]), o($Va, [2, 48]), o($Va, [2, 49]), {
+    27: [1, 100]
   }, {
-    27: [1, 108]
-  }, o($Vb, [2, 53]), {
-    48: [1, 109]
+    27: [1, 101]
+  }, o($Va, [2, 47]), {
+    45: [1, 102]
   }, {
-    48: [1, 110]
+    45: [1, 103]
   }, {
-    4: 111,
+    4: 104,
     6: 3,
     7: 4,
     8: 6,
@@ -1605,406 +1579,588 @@ var parser = {
     24: $V2,
     34: 15,
     35: $V3,
-    80: $V4
-  }, o($Vb, [2, 40]), o([5, 14, 16, 18, 19, 22, 24, 27, 35, 37, 38, 50, 55, 57, 58, 59, 60, 61, 62, 64, 65, 66, 67, 68, 69, 70, 71, 72, 74, 75, 76, 77, 78, 79, 80, 81], [2, 91]), {
+    78: $V4
+  }, o($Va, [2, 40]), o([5, 14, 16, 18, 19, 22, 24, 27, 35, 37, 47, 52, 54, 55, 56, 57, 58, 59, 61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 78, 79], [2, 85]), {
+    21: 49,
+    26: 105,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
+  }, {
+    21: 49,
+    26: 106,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
+  }, {
+    21: 49,
+    26: 107,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
+  }, {
+    21: 49,
+    26: 108,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
+  }, {
+    21: 49,
+    26: 109,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
+  }, {
+    21: 49,
+    26: 110,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
+  }, {
+    21: 49,
+    26: 111,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
+  }, {
     21: 49,
     26: 112,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     21: 49,
     26: 113,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     21: 49,
     26: 114,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     21: 49,
     26: 115,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     21: 49,
     26: 116,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     21: 49,
     26: 117,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     21: 49,
     26: 118,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     21: 49,
     26: 119,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
-    21: 49,
-    26: 120,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
-  }, {
-    21: 49,
-    26: 121,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
-  }, {
-    21: 49,
-    26: 122,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
-  }, {
+    52: [1, 120],
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
+    61: $VA,
+    62: $VB,
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
+  }, o($VK, [2, 56], {
+    59: $Vz
+  }), o($VL, [2, 63], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
+    61: $VA,
+    62: $VB,
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
+  }), {
     21: 49,
     26: 123,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    52: [1, 121],
+    53: $Vm,
+    60: $Vn,
+    70: 122,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
+  }, o($Va, [2, 37]), {
+    25: $Vb
+  }, {
+    8: 32,
+    17: 16,
+    18: $V0,
+    19: $V1,
+    20: 13,
+    21: 14,
+    25: $Vb,
+    28: [1, 124],
+    31: $VM,
+    33: $VN,
+    38: $Vc,
+    40: $Vd,
+    41: 33,
+    42: 34,
+    43: $Ve,
+    46: $Vf,
+    78: $V4
+  }, o($Vt, [2, 27]), {
+    4: 127,
+    6: 3,
+    7: 4,
+    8: 6,
+    9: 7,
+    10: 8,
+    11: 9,
+    12: 10,
+    13: 11,
+    16: [1, 128],
+    17: 16,
+    18: $V0,
+    19: $V1,
+    20: 13,
+    21: 14,
+    23: 5,
+    24: $V2,
+    34: 15,
+    35: $V3,
+    78: $V4
+  }, {
+    4: 129,
+    6: 3,
+    7: 4,
+    8: 6,
+    9: 7,
+    10: 8,
+    11: 9,
+    12: 10,
+    13: 11,
+    16: [1, 130],
+    17: 16,
+    18: $V0,
+    19: $V1,
+    20: 13,
+    21: 14,
+    23: 5,
+    24: $V2,
+    34: 15,
+    35: $V3,
+    78: $V4
+  }, o($Va, [2, 25]), o($Va, [2, 45]), o($Va, [2, 46]), {
+    21: 49,
+    26: 131,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     21: 49,
-    26: 124,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    26: 132,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
-    21: 49,
-    26: 125,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
-  }, {
-    21: 49,
-    26: 126,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
-  }, {
-    55: [1, 127],
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
+    6: 22,
+    7: 23,
+    8: 6,
+    9: 7,
+    10: 8,
+    11: 9,
+    12: 10,
+    13: 11,
+    17: 16,
+    18: $V0,
+    19: $V1,
+    20: 13,
+    21: 14,
+    23: 5,
+    24: $V2,
+    34: 15,
+    35: $V3,
+    37: [1, 133],
+    78: $V4
+  }, o($VO, [2, 57], {
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz
+  }), o($VO, [2, 58], {
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz
+  }), o($VK, [2, 59], {
+    59: $Vz
+  }), o($VK, [2, 60], {
+    59: $Vz
+  }), o($VK, [2, 61], {
+    59: $Vz
+  }), o($VL, [2, 62], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
     61: $VA,
     62: $VB,
-    64: $VC,
-    65: $VD,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
-  }, o($VO, [2, 62], {
-    62: $VB
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
+  }), o([27, 47, 52, 61, 71, 79], [2, 64], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
+    62: $VB,
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
+  }), o([27, 47, 52, 61, 62, 71, 79], [2, 65], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
+  }), o([27, 47, 52, 61, 62, 63, 71, 79], [2, 66], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
+  }), o($VP, [2, 67], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz
+  }), o($VP, [2, 68], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz
   }), o($VP, [2, 69], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz
+  }), o($VP, [2, 70], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz
+  }), o($VP, [2, 71], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz
+  }), o($VP, [2, 72], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz
+  }), o($VJ, [2, 55]), o($VJ, [2, 73]), {
+    52: [1, 134],
+    71: [1, 135]
+  }, o($VQ, [2, 76], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
     61: $VA,
     62: $VB,
-    64: $VC,
-    65: $VD,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
   }), {
-    21: 49,
-    26: 130,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    55: [1, 128],
-    56: $Vn,
-    63: $Vo,
-    73: 129,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
-  }, o($Vb, [2, 37]), {
-    25: $Vc
+    27: [1, 136]
   }, {
-    25: $Vc,
-    28: [1, 131],
-    31: $VQ,
-    33: $VR,
-    38: $Vd,
-    42: $Ve,
-    43: $Vf,
-    44: 33,
-    45: 34,
-    46: $Vg,
-    49: $Vh
-  }, o($Vu, [2, 27]), {
-    4: 134,
-    6: 3,
-    7: 4,
-    8: 6,
-    9: 7,
-    10: 8,
-    11: 9,
-    12: 10,
-    13: 11,
-    16: [1, 135],
-    17: 16,
-    18: $V0,
-    19: $V1,
-    20: 13,
-    21: 14,
-    23: 5,
-    24: $V2,
-    34: 15,
-    35: $V3,
-    80: $V4
+    27: [1, 137]
   }, {
-    4: 136,
-    6: 3,
-    7: 4,
-    8: 6,
-    9: 7,
-    10: 8,
-    11: 9,
-    12: 10,
-    13: 11,
-    16: [1, 137],
-    17: 16,
-    18: $V0,
-    19: $V1,
-    20: 13,
-    21: 14,
-    23: 5,
-    24: $V2,
-    34: 15,
-    35: $V3,
-    80: $V4
-  }, o($Vb, [2, 25]), o($Vb, [2, 45]), o($VN, [2, 47]), o($Vb, [2, 51]), o($Vb, [2, 52]), {
     21: 49,
     26: 138,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
-  }, {
-    21: 49,
-    26: 139,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
   }, {
     6: 22,
     7: 23,
@@ -2020,168 +2176,11 @@ var parser = {
     20: 13,
     21: 14,
     23: 5,
-    24: $V2,
+    24: [1, 139],
     34: 15,
     35: $V3,
-    37: [1, 140],
-    80: $V4
-  }, o($VS, [2, 63], {
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB
-  }), o($VS, [2, 64], {
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB
-  }), o($VO, [2, 65], {
-    62: $VB
-  }), o($VO, [2, 66], {
-    62: $VB
-  }), o($VO, [2, 67], {
-    62: $VB
-  }), o($VP, [2, 68], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB,
-    64: $VC,
-    65: $VD,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
-  }), o([27, 50, 55, 64, 74, 81], [2, 70], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB,
-    65: $VD,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
-  }), o([27, 50, 55, 64, 65, 74, 81], [2, 71], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
-  }), o([27, 50, 55, 64, 65, 66, 74, 81], [2, 72], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
-  }), o($VT, [2, 73], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB
-  }), o($VT, [2, 74], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB
-  }), o($VT, [2, 75], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB
-  }), o($VT, [2, 76], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB
-  }), o($VT, [2, 77], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB
-  }), o($VT, [2, 78], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB
-  }), o($VL, [2, 61]), o($VL, [2, 79]), {
-    55: [1, 141],
-    74: [1, 142]
-  }, o($VU, [2, 82], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB,
-    64: $VC,
-    65: $VD,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
-  }), {
-    27: [1, 143]
-  }, {
-    27: [1, 144]
-  }, {
-    21: 49,
-    26: 145,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
-  }, {
+    78: $V4
+  }, o($VR, [2, 30]), {
     6: 22,
     7: 23,
     8: 6,
@@ -2196,151 +2195,144 @@ var parser = {
     20: 13,
     21: 14,
     23: 5,
-    24: [1, 146],
+    24: [1, 140],
+    29: 141,
+    30: 97,
+    32: 98,
     34: 15,
     35: $V3,
-    80: $V4
-  }, o($VV, [2, 30]), {
-    6: 22,
-    7: 23,
-    8: 6,
-    9: 7,
-    10: 8,
-    11: 9,
-    12: 10,
-    13: 11,
+    78: $V4
+  }, o($VR, [2, 32]), {
+    27: [2, 50],
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
+    61: $VA,
+    62: $VB,
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
+  }, {
+    27: [2, 51],
+    47: [1, 142],
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
+    61: $VA,
+    62: $VB,
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
+  }, o($Va, [2, 43]), o($VJ, [2, 74]), {
+    21: 49,
+    26: 143,
+    39: $Vj,
+    44: $Vk,
+    49: 44,
+    50: 45,
+    51: $Vl,
+    53: $Vm,
+    60: $Vn,
+    72: 50,
+    73: $Vo,
+    74: $Vp,
+    75: $Vq,
+    76: $Vr,
+    77: $Vs,
+    78: $V4
+  }, o($Vt, [2, 26]), o($VR, [2, 29]), {
+    27: [1, 144],
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
+    61: $VA,
+    62: $VB,
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
+  }, {
+    8: 32,
     17: 16,
     18: $V0,
     19: $V1,
     20: 13,
     21: 14,
-    23: 5,
-    24: [1, 147],
-    29: 148,
-    30: 102,
-    32: 103,
-    34: 15,
-    35: $V3,
-    80: $V4
-  }, o($VV, [2, 32]), {
-    27: [2, 56],
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
+    25: $Vb,
+    28: [1, 145],
+    38: $Vc,
+    40: $Vd,
+    41: 33,
+    42: 34,
+    43: $Ve,
+    46: $Vf,
+    78: $V4
+  }, {
+    8: 32,
+    17: 16,
+    18: $V0,
+    19: $V1,
+    20: 13,
+    21: 14,
+    25: $Vb,
+    28: [1, 146],
+    31: $VM,
+    33: $VN,
+    38: $Vc,
+    40: $Vd,
+    41: 33,
+    42: 34,
+    43: $Ve,
+    46: $Vf,
+    78: $V4
+  }, o($Vt, [2, 35]), {
+    48: [1, 147]
+  }, o($VQ, [2, 75], {
+    54: $Vu,
+    55: $Vv,
+    56: $Vw,
+    57: $Vx,
+    58: $Vy,
+    59: $Vz,
     61: $VA,
     62: $VB,
-    64: $VC,
-    65: $VD,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
+    63: $VC,
+    64: $VD,
+    65: $VE,
+    66: $VF,
+    67: $VG,
+    68: $VH,
+    69: $VI
+  }), o($VR, [2, 31]), {
+    27: [1, 148]
   }, {
-    27: [2, 57],
-    50: [1, 149],
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB,
-    64: $VC,
-    65: $VD,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
-  }, o($Vb, [2, 43]), o($VL, [2, 80]), {
-    21: 49,
-    26: 150,
-    38: $Vk,
-    41: 50,
-    47: $Vl,
-    52: 44,
-    53: 45,
-    54: $Vm,
-    56: $Vn,
-    63: $Vo,
-    75: $Vp,
-    76: $Vq,
-    77: $Vr,
-    78: $Vs,
-    79: $Vt,
-    80: $V4
-  }, o($Vu, [2, 26]), o($VV, [2, 29]), {
-    27: [1, 151],
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB,
-    64: $VC,
-    65: $VD,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
+    27: [1, 149]
   }, {
-    25: $Vc,
-    28: [1, 152],
-    38: $Vd,
-    42: $Ve,
-    43: $Vf,
-    44: 33,
-    45: 34,
-    46: $Vg,
-    49: $Vh
-  }, {
-    25: $Vc,
-    28: [1, 153],
-    31: $VQ,
-    33: $VR,
-    38: $Vd,
-    42: $Ve,
-    43: $Vf,
-    44: 33,
-    45: 34,
-    46: $Vg,
-    49: $Vh
-  }, o($Vu, [2, 35]), {
-    51: [1, 154]
-  }, o($VU, [2, 81], {
-    57: $Vw,
-    58: $Vx,
-    59: $Vy,
-    60: $Vz,
-    61: $VA,
-    62: $VB,
-    64: $VC,
-    65: $VD,
-    66: $VE,
-    67: $VF,
-    68: $VG,
-    69: $VH,
-    70: $VI,
-    71: $VJ,
-    72: $VK
-  }), o($VV, [2, 31]), {
-    27: [1, 155]
-  }, {
-    27: [1, 156]
-  }, {
-    27: [2, 58]
-  }, o($Vu, [2, 33]), o($Vu, [2, 34])],
+    27: [2, 52]
+  }, o($Vt, [2, 33]), o($Vt, [2, 34])],
   defaultActions: {
     21: [2, 1],
-    154: [2, 58]
+    147: [2, 52]
   },
   parseError: function parseError(str, hash) {
     if (hash.recoverable) {
@@ -2566,6 +2558,8 @@ class Expression {}
 
 class FunctionCall {}
 
+class Command {}
+
 var _default = {
   types: {
     Text,
@@ -2574,7 +2568,8 @@ var _default = {
     Assignment,
     Literal,
     Expression,
-    FunctionCall
+    FunctionCall,
+    Command
   },
   // /////////////// Dialog Nodes
   DialogShortcutNode: class extends Shortcut {
@@ -2626,6 +2621,33 @@ var _default = {
       this.expression = expression;
       this.statement = statement;
       this.elseStatement = elseStatement;
+    }
+
+  },
+  // /////////////// Command Nodes
+  GenericCommandNode: class extends Command {
+    constructor(command, lineNo) {
+      let hashtags = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+      super();
+      this.type = 'GenericCommandNode';
+      this.command = command;
+      this.hashtags = hashtags;
+      this.lineNum = lineNo ? lineNo.first_line : -1;
+    }
+
+  },
+  JumpCommandNode: class extends Command {
+    constructor(destination) {
+      super();
+      this.type = 'JumpCommandNode';
+      this.destination = destination;
+    }
+
+  },
+  StopCommandNode: class extends Command {
+    constructor() {
+      super();
+      this.type = 'StopCommandNode';
     }
 
   },
@@ -2850,21 +2872,6 @@ var _default = {
     }
 
   },
-  JumpNode: class extends FunctionCall {
-    constructor(destination) {
-      super();
-      this.type = 'JumpNode';
-      this.destination = destination;
-    }
-
-  },
-  StopNode: class extends FunctionCall {
-    constructor() {
-      super();
-      this.type = 'StopNode';
-    }
-
-  },
   // /////////////// Inline Expression
   InlineExpressionNode: class extends Expression {
     constructor(expression, lineNo) {
@@ -2884,7 +2891,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 625:
-/***/ ((module, exports, __nested_webpack_require_67854__) => {
+/***/ ((module, exports, __nested_webpack_require_67479__) => {
 
 
 
@@ -2893,17 +2900,21 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 
-var _nodes = _interopRequireDefault(__nested_webpack_require_67854__(987));
+var _nodes = _interopRequireDefault(__nested_webpack_require_67479__(987));
 
-var _lexer = _interopRequireDefault(__nested_webpack_require_67854__(271));
+var _lexer = _interopRequireDefault(__nested_webpack_require_67479__(271));
 
-var _compiledParser = __nested_webpack_require_67854__(87);
+var _compiledParser = __nested_webpack_require_67479__(87);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _compiledParser.parser.lexer = new _lexer.default();
 _compiledParser.parser.yy = _nodes.default;
 _compiledParser.parser.yy.declarations = {};
+
+_compiledParser.parser.yy.parseError = function parseError(e) {
+  throw e;
+};
 
 _compiledParser.parser.yy.registerDeclaration = function registerDeclaration(variableName, expression, explicitType) {
   if (!this.areDeclarationsHandled) {
@@ -2942,7 +2953,7 @@ class TextResult extends Result {
    * Create a text display result
    * @param {string} [text] text to be displayed
    * @param {string[]} [hashtags] the hashtags for the line
-   * @param {object} [metadata] the parent yarn node
+   * @param {object} [metadata] the parent yarn data
    */
   constructor(text, hashtags, metadata) {
     super();
@@ -2956,15 +2967,13 @@ class TextResult extends Result {
 class CommandResult extends Result {
   /**
    * Return a command string
-   * @param {string} [name] the function name being called
-   * @param {[]} [args] the array of arguments for the function
+   * @param {string} [command] the command text
    * @param {string[]} [hashtags] the hashtags for the line
-   * @param {object} [metadata] the parent yarn node
+   * @param {object} [metadata] the parent yarn data
    */
-  constructor(name, args, hashtags, metadata) {
+  constructor(command, hashtags, metadata) {
     super();
-    this.name = name;
-    this.args = args;
+    this.command = command;
     this.hashtags = hashtags;
     this.metadata = metadata;
   }
@@ -2977,7 +2986,7 @@ class OptionResult extends Result {
    * @param {string} [text] option text to display
    * @param {boolean} [isAvailable] whether option is available
    * @param {string[]} [hashtags] the hashtags for the line
-   * @param {object} [metadata] the parent yarn node
+   * @param {object} [metadata] the parent yarn data
    */
   constructor(text) {
     let isAvailable = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -2996,7 +3005,7 @@ class OptionsResult extends Result {
   /**
    * Create a selectable list of options from the given list of text
    * @param {OptionResult[]} [options] list of the text of options to be shown
-   * @param {object} [metadata] the parent yarn node
+   * @param {object} [metadata] the parent yarn data
    */
   constructor(options, metadata) {
     super();
@@ -3030,7 +3039,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 359:
-/***/ ((module, exports, __nested_webpack_require_71648__) => {
+/***/ ((module, exports, __nested_webpack_require_71258__) => {
 
 
 
@@ -3039,15 +3048,15 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 
-var _parser = _interopRequireDefault(__nested_webpack_require_71648__(625));
+var _parser = _interopRequireDefault(__nested_webpack_require_71258__(625));
 
-var _results = _interopRequireDefault(__nested_webpack_require_71648__(457));
+var _results = _interopRequireDefault(__nested_webpack_require_71258__(457));
 
-var _defaultVariableStorage = _interopRequireDefault(__nested_webpack_require_71648__(826));
+var _defaultVariableStorage = _interopRequireDefault(__nested_webpack_require_71258__(826));
 
-var _convertYarn = _interopRequireDefault(__nested_webpack_require_71648__(722));
+var _convertYarn = _interopRequireDefault(__nested_webpack_require_71258__(722));
 
-var _nodes = _interopRequireDefault(__nested_webpack_require_71648__(987));
+var _nodes = _interopRequireDefault(__nested_webpack_require_71258__(987));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3252,8 +3261,8 @@ class Runner {
           }
         }
       } else {
-        // FunctionCall
-        if (node.type === 'JumpNode') {
+        // Command
+        if (node.type === 'JumpCommandNode') {
           yield* this.run(node.destination); // ignore the rest of this outer loop and
           // tell parent loops to ignore following nodes
 
@@ -3262,7 +3271,7 @@ class Runner {
           };
         }
 
-        if (node.type === 'StopNode') {
+        if (node.type === 'StopCommandNode') {
           // ignore the rest of this outer loop and
           // tell parent loops to ignore following nodes
           return isRoot ? undefined : {
@@ -3270,8 +3279,8 @@ class Runner {
           };
         }
 
-        const funcArgs = node.args.map(this.evaluateExpressionOrLiteral, this);
-        yield new _results.default.CommandResult(node.functionName, funcArgs, node.hashtags, metadata);
+        const command = this.evaluateExpressionOrLiteral(node.command);
+        yield new _results.default.CommandResult(command, node.hashtags, metadata);
       }
 
       prevnode = node;
@@ -3296,15 +3305,12 @@ class Runner {
     // the consuming app does the actual filtering or whatever
     const transformedSelections = selections.map(s => {
       let isAvailable = true;
-      let text = '';
 
       if (s.conditionalExpression && !this.evaluateExpressionOrLiteral(s.conditionalExpression)) {
         isAvailable = false;
       }
 
-      text = s.text.reduce((acc, node) => {
-        return acc + this.evaluateExpressionOrLiteral(node).toString();
-      }, '');
+      const text = this.evaluateExpressionOrLiteral(s.text);
       return Object.assign(s, {
         isAvailable,
         text
@@ -3381,6 +3387,14 @@ class Runner {
 
 
   evaluateExpressionOrLiteral(node) {
+    // A combined array of text and inline expressions to be treated as one.
+    // Could probably be cleaned up by introducing a new node type.
+    if (Array.isArray(node)) {
+      return node.reduce((acc, n) => {
+        return acc + this.evaluateExpressionOrLiteral(n).toString();
+      }, '');
+    }
+
     const nodeHandlers = {
       UnaryMinusExpressionNode: a => {
         return -a;
@@ -3484,7 +3498,7 @@ module.exports = exports.default;
 /******/ 	var __webpack_module_cache__ = {};
 /******/ 	
 /******/ 	// The require function
-/******/ 	function __nested_webpack_require_86123__(moduleId) {
+/******/ 	function __nested_webpack_require_85929__(moduleId) {
 /******/ 		// Check if module is in cache
 /******/ 		var cachedModule = __webpack_module_cache__[moduleId];
 /******/ 		if (cachedModule !== undefined) {
@@ -3498,7 +3512,7 @@ module.exports = exports.default;
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __nested_webpack_require_86123__);
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __nested_webpack_require_85929__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -3509,7 +3523,7 @@ module.exports = exports.default;
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nested_webpack_require_86123__(352);
+/******/ 	var __webpack_exports__ = __nested_webpack_require_85929__(352);
 /******/ 	
 /******/ 	return __webpack_exports__;
 /******/ })()

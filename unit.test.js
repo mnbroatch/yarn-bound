@@ -95,12 +95,10 @@ text
 })
 
 describe('advance', () => {
-  const mockCommandArgs1 = ['a', 'b']
-  const mockCommandArgs2 = ['c', 'd']
   const mockCommandName1 = 'blah'
   const mockCommandName2 = 'bleh'
-  const mockCommandResult1 = new bondage.CommandResult(mockCommandName1, mockCommandArgs1)
-  const mockCommandResult2 = new bondage.CommandResult(mockCommandName2, mockCommandArgs2)
+  const mockCommandResult1 = new bondage.CommandResult(mockCommandName1)
+  const mockCommandResult2 = new bondage.CommandResult(mockCommandName2)
   const mockTextResult1 = new bondage.TextResult('marge')
   const mockTextResult2 = new bondage.TextResult('maggie')
   const mockTextResult3 = new bondage.TextResult('homer')
@@ -163,17 +161,11 @@ describe('advance', () => {
       expect(runner.currentResult).toBe(mockTextResult1)
     })
 
-    test('should call the command handler with the correct arguments for each command result', () => {
+    test('should call the command handler for each command result', () => {
       const handleCommand = jest.fn()
       new YarnBound({ handleCommand })
-      expect(handleCommand).toHaveBeenNthCalledWith(1, {
-        name: mockCommandName1,
-        args: mockCommandArgs1
-      })
-      expect(handleCommand).toHaveBeenNthCalledWith(2, {
-        name: mockCommandName2,
-        args: mockCommandArgs2
-      })
+      expect(handleCommand).toHaveBeenNthCalledWith(1, { command: mockCommandName1 })
+      expect(handleCommand).toHaveBeenNthCalledWith(2, { command: mockCommandName2 })
     })
   })
 

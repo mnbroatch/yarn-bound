@@ -136,12 +136,7 @@ A Command Result looks like this:
 
 ```javascript
 {
-  "name": "someCommand",
-  "args": [
-    "someArg",
-    2,
-    false
-  ],
+  "command": "someCommand",
   "hashtags": [],
   "metadata": {/* see below */}
 }
@@ -203,7 +198,7 @@ and `runner.currentResult` will be an OptionsResult with an options array with t
 runner.advance(0)
 ```
 
-Now, `runner.currentNode` is a CommandResult where `name` is "doSomething" and `args` is an array with one string in it, "home".
+Now, `runner.currentNode` is a CommandResult where `command` is "doSomething home".
 
 ```javascript
 runner.advance()
