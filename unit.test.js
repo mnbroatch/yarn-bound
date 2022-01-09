@@ -103,7 +103,7 @@ describe('advance', () => {
   const mockTextResult2 = new bondage.TextResult('maggie')
   const mockTextResult3 = new bondage.TextResult('homer')
   const mockOptionsResult = new bondage.OptionsResult(['bart', 'lisa'])
-  describe('where next nodes are a TextResult followed by OptionsResult', () => {
+  describe('where next results are a TextResult followed by OptionsResult', () => {
     beforeAll(() => {
       bondage.Runner.prototype.run.mockImplementation(function * () {
         yield mockTextResult1
@@ -113,17 +113,17 @@ describe('advance', () => {
       })
     })
 
-    test('should set currentResult to an Options object with the text attached if combineTextAndOptionsResults is false', () => {
-      const runner = new YarnBound({ combineTextAndOptionsResults: true })
-      expect(runner.currentResult).toEqual({ ...mockOptionsResult, ...mockTextResult1 })
-      expect(runner.currentResult).toBeInstanceOf(bondage.OptionsResult)
-    })
-
-    test('should not set currentResult to an Options object with the text attached', () => {
+    test('should set currentResult to a the TextResult object', () => {
       const runner = new YarnBound({})
       expect(runner.currentResult).toBe(mockTextResult1)
       runner.advance()
       expect(runner.currentResult).toBe(mockOptionsResult)
+    })
+
+    test('should set currentResult to an Options object with the text attached if combineTextAndOptionsResults is false', () => {
+      const runner = new YarnBound({ combineTextAndOptionsResults: true })
+      expect(runner.currentResult).toEqual({ ...mockOptionsResult, ...mockTextResult1 })
+      expect(runner.currentResult).toBeInstanceOf(bondage.OptionsResult)
     })
 
     test('should select the option with the index passed in, if there is one', () => {
@@ -139,7 +139,7 @@ describe('advance', () => {
     })
   })
 
-  describe('where next nodes are CommandResults followed by TextResults', () => {
+  describe('where next results are CommandResults followed by TextResults', () => {
     beforeAll(() => {
       bondage.Runner.prototype.run.mockImplementation(function * () {
         yield mockCommandResult1
@@ -154,6 +154,24 @@ describe('advance', () => {
       expect(runner.currentResult).toBe(mockCommandResult1)
       runner.advance()
       expect(runner.currentResult).toBe(mockCommandResult2)
+    })
+
+    test('should add previous results to history', () => {
+      const runner = new YarnBound({})
+      expect(runner.currentResult).toBe(mockCommandResult1)
+      runner.advance()
+      expect(runner.history).toEqual([mockCommandResult1])
+      runner.advance()
+      expect(runner.history).toEqual([mockCommandResult1, mockCommandResult2])
+      runner.advance()
+      expect(runner.history).toEqual([mockCommandResult1, mockCommandResult2, mockTextResult1])
+    })
+
+    test('should not add command results to history if handleCommand is supplied', () => {
+      const runner = new YarnBound({ handleCommand: () => {} })
+      expect(runner.currentResult).toBe(mockTextResult1)
+      runner.advance()
+      expect(runner.history).toEqual([mockTextResult1])
     })
 
     test('should set currentResult to the next non-command result if handleCommand is supplied', () => {

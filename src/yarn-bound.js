@@ -14,6 +14,7 @@ export default class YarnBound {
     this.bondage = bondage
     this.bufferedNode = null
     this.currentResult = null
+    this.history = []
 
     const runner = new bondage.Runner()
     
@@ -80,6 +81,9 @@ export default class YarnBound {
       }
     }
 
+    if (this.currentResult) {
+      this.history.push(this.currentResult)
+    }
     this.currentResult = next
     this.bufferedNode = buffered
   }

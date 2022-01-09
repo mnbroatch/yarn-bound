@@ -20,15 +20,16 @@ There are features in the Yarn docs that are not present in the [Yarn language s
   - `[b]Markup[/b]`
   - built-in `<<wait>>` command
 
+There are also features like `<<declare $var = 1>>` that are in the spec but not the docs (apart from in the C# API docs)!
+
 
 # Usage
 
 Install with `npm i -S yarn-bound` or grab `yarn-bound.js` from the `/dist/` folder.
 
-For information on how to write Yarn, visit the [official documentation](https://docs.yarnspinner.dev/). Start there! YarnBound is useful after you have a yarn dialogue written and in string format.
+For information on how to write Yarn, visit the [official documentation](https://docs.yarnspinner.dev/). Start there! YarnBound is useful after you have a yarn dialogue written and in string format. It's worth skimming the [Yarn language spec](https://github.com/YarnSpinnerTool/YarnSpinner/blob/9275277f50a6acbe8438b29596acc8527cf5581a/Documentation/Yarn-Spec.md) as well.
 
-
-To get started, import and create a new instance of Yarn.
+To get started with YarnBound, import and create a new instance.
 
 ```javascript
 import YarnBound from 'yarn-bound'
@@ -141,6 +142,8 @@ A Command Result looks like this:
   "metadata": {/* see below */}
 }
 ```
+
+It could also have a `isDialogueEnd` property on it (though that may not be useful if you're using a command handler!)
 
 Every Result contains `metadata` which includes node header tags including `title`, and also any file tags.
 

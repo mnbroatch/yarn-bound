@@ -3603,6 +3603,7 @@ class YarnBound {
     this.bondage = _bondage.default;
     this.bufferedNode = null;
     this.currentResult = null;
+    this.history = [];
     const runner = new _bondage.default.Runner(); // To make template string dialogues more convenient, we will allow and strip
     // uniform leading whitespace. The header delimiter will set the baseline.
 
@@ -3659,6 +3660,10 @@ class YarnBound {
           isDialogueEnd: true
         });
       }
+    }
+
+    if (this.currentResult) {
+      this.history.push(this.currentResult);
     }
 
     this.currentResult = next;
