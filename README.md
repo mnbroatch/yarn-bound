@@ -6,6 +6,7 @@ YarnBound attempts to be the simplest way to use the Yarn language in the contex
 
 Quality-of-life features on top of bondage.js:
   - A simpler API 
+  - History of previous Results
   - Option to return text and a subsequent options block together as one result
   - Option to run a custom command handler function instead of returning a CommandResult
   - include an `isDialogueEnd` property with the last Result in a dialogue
@@ -227,6 +228,13 @@ const runner = new YarnBound({
   }
 })
 ```
+
+
+# History
+
+An array containing Results already visited is located at `runner.history`
+
+If your instance is going to run through hundreds of thousands of lines, you should probably periodically prune it.
 
 
 # Caveats
