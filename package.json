@@ -1,6 +1,6 @@
 {
   "name": "yarn-bound",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Quality of life wrapper around bondage.js",
   "main": "dist/yarn-bound.js",
   "scripts": {
@@ -28,7 +28,7 @@
 
   },
   "dependencies": {
-    "@mnbroatch/bondage": "^3.0.32"
+    "@mnbroatch/bondage": "^3.0.33"
   },
   "repository": {
     "type": "git",
