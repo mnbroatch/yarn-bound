@@ -232,7 +232,7 @@ const runner = new YarnBound({
 
 # History
 
-An array containing Results already visited is located at `runner.history`
+An array containing Results already visited is located at `runner.history`.
 
 If your instance is going to run through hundreds of thousands of lines, you should probably periodically prune it.
 

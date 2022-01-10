@@ -7,7 +7,7 @@ export default class YarnBound {
     functions,
     handleCommand,
     combineTextAndOptionsResults,
-    startAt = 'Start'
+    startAt = 'Start',
   }) {
     this.handleCommand = handleCommand
     this.combineTextAndOptionsResults = combineTextAndOptionsResults

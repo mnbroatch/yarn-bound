@@ -3596,13 +3596,15 @@ class YarnBound {
       functions,
       handleCommand,
       combineTextAndOptionsResults,
-      startAt = 'Start'
+      startAt = 'Start',
+      maxHistoryLength = 100
     } = _ref;
     this.handleCommand = handleCommand;
     this.combineTextAndOptionsResults = combineTextAndOptionsResults;
     this.bondage = _bondage.default;
     this.bufferedNode = null;
     this.currentResult = null;
+    this.maxHistoryLength = maxHistoryLength;
     this.history = [];
     const runner = new _bondage.default.Runner(); // To make template string dialogues more convenient, we will allow and strip
     // uniform leading whitespace. The header delimiter will set the baseline.
@@ -3663,7 +3665,11 @@ class YarnBound {
     }
 
     if (this.currentResult) {
-      this.history.push(this.currentResult);
+      this.history.push(JSON.parse(JSON.stringify(this.currentResult)));
+
+      if (this.history.length > this.maxHistoryLength) {
+        this.history.shift();
+      }
     }
 
     this.currentResult = next;
