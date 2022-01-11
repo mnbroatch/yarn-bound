@@ -1,4 +1,4 @@
-import bondage, { OptionsResult, TextResult, CommandResult } from '@mnbroatch/bondage'
+import bondage from '@mnbroatch/bondage'
 
 export default class YarnBound {
   constructor ({
@@ -88,5 +88,3 @@ export default class YarnBound {
     this.bufferedNode = buffered
   }
 }
-
-export { OptionsResult, TextResult, CommandResult }

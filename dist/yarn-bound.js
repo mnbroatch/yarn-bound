@@ -3549,8 +3549,13 @@ exports["default"] = void 0;
 
 var _yarnBound = _interopRequireDefault(__webpack_require__(424));
 
+var _bondage = __webpack_require__(706);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+_yarnBound.default.OptionsResult = _bondage.OptionsResult;
+_yarnBound.default.TextResult = _bondage.TextResult;
+_yarnBound.default.CommandResult = _bondage.CommandResult;
 var _default = _yarnBound.default;
 exports["default"] = _default;
 module.exports = exports.default;
@@ -3558,7 +3563,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 424:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((module, exports, __webpack_require__) => {
 
 "use strict";
 
@@ -3566,31 +3571,11 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-Object.defineProperty(exports, "CommandResult", ({
-  enumerable: true,
-  get: function get() {
-    return _bondage.CommandResult;
-  }
-}));
-Object.defineProperty(exports, "OptionsResult", ({
-  enumerable: true,
-  get: function get() {
-    return _bondage.OptionsResult;
-  }
-}));
-Object.defineProperty(exports, "TextResult", ({
-  enumerable: true,
-  get: function get() {
-    return _bondage.TextResult;
-  }
-}));
 exports["default"] = void 0;
 
-var _bondage = _interopRequireWildcard(__webpack_require__(706));
+var _bondage = _interopRequireDefault(__webpack_require__(706));
 
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 class YarnBound {
   constructor(_ref) {
@@ -3677,6 +3662,7 @@ class YarnBound {
 }
 
 exports["default"] = YarnBound;
+module.exports = exports.default;
 
 /***/ })
 
