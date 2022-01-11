@@ -1,4 +1,5 @@
 import bondage from '@mnbroatch/bondage'
+import lineParser from './line-parser'
 
 export default class YarnBound {
   constructor ({
@@ -83,6 +84,14 @@ export default class YarnBound {
 
     if (this.currentResult) {
       this.history.push(this.currentResult)
+    }
+
+    if (next instanceof bondage.TextResult) {
+      next.text = lineParser(next.text)
+    } else if (next instanceof bondage.OptionsResult) {
+      next.options.forEach((option) => {
+        option.text = lineParser(option.text)
+      })
     }
     this.currentResult = next
     this.bufferedNode = buffered

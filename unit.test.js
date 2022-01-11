@@ -2,8 +2,10 @@
 /* eslint-disable no-new */
 
 import YarnBound from './src/yarn-bound'
+import lineParser from './src/line-parser'
 import bondage from '@mnbroatch/bondage'
 
+jest.mock('./src/line-parser')
 jest.mock('@mnbroatch/bondage')
 bondage.Runner.prototype.run.mockImplementation(function * () {
   while (true) yield new bondage.TextResult()
@@ -45,18 +47,6 @@ text
     new YarnBound({ variableStorage })
     expect(bondage.Runner.prototype.setVariableStorage)
       .toHaveBeenCalledWith(variableStorage)
-  })
-
-  test('should register provided functions', () => {
-    const functions = {
-      functionOne: () => {},
-      functionTwo: () => {}
-    }
-    new YarnBound({ functions })
-    Object.entries(functions).forEach(([key, func]) => {
-      expect(bondage.Runner.prototype.registerFunction)
-        .toHaveBeenCalledWith(key, func)
-    })
   })
 
   test('should register provided functions', () => {
@@ -136,6 +126,32 @@ describe('advance', () => {
       runner.advance(1)
       expect(currentResult.select).toHaveBeenCalledWith(1)
       expect(runner.currentResult).toBe(mockTextResult2)
+    })
+
+    test('should set currentResult to a the TextResult object', () => {
+      const runner = new YarnBound({})
+      expect(runner.currentResult).toBe(mockTextResult1)
+      runner.advance()
+      expect(runner.currentResult).toBe(mockOptionsResult)
+    })
+
+    test('should run the lineParser on text result text', () => {
+      const mockLine = {}
+      lineParser.mockImplementation(function () {
+        return mockLine
+      })
+      const runner = new YarnBound({})
+      expect(runner.currentResult.text).toBe(mockLine)
+    })
+
+    test('should run the lineParser on option text', () => {
+      const mockLine = {}
+      lineParser.mockImplementation(function () {
+        return mockLine
+      })
+      const runner = new YarnBound({})
+      runner.advance()
+      expect(runner.currentResult.options[0].text).toBe(mockLine)
     })
   })
 
