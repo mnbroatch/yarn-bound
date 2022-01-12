@@ -3562,6 +3562,262 @@ module.exports = exports.default;
 
 /***/ }),
 
+/***/ 279:
+/***/ ((module, exports, __webpack_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = lineParser;
+
+var _bondage = __webpack_require__(706);
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+// mutates node, processing [markup /] and `character:`
+function lineParser(node, locale) {
+  if (node instanceof _bondage.TextResult) {
+    parseLine(node, locale);
+  } else if (node instanceof _bondage.OptionsResult) {
+    node.options.forEach(option => {
+      parseLine(option, locale);
+    });
+  }
+}
+
+function parseLine(node, locale) {
+  node.markup = [];
+  parseCharacterLabel(node);
+  parseMarkup(node, locale);
+}
+
+function parseCharacterLabel(node) {
+  const match = node.text.match(/^(\S+):\s+/);
+
+  if (match) {
+    node.text = node.text.replace(match[0], '');
+    node.markup.push({
+      name: 'character',
+      properties: {
+        name: match[1]
+      }
+    });
+  }
+}
+
+function parseMarkup(node, locale) {
+  const attributes = [];
+  let noMarkup = false;
+  const attributeRegex = /(^|[^\\])\[(.*?[^\\])\](.|$)/;
+  let textRemaining = node.text;
+  let resultText = '';
+  let match = textRemaining.match(attributeRegex);
+
+  while (match) {
+    const {
+      index
+    } = match;
+    const [wholeMatch, charBefore, contents, charAfter] = match;
+    const hasLeadingSpace = /\s/.test(charBefore);
+    const hasTrailingSpace = /\s/.test(charAfter);
+
+    const attribute = _objectSpread(_objectSpread({}, parseAttributeContents(contents, locale)), {}, {
+      position: resultText.length + index + charBefore.length
+    });
+
+    if (!noMarkup || attribute.name === 'nomarkup') {
+      const isReplacementTag = attribute.name === 'select' || attribute.name === 'plural' || attribute.name === 'ordinal';
+      const shouldTrim = !isReplacementTag && attribute.isSelfClosing && attribute.properties && attribute.properties.trimwhitespace !== false && (index === 0 && hasTrailingSpace || hasLeadingSpace && hasTrailingSpace);
+
+      if (attribute.properties) {
+        delete attribute.properties.trimwhitespace;
+      }
+
+      const replacement = charBefore + (attribute.replacement || '') + (shouldTrim ? charAfter.slice(1) : charAfter);
+      textRemaining = textRemaining.replace(attributeRegex, replacement); // inner slices are because charAfter could be an opening square bracket
+
+      resultText += textRemaining.slice(0, index + replacement.slice(1).length);
+      textRemaining = textRemaining.slice(index + replacement.slice(1).length);
+
+      if (!isReplacementTag && attribute.name !== 'nomarkup') {
+        attributes.push(attribute);
+      }
+    } else {
+      // -1s are because charAfter could be an opening square bracket
+      resultText += textRemaining.slice(0, index + wholeMatch.length - 1);
+      textRemaining = textRemaining.slice(index + wholeMatch.length - 1);
+    }
+
+    if (attribute.name === 'nomarkup') {
+      noMarkup = !attribute.isClosing;
+    }
+
+    match = textRemaining.match(attributeRegex);
+  }
+
+  node.text = resultText + textRemaining; // Escaped bracket support might need some TLC.
+
+  const escapedCharacterRegex = /\\(\[|\])/;
+  match = node.text.match(escapedCharacterRegex);
+  textRemaining = node.text;
+  resultText = '';
+
+  while (match) {
+    const char = match[1];
+    attributes.forEach(attr => {
+      if (attr.position > resultText.length + match.index) {
+        attr.position -= 1;
+      }
+    });
+    textRemaining = textRemaining.replace(escapedCharacterRegex, char);
+    resultText += textRemaining.slice(0, match.index + 1);
+    textRemaining = textRemaining.slice(match.index + 1);
+    match = textRemaining.match(escapedCharacterRegex);
+  }
+
+  node.text = resultText + textRemaining;
+  const openTagStacks = {};
+  attributes.forEach(attr => {
+    if (!openTagStacks[attr.name]) {
+      openTagStacks[attr.name] = [];
+    }
+
+    if (attr.isClosing && !openTagStacks[attr.name].length) {
+      throw new Error("Encountered closing ".concat(attr.name, " tag before opening tag"));
+    } else if (attr.isClosing) {
+      const openTag = openTagStacks[attr.name].pop();
+      node.markup.push({
+        name: openTag.name,
+        position: openTag.position,
+        properties: openTag.properties,
+        length: attr.position - openTag.position
+      });
+    } else if (attr.isSelfClosing) {
+      node.markup.push({
+        name: attr.name,
+        position: attr.position,
+        properties: attr.properties,
+        length: 0
+      });
+    } else if (attr.isCloseAll) {
+      const openTags = Object.values(openTagStacks).flat();
+
+      while (openTags.length) {
+        const openTag = openTags.pop();
+        node.markup.push({
+          name: openTag.name,
+          position: openTag.position,
+          properties: openTag.properties,
+          length: attr.position - openTag.position
+        });
+      }
+    } else {
+      openTagStacks[attr.name].push({
+        name: attr.name,
+        position: attr.position,
+        properties: attr.properties
+      });
+    }
+  });
+}
+
+function parseAttributeContents(contents, locale) {
+  const nameMatch = contents.match(/^\/?([^\s=/]+)(\/|\s|$)/);
+  const isClosing = contents[0] === '/';
+  const isSelfClosing = contents[contents.length - 1] === '/';
+  const isCloseAll = contents === '/';
+
+  if (isCloseAll) {
+    return {
+      name: 'closeall',
+      isCloseAll: true
+    };
+  } else if (isClosing) {
+    return {
+      name: nameMatch[1],
+      isClosing: true
+    };
+  } else {
+    const propertyAssignmentsText = nameMatch ? contents.replace(nameMatch[0], '') : contents;
+    const propertyAssignments = propertyAssignmentsText.match(/(\S+?".*?"|[^\s/]+)/g);
+    let properties = {};
+
+    if (propertyAssignments) {
+      properties = propertyAssignments.reduce((acc, propAss) => {
+        return _objectSpread(_objectSpread({}, acc), parsePropertyAssignment(propAss));
+      }, {});
+    }
+
+    const name = nameMatch && nameMatch[1] || Object.keys(properties)[0];
+    let replacement;
+
+    if (name === 'select') {
+      replacement = processSelectAttribute(properties);
+    } else if (name === 'plural') {
+      replacement = processPluralAttribute(properties, locale);
+    } else if (name === 'ordinal') {
+      replacement = processOrdinalAttribute(properties, locale);
+    }
+
+    return {
+      name,
+      properties,
+      isSelfClosing,
+      replacement
+    };
+  }
+}
+
+function parsePropertyAssignment(propAss) {
+  const [propName, ...rest] = propAss.split('=');
+  const stringValue = rest.join('='); // just in case string value had a = in it
+
+  if (!propName || !stringValue) {
+    throw new Error("Invalid markup property assignment: ".concat(propAss));
+  }
+
+  let value;
+
+  if (stringValue === 'true' || stringValue === 'false') {
+    value = stringValue === 'true';
+  } else if (/^-?(0|[1-9]\d*)?(\.\d+)?(?<=\d)$/.test(stringValue)) {
+    value = +stringValue;
+  } else if (stringValue[0] === '"' && stringValue[stringValue.length - 1] === '"') {
+    value = stringValue.slice(1, -1);
+  } else {
+    value = stringValue;
+  }
+
+  return {
+    [propName]: value
+  };
+}
+
+function processSelectAttribute(properties) {
+  return properties[properties.value];
+}
+
+function processPluralAttribute(properties, locale) {
+  return properties[new Intl.PluralRules(locale).select(properties.value)].replaceAll('%', properties.value);
+}
+
+function processOrdinalAttribute(properties, locale) {
+  return properties[new Intl.PluralRules(locale, {
+    type: 'ordinal'
+  }).select(properties.value)].replaceAll('%', properties.value);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
 /***/ 424:
 /***/ ((module, exports, __webpack_require__) => {
 
@@ -3575,6 +3831,8 @@ exports["default"] = void 0;
 
 var _bondage = _interopRequireDefault(__webpack_require__(706));
 
+var _lineParser = _interopRequireDefault(__webpack_require__(279));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 class YarnBound {
@@ -3585,6 +3843,7 @@ class YarnBound {
       functions,
       handleCommand,
       combineTextAndOptionsResults,
+      locale,
       startAt = 'Start'
     } = _ref;
     this.handleCommand = handleCommand;
@@ -3593,6 +3852,7 @@ class YarnBound {
     this.bufferedNode = null;
     this.currentResult = null;
     this.history = [];
+    this.locale = locale;
     const runner = new _bondage.default.Runner(); // To make template string dialogues more convenient, we will allow and strip
     // uniform leading whitespace. The header delimiter will set the baseline.
 
@@ -3655,6 +3915,7 @@ class YarnBound {
       this.history.push(this.currentResult);
     }
 
+    (0, _lineParser.default)(next, this.locale);
     this.currentResult = next;
     this.bufferedNode = buffered;
   }

@@ -13,15 +13,13 @@ Quality-of-life features on top of bondage.js:
 
 A live demo is under development.
 
-
-# Missing features:
-
-There are features in the Yarn docs that are not present in the [Yarn language spec](https://github.com/YarnSpinnerTool/YarnSpinner/blob/9275277f50a6acbe8438b29596acc8527cf5581a/Documentation/Yarn-Spec.md). These have not yet been implemented. Known examples are:
+Bondage.js also does not support
   - `Character: some text` annotation
   - `[b]Markup[/b]`
-  - built-in `<<wait>>` command
 
-There are also features like `<<declare $var = 1>>` that are in the spec but not the docs (apart from in the C# API docs)!
+because these are not language features (it's confusing). YarnBound adds these things.
+
+The only thing I know to be missing from the spec and non-unity-specific docs is the built-in `wait` command, because I can't tell what I want it to do.
 
 
 # Usage
@@ -241,6 +239,8 @@ The `isDialogueEnd` feature assumes your dialogue will terminate on a TextResult
   - The dialogue terminates on an OptionsResult, or
   - The dialogue terminates on a CommandResult and a `handleCommand` callback is supplied.
     - Terminating on the `<<stop>>` command is fine
+
+Escaping markdown is iffy and might require you to double escape `\\`. Probably better to use `nomarkup` attributes.
 
 
 # Other included versions

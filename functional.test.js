@@ -7,7 +7,7 @@ describe('functional test', () => {
   const dialogue = `
     title:Start
     ---
-    I am a line
+    Char: I am a line
     1 + 1 is {1 + 1}
     -> I should be disabled<<if false is true>>
       X
@@ -32,7 +32,7 @@ describe('functional test', () => {
         { text: 'I should be disabled', isAvailable: false },
         { text: 'I am a choice' },
         { text: 'I am another choice' }
-      ]).options
+      ]).options.map((option) => ({ ...option, markup: [] }))
     )
     runner.advance(1)
     expect(runner.currentResult.text).toBe('I am the line after a choice')

@@ -1,14 +1,12 @@
 /* eslint-env jest */
 /* eslint-disable no-new */
 
-import YarnBound from './src/yarn-bound'
-import lineParser from './src/line-parser'
+import YarnBound from './src/index'
 import bondage from '@mnbroatch/bondage'
 
-jest.mock('./src/line-parser')
 jest.mock('@mnbroatch/bondage')
 bondage.Runner.prototype.run.mockImplementation(function * () {
-  while (true) yield new bondage.TextResult()
+  while (true) yield new bondage.TextResult('hello')
 })
 // It's convenient to make actual results objects in test
 const actualBondage = jest.requireActual('@mnbroatch/bondage')
@@ -92,7 +90,10 @@ describe('advance', () => {
   const mockTextResult1 = new bondage.TextResult('marge')
   const mockTextResult2 = new bondage.TextResult('maggie')
   const mockTextResult3 = new bondage.TextResult('homer')
-  const mockOptionsResult = new bondage.OptionsResult(['bart', 'lisa'])
+  const mockOptionsResult = new bondage.OptionsResult([
+    { text: 'bart' },
+    { text: 'lisa' }
+  ])
   describe('where next results are a TextResult followed by OptionsResult', () => {
     beforeAll(() => {
       bondage.Runner.prototype.run.mockImplementation(function * () {
@@ -108,6 +109,11 @@ describe('advance', () => {
       expect(runner.currentResult).toBe(mockTextResult1)
       runner.advance()
       expect(runner.currentResult).toBe(mockOptionsResult)
+    })
+
+    test('should attach a markup array to a the TextResult object', () => {
+      const runner = new YarnBound({})
+      expect(runner.currentResult.markup).toEqual([])
     })
 
     test('should set currentResult to an Options object with the text attached if combineTextAndOptionsResults is false', () => {
@@ -133,25 +139,6 @@ describe('advance', () => {
       expect(runner.currentResult).toBe(mockTextResult1)
       runner.advance()
       expect(runner.currentResult).toBe(mockOptionsResult)
-    })
-
-    test('should run the lineParser on text result text', () => {
-      const mockLine = {}
-      lineParser.mockImplementation(function () {
-        return mockLine
-      })
-      const runner = new YarnBound({})
-      expect(runner.currentResult.text).toBe(mockLine)
-    })
-
-    test('should run the lineParser on option text', () => {
-      const mockLine = {}
-      lineParser.mockImplementation(function () {
-        return mockLine
-      })
-      const runner = new YarnBound({})
-      runner.advance()
-      expect(runner.currentResult.options[0].text).toBe(mockLine)
     })
   })
 

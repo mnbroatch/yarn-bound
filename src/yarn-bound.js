@@ -8,7 +8,8 @@ export default class YarnBound {
     functions,
     handleCommand,
     combineTextAndOptionsResults,
-    startAt = 'Start',
+    locale,
+    startAt = 'Start'
   }) {
     this.handleCommand = handleCommand
     this.combineTextAndOptionsResults = combineTextAndOptionsResults
@@ -16,9 +17,9 @@ export default class YarnBound {
     this.bufferedNode = null
     this.currentResult = null
     this.history = []
-
+    this.locale = locale
     const runner = new bondage.Runner()
-    
+
     // To make template string dialogues more convenient, we will allow and strip
     // uniform leading whitespace. The header delimiter will set the baseline.
     if (typeof dialogue === 'string') {
@@ -86,13 +87,7 @@ export default class YarnBound {
       this.history.push(this.currentResult)
     }
 
-    if (next instanceof bondage.TextResult) {
-      next.text = lineParser(next.text)
-    } else if (next instanceof bondage.OptionsResult) {
-      next.options.forEach((option) => {
-        option.text = lineParser(option.text)
-      })
-    }
+    lineParser(next, this.locale)
     this.currentResult = next
     this.bufferedNode = buffered
   }

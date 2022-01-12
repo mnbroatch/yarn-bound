@@ -1,6 +1,6 @@
 {
   "name": "yarn-bound",
-  "version": "0.1.2",
+  "version": "0.2.1",
   "description": "Quality of life wrapper around bondage.js",
   "main": "dist/yarn-bound.js",
   "scripts": {
@@ -13,19 +13,19 @@
   "author": "Matthew Broatch",
   "license": "ISC",
   "devDependencies": {
-    "standard": "^16.0.4",
     "@babel/preset-env": "^7.16.7",
     "babel-jest": "^27.4.4",
     "babel-loader": "",
     "babel-plugin-add-module-exports": "^1.0.4",
     "core-js": "^3.20.2",
-    "eslint": "^3.19.0",
+    "eslint": "",
+    "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.3.0",
     "jest": "^27.4.3",
     "regenerator-runtime": "^0.13.9",
+    "standard": "^16.0.4",
     "webpack": "^5.65.0",
     "webpack-cli": "^4.9.1"
-
   },
   "dependencies": {
     "@mnbroatch/bondage": "^3.0.33"
