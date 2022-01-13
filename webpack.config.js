@@ -11,7 +11,7 @@ const common = {
   module: {
     rules: [{
       test: /\.js/,
-      exclude: /node_modules/,
+      exclude: /node_modules\/(?!@mnbroatch).+/,
       use: {
         loader: 'babel-loader',
         options: {
@@ -52,8 +52,6 @@ module.exports = [
     },
     module: {
       rules: [{
-        // test: /\.js/,
-        // exclude: /node_modules/,
         exclude: /node_modules\/(?!@mnbroatch).+/,
         use: {
           loader: 'babel-loader',
