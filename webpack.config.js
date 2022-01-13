@@ -4,9 +4,9 @@ const common = {
     filename: 'yarn-bound.min.js',
     library: {
       name: 'YarnBound',
-      type: 'umd',
+      type: 'umd'
     },
-    globalObject: 'this',
+    globalObject: 'this'
   },
   module: {
     rules: [{
@@ -19,16 +19,16 @@ const common = {
             ['@babel/preset-env',
               {
                 modules: 'cjs',
-                targets: 'last 4 years',
-              },
-            ],
+                targets: 'last 4 years'
+              }
+            ]
           ],
-          plugins: ['add-module-exports'],
-        },
-      },
-    }],
-  },
-};
+          plugins: ['add-module-exports']
+        }
+      }
+    }]
+  }
+}
 
 module.exports = [
   common,
@@ -36,19 +36,19 @@ module.exports = [
     ...common,
     output: {
       ...common.output,
-      filename: 'yarn-bound.js',
+      filename: 'yarn-bound.js'
     },
     optimization: {
       ...common.optimization,
-      minimize: false,
-    },
+      minimize: false
+    }
   },
   {
     ...common,
     target: ['web', 'es5'],
     output: {
       ...common.output,
-      filename: 'yarn-bound.ie.js',
+      filename: 'yarn-bound.ie.js'
     },
     module: {
       rules: [{
@@ -64,14 +64,14 @@ module.exports = [
                   modules: 'cjs',
                   useBuiltIns: 'usage',
                   corejs: 3,
-                  targets: 'ie 11',
-                },
-              ],
+                  targets: 'ie 11'
+                }
+              ]
             ],
-            plugins: ['add-module-exports'],
-          },
-        },
-      }],
-    },
-  },
-];
+            plugins: ['add-module-exports']
+          }
+        }
+      }]
+    }
+  }
+]

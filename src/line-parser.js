@@ -200,7 +200,7 @@ function parsePropertyAssignment (propAss) {
   let value
   if (stringValue === 'true' || stringValue === 'false') {
     value = stringValue === 'true'
-  } else if (/^-?(0|[1-9]\d*)?(\.\d+)?(?<=\d)$/.test(stringValue)) {
+  } else if (/^-?\d*\.?\d+$/.test(stringValue)) {
     value = +stringValue
   } else if (stringValue[0] === '"' && stringValue[stringValue.length - 1] === '"') {
     value = stringValue.slice(1, -1)

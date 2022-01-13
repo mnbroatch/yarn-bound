@@ -240,7 +240,7 @@ The `isDialogueEnd` feature assumes your dialogue will terminate on a TextResult
   - The dialogue terminates on a CommandResult and a `handleCommand` callback is supplied.
     - Terminating on the `<<stop>>` command is fine
 
-Escaping markdown is iffy and might require you to double escape `\\`. Probably better to use `nomarkup` attributes.
+Escaping square brackets is iffy and you'll have to double escape `\\` them. Probably better to use `nomarkup` attributes.
 
 
 # Other included versions
