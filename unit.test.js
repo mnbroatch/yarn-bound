@@ -2,7 +2,7 @@
 /* eslint-disable no-new */
 
 import YarnBound from './src/index'
-import bondage from '@mnbroatch/bondage/src/index.js'
+import bondage from '@mnbroatch/bondage'
 
 jest.spyOn(bondage.Runner.prototype, 'load').mockImplementation()
 jest.spyOn(bondage.Runner.prototype, 'registerFunction').mockImplementation()

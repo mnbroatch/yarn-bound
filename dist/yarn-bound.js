@@ -2025,7 +2025,7 @@ exports["default"] = void 0;
 
 var _yarnBound = _interopRequireDefault(__webpack_require__(424));
 
-var _index = _interopRequireDefault(__webpack_require__(753));
+var _bondage = _interopRequireDefault(__webpack_require__(753));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2033,7 +2033,7 @@ const {
   OptionsResult,
   TextResult,
   CommandResult
-} = _index.default;
+} = _bondage.default;
 _yarnBound.default.OptionsResult = OptionsResult;
 _yarnBound.default.TextResult = TextResult;
 _yarnBound.default.CommandResult = CommandResult;
@@ -2298,7 +2298,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = void 0;
 
-var _index = _interopRequireDefault(__webpack_require__(753));
+var _bondage = _interopRequireDefault(__webpack_require__(753));
 
 var _lineParser = _interopRequireDefault(__webpack_require__(279));
 
@@ -2317,12 +2317,12 @@ class YarnBound {
     } = _ref;
     this.handleCommand = handleCommand;
     this.combineTextAndOptionsResults = combineTextAndOptionsResults;
-    this.bondage = _index.default;
+    this.bondage = _bondage.default;
     this.bufferedNode = null;
     this.currentResult = null;
     this.history = [];
     this.locale = locale;
-    const runner = new _index.default.Runner(); // To make template string dialogues more convenient, we will allow and strip
+    const runner = new _bondage.default.Runner(); // To make template string dialogues more convenient, we will allow and strip
     // uniform leading whitespace. The header delimiter will set the baseline.
 
     if (typeof dialogue === 'string') {
@@ -2358,7 +2358,7 @@ class YarnBound {
     // is supplied, use that and don't bother the consuming app
 
     if (this.handleCommand) {
-      while (next instanceof _index.default.CommandResult) {
+      while (next instanceof _bondage.default.CommandResult) {
         this.handleCommand(next);
         next = this.generator.next().value;
       }
@@ -2366,11 +2366,11 @@ class YarnBound {
     // Can't look ahead of option nodes (what would you look ahead at?)
 
 
-    if (!(next instanceof _index.default.OptionsResult)) {
+    if (!(next instanceof _bondage.default.OptionsResult)) {
       const upcoming = this.generator.next();
       buffered = upcoming.value;
 
-      if (next instanceof _index.default.TextResult && this.combineTextAndOptionsResults && buffered instanceof _index.default.OptionsResult) {
+      if (next instanceof _bondage.default.TextResult && this.combineTextAndOptionsResults && buffered instanceof _bondage.default.OptionsResult) {
         next = Object.assign(buffered, next);
         buffered = null;
       } else if (upcoming.done) {
@@ -2384,9 +2384,9 @@ class YarnBound {
       this.history.push(this.currentResult);
     }
 
-    if (next instanceof _index.default.TextResult) {
+    if (next instanceof _bondage.default.TextResult) {
       (0, _lineParser.default)(next, this.locale);
-    } else if (next instanceof _index.default.OptionsResult) {
+    } else if (next instanceof _bondage.default.OptionsResult) {
       if (next.text) {
         (0, _lineParser.default)(next, this.locale);
       }

@@ -4,7 +4,6 @@
 import lineParser from './src/line-parser'
 import YarnBound from './src/index'
 const TextResult = YarnBound.TextResult
-const OptionsResult = YarnBound.OptionsResult
 
 describe('line parser', () => {
   test('should handle a character', () => {
