@@ -1,5 +1,5 @@
-import bondage from '@mnbroatch/bondage'
-import lineParser from './line-parser'
+import bondage from '@mnbroatch/bondage/src/index'
+import parseLine from './line-parser'
 
 export default class YarnBound {
   constructor ({
@@ -31,6 +31,7 @@ export default class YarnBound {
     }
 
     runner.load(dialogue)
+
     if (variableStorage) {
       variableStorage.display = variableStorage.display || variableStorage.get
       runner.setVariableStorage(variableStorage)
@@ -87,7 +88,17 @@ export default class YarnBound {
       this.history.push(this.currentResult)
     }
 
-    lineParser(next, this.locale)
+    if (next instanceof bondage.TextResult) {
+      parseLine(next, this.locale)
+    } else if (next instanceof bondage.OptionsResult) {
+      if (next.text) {
+        parseLine(next, this.locale)
+      }
+      next.options.forEach((option) => {
+        parseLine(option, this.locale)
+      })
+    }
+
     this.currentResult = next
     this.bufferedNode = buffered
   }

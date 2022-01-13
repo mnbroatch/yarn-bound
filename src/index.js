@@ -1,7 +1,8 @@
-import YarnBound from './yarn-bound.js';
-import { OptionsResult, TextResult, CommandResult } from '@mnbroatch/bondage'
+import YarnBound from './yarn-bound.js'
+import bondage from '@mnbroatch/bondage/src/index'
+const { OptionsResult, TextResult, CommandResult } = bondage
 
 YarnBound.OptionsResult = OptionsResult
 YarnBound.TextResult = TextResult
 YarnBound.CommandResult = CommandResult
-export default YarnBound;
+export default YarnBound

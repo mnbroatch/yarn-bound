@@ -1,17 +1,5 @@
-import { TextResult, OptionsResult } from '@mnbroatch/bondage'
-
 // mutates node, processing [markup /] and `character:`
-export default function lineParser (node, locale) {
-  if (node instanceof TextResult) {
-    parseLine(node, locale)
-  } else if (node instanceof OptionsResult) {
-    node.options.forEach((option) => {
-      parseLine(option, locale)
-    })
-  }
-}
-
-function parseLine (node, locale) {
+export default function parseLine (node, locale) {
   node.markup = []
   parseCharacterLabel(node)
   parseMarkup(node, locale)

@@ -230,21 +230,9 @@ describe('line parser', () => {
     expect(node.markup).toEqual([])
   })
 
-  test('should process text on Options', () => {
-    const node = new OptionsResult([
-      new TextResult('BillyBob: Yeehaw')
-    ])
-    lineParser(node)
-    expect(node.options[0].text).toBe('Yeehaw')
-  })
-
   test('should throw an error on invalid markup', () => {
-    const node1 = new OptionsResult([
-      new TextResult('BillyBob: [/unmatched]Yeehaw')
-    ])
-    const node2 = new OptionsResult([
-      new TextResult('BillyBob: [blah=]Yeehaw')
-    ])
+    const node1 = new TextResult('BillyBob: [/unmatched]Yeehaw')
+    const node2 = new TextResult('BillyBob: [blah=]Yeehaw')
     expect(() => { lineParser(node1) }).toThrow()
     expect(() => { lineParser(node2) }).toThrow()
   })

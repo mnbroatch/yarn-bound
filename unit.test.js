@@ -2,17 +2,14 @@
 /* eslint-disable no-new */
 
 import YarnBound from './src/index'
-import bondage from '@mnbroatch/bondage'
+import bondage from '@mnbroatch/bondage/src/index.js'
 
-jest.mock('@mnbroatch/bondage')
-bondage.Runner.prototype.run.mockImplementation(function * () {
+jest.spyOn(bondage.Runner.prototype, 'load').mockImplementation()
+jest.spyOn(bondage.Runner.prototype, 'registerFunction').mockImplementation()
+jest.spyOn(bondage.Runner.prototype, 'setVariableStorage').mockImplementation()
+jest.spyOn(bondage.Runner.prototype, 'run').mockImplementation(function * () {
   while (true) yield new bondage.TextResult('hello')
 })
-// It's convenient to make actual results objects in test
-const actualBondage = jest.requireActual('@mnbroatch/bondage')
-bondage.TextResult = actualBondage.TextResult
-bondage.OptionsResult = actualBondage.OptionsResult
-bondage.CommandResult = actualBondage.CommandResult
 
 describe('constructor', () => {
   const dialogue = []

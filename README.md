@@ -32,8 +32,8 @@ To get started with YarnBound, import and create a new instance.
 
 ```javascript
 import YarnBound from 'yarn-bound'
-// or node: 
-// const bondage = require('yarn-bound')
+// or node:
+// const bondage = require('yarn-bound/dist/yarn-bound.js')
 // or in a script tag:
 // <script src="path-to-file/yarn-bound.js"></script>
 
