@@ -33,9 +33,9 @@ To get started with YarnBound, import and create a new instance.
 ```javascript
 import YarnBound from 'yarn-bound'
 // or node:
-// const bondage = require('yarn-bound/dist/yarn-bound.js')
+// const bondage = require('yarn-bound')
 // or in a script tag:
-// <script src="path-to-file/yarn-bound.js"></script>
+// <script src="path-to-file/yarn-bound.min.js"></script>
 
 const runner = new YarnBound(options)
 ```
@@ -248,3 +248,5 @@ Escaping square brackets is iffy and you'll have to double escape `\\` them. Pro
 A minified version exists at `yarn-bound/dist/yarn-bound.min.js`.
 
 If you need compatibility with internet explorer, you can transpile for yourself or use `yarn-bound/dist/yarn-bound.ie.js`.
+
+If you want to transpile for yourself, use `import YarnBound from 'yarn-bound/src/index'` and make sure your transpiler isn't ignoring it.

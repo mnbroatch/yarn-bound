@@ -1,4 +1,4 @@
-import bondage from '@mnbroatch/bondage'
+import bondage from '@mnbroatch/bondage/src/index.js'
 import parseLine from './line-parser'
 
 export default class YarnBound {

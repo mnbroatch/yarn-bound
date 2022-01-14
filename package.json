@@ -1,8 +1,8 @@
 {
   "name": "yarn-bound",
-  "version": "0.2.7",
+  "version": "0.2.9",
   "description": "Quality of life wrapper around bondage.js",
-  "main": "src/index.js",
+  "main": "dist/yarn-bound.js",
   "scripts": {
     "test": "jest --verbose false",
     "test:coverage": "jest --coverage --verbose false",
@@ -28,7 +28,7 @@
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {
-    "@mnbroatch/bondage": "^3.0.36"
+    "@mnbroatch/bondage": "^3.0.40"
   },
   "repository": {
     "type": "git",
