@@ -247,6 +247,6 @@ Escaping square brackets is iffy and you'll have to double escape `\\` them. Pro
 
 A minified version exists at `yarn-bound/dist/yarn-bound.min.js`.
 
-If you want to transpile for yourself, use `import YarnBound from 'yarn-bound/src/index'` and make sure your transpiler isn't ignoring it. You will also need to transpile `@mnbroatch/bondage`
+If you want to transpile for yourself, use `import YarnBound from 'yarn-bound/src/index'` and make sure your transpiler isn't ignoring it. You will also need to transpile `@mnbroatch/bondage`, and include both in your bundle, if necessary.
 
 A version compatibile with internet explorer is at `yarn-bound/dist/yarn-bound.ie.js`.

@@ -13,9 +13,14 @@ return /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 717:
-/***/ ((module) => {
+/***/ ((module, exports) => {
 
 
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = convertYarn;
 
 /* eslint-disable */
 
@@ -41,7 +46,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 
 /* eslint-enable */
-module.exports = function convertYarn(content) {
+function convertYarn(content) {
   const objects = [];
   const lines = content.split(/\r?\n+/).filter(line => {
     return !line.match(/^\s*$/);
@@ -86,14 +91,22 @@ module.exports = function convertYarn(content) {
   }
 
   return objects;
-};
+}
+
+;
+module.exports = exports.default;
 
 /***/ }),
 
 /***/ 131:
-/***/ ((module) => {
+/***/ ((module, exports) => {
 
 
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports["default"] = void 0;
 
 class DefaultVariableStorage {
   constructor() {
@@ -111,7 +124,9 @@ class DefaultVariableStorage {
 
 }
 
-module.exports = DefaultVariableStorage;
+var _default = DefaultVariableStorage;
+exports["default"] = _default;
+module.exports = exports.default;
 
 /***/ }),
 
