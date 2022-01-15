@@ -82,6 +82,8 @@ That's all there is to the basic operation!
 **combineTextAndOptionsResults**: *boolean* - If this is true, a Text Result followed by an Options Result will be combined into one Options Result with a `text` property.
   - This is convenient if you want to show prompts and responses at the same time.
 
+**locale**: *string* - Used for pluralization markdown attributes.
+
 
 # Results Data
 
