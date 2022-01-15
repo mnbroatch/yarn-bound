@@ -19,7 +19,7 @@ Bondage.js also does not support
 
 because these are not language features (it's confusing). YarnBound adds these things.
 
-The only thing I know to be missing from the spec and non-unity-specific docs is the built-in `wait` command, because I can't tell what I want it to do.
+The only thing I know to be missing from the spec and non-unity-specific docs is the built-in `wait` command, because I can't tell what I would want it to do.
 
 
 # Usage
@@ -231,6 +231,11 @@ const runner = new YarnBound({
 # History
 
 An array containing Results already visited is located at `runner.history`.
+
+
+# React Component
+
+A simple react component can be found at: [react-dialogue-tree](https://github.com/mnbroatch/react-dialogue-tree)
 
 
 # Caveats

@@ -3860,7 +3860,7 @@ class YarnBound {
       if (next instanceof _index.default.TextResult && this.combineTextAndOptionsResults && buffered instanceof _index.default.OptionsResult) {
         next = Object.assign(buffered, next);
         buffered = null;
-      } else if (upcoming.done) {
+      } else if (next && upcoming.done) {
         next = Object.assign(next, {
           isDialogueEnd: true
         });

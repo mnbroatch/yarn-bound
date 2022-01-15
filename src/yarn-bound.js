@@ -79,7 +79,7 @@ export default class YarnBound {
       ) {
         next = Object.assign(buffered, next)
         buffered = null
-      } else if (upcoming.done) {
+      } else if (next && upcoming.done) {
         next = Object.assign(next, { isDialogueEnd: true })
       }
     }
