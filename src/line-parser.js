@@ -3,6 +3,7 @@ export default function parseLine (node, locale) {
   node.markup = []
   parseCharacterLabel(node)
   parseMarkup(node, locale)
+  node.text = node.text.replace(/(?:\\(.))/g, '$1')
 }
 
 function parseCharacterLabel (node) {

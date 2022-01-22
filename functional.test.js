@@ -8,7 +8,7 @@ describe('functional test', () => {
   const dialogue = `
     title:Start
     ---
-    Char: I am a line
+    Char: \\\\I am a l\\ine
     1 + 1 is {1 + 1}
     -> I should be disabled<<if false is true>>
       X
@@ -24,7 +24,7 @@ describe('functional test', () => {
 
   test('should load a dialogue object into the runner', () => {
     const runner = new YarnBound({ dialogue })
-    expect(runner.currentResult.text).toBe('I am a line')
+    expect(runner.currentResult.text).toBe('\\I am a line')
     runner.advance()
     expect(runner.currentResult.text).toBe('1 + 1 is 2')
     runner.advance()

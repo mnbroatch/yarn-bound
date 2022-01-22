@@ -19,6 +19,7 @@ export default class YarnBound {
     this.history = []
     this.locale = locale
     const runner = new bondage.Runner()
+    runner.noEscape = true
 
     // To make template string dialogues more convenient, we will allow and strip
     // uniform leading whitespace. The header delimiter will set the baseline.
