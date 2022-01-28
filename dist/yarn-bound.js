@@ -12,7 +12,7 @@ return /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 717:
+/***/ 144:
 /***/ ((module, exports) => {
 
 
@@ -20,7 +20,7 @@ return /******/ (() => { // webpackBootstrap
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports["default"] = convertYarn;
+exports["default"] = convertYarnToJS;
 
 /* eslint-disable */
 
@@ -46,19 +46,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 
 /* eslint-enable */
-function convertYarn(content) {
+function convertYarnToJS(content) {
   const objects = [];
   const lines = content.split(/\r?\n+/).filter(line => {
     return !line.match(/^\s*$/);
   });
   let obj = null;
   let readingBody = false;
-  let filetags;
+  let filetags; // per-node, we will uniformly strip leading space
+  // which can result from constructing dialogues
+  // using template strings.
+
+  let leadingSpace = '';
   let i = 0;
 
-  while (lines[i][0] === '#' || !lines[i].trim()) {
+  while (lines[i].trim()[0] === '#') {
     if (!filetags) filetags = [];
-    filetags.push(lines[i].substr(1).trim());
+    filetags.push(lines[i].trim().substr(1));
     i += 1;
   }
 
@@ -69,10 +73,11 @@ function convertYarn(content) {
       objects.push(obj);
       obj = null;
     } else if (readingBody) {
-      obj.body += "".concat(lines[i], "\n");
+      obj.body += "".concat(lines[i].replace(leadingSpace, ''), "\n");
     } else if (lines[i].trim() === '---') {
       readingBody = true;
       obj.body = '';
+      leadingSpace = lines[i].match(/^\s*/)[0];
     } else if (lines[i].indexOf(':') > -1) {
       const [key, value] = lines[i].split(':');
       const trimmedKey = key.trim();
@@ -93,7 +98,6 @@ function convertYarn(content) {
   return objects;
 }
 
-;
 module.exports = exports.default;
 
 /***/ }),
@@ -142,8 +146,13 @@ exports["default"] = void 0;
 
 var _runner = _interopRequireDefault(__webpack_require__(159));
 
+var _results = _interopRequireDefault(__webpack_require__(34));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+_runner.default.OptionsResult = _results.default.OptionsResult;
+_runner.default.TextResult = _results.default.TextResult;
+_runner.default.CommandResult = _results.default.CommandResult;
 var _default = _runner.default;
 exports["default"] = _default;
 module.exports = exports.default;
@@ -180,11 +189,6 @@ class LexerState {
      */
 
     this.isTrackingNextIndentation = false;
-    /**
-     * Whether or not this state emits EndOfLine tokens
-     */
-
-    this.isEmittingEndOfLineTokens = false;
   }
   /**
    * addTransition - Define a new transition for this state.
@@ -414,9 +418,8 @@ class Lexer {
         this.yytext = this.getCurrentLine().substr(this.yylloc.last_column - 1, matchedText.length);
 
         if (rule.token === 'String') {
-          // If that's a String, we're removing the quotes and
-          // un-escaping double-escaped characters.
-          this.yytext = this.yytext.substring(1, this.yytext.length - 1).replace(/\\/g, '');
+          // If that's a String, remove the quotes
+          this.yytext = this.yytext.substring(1, this.yytext.length - 1);
         } // Update our line and column info
 
 
@@ -434,12 +437,12 @@ class Lexer {
         }
 
         const nextState = this.states[rule.state];
-        const hasText = !nextState || nextState.transitions.find(transition => {
+        const nextStateHasText = !rule.state || nextState.transitions.find(transition => {
           return transition.token === 'Text';
         }); // inline expressions and escaped characters interrupt text
         // but should still preserve surrounding whitespace.
 
-        if (rule.token !== 'EndInlineExp' && rule.token !== 'EscapedCharacter' || !hasText // we never want leading whitespace if not in text-supporting state
+        if (rule.token !== 'EndInlineExp' && rule.token !== 'EscapedCharacter' || !nextStateHasText // we never want leading whitespace if not in text-supporting state
         ) {
           // Remove leading whitespace characters
           const spaceMatch = this.getCurrentLine().substring(this.yylloc.last_column - 1).match(/^\s*/);
@@ -1186,11 +1189,11 @@ var parser = {
         break;
 
       case 70:
-        this.$ = new yy.FunctionResultNode($$[$0 - 2], []);
+        this.$ = new yy.FunctionCallNode($$[$0 - 2], [], this._$);
         break;
 
       case 71:
-        this.$ = new yy.FunctionResultNode($$[$0 - 3], $$[$0 - 1]);
+        this.$ = new yy.FunctionCallNode($$[$0 - 3], $$[$0 - 1], this._$);
         break;
 
       case 72:
@@ -2592,7 +2595,7 @@ var _default = {
       this.type = 'GenericCommandNode';
       this.command = command;
       this.hashtags = hashtags;
-      this.lineNum = lineNo ? lineNo.first_line : -1;
+      this.lineNum = lineNo.first_line;
     }
 
   },
@@ -2618,7 +2621,7 @@ var _default = {
       super();
       this.type = 'TextNode';
       this.text = text;
-      this.lineNum = lineNo ? lineNo.first_line : -1;
+      this.lineNum = lineNo.first_line;
       this.hashtags = hashtags;
     }
 
@@ -2629,7 +2632,7 @@ var _default = {
       super();
       this.type = 'EscapedCharacterNode';
       this.text = text;
-      this.lineNum = lineNo ? lineNo.first_line : -1;
+      this.lineNum = lineNo.first_line;
       this.hashtags = hashtags;
     }
 
@@ -2831,14 +2834,14 @@ var _default = {
 
   },
   // /////////////// Function Nodes
-  FunctionResultNode: class extends FunctionCall {
+  FunctionCallNode: class extends FunctionCall {
     constructor(functionName, args, lineNo) {
       let hashtags = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
       super();
-      this.type = 'FunctionResultNode';
+      this.type = 'FunctionCallNode';
       this.functionName = functionName;
       this.args = args;
-      this.lineNum = lineNo ? lineNo.first_line : -1;
+      this.lineNum = lineNo.first_line;
       this.hashtags = hashtags;
     }
 
@@ -3025,7 +3028,7 @@ var _results = _interopRequireDefault(__webpack_require__(34));
 
 var _defaultVariableStorage = _interopRequireDefault(__webpack_require__(131));
 
-var _convertYarn = _interopRequireDefault(__webpack_require__(717));
+var _convertYarnToJs = _interopRequireDefault(__webpack_require__(144));
 
 var _nodes = _interopRequireDefault(__webpack_require__(748));
 
@@ -3045,27 +3048,24 @@ class Runner {
     this.yarnNodes = {};
     this.variables = new _defaultVariableStorage.default();
     this.functions = {};
-    this.visited = {}; // Which nodes have been visited
-
-    this.registerFunction('visited', nodeTitle => {
-      return !!this.visited[nodeTitle];
-    });
   }
   /**
    * Loads the yarn node data into this.nodes
-   * @param {any[]} yarn dialogue as string or array
+   * @param dialogue {any[]} yarn dialogue as string or array
    */
 
 
-  load(data) {
-    if (!data) {
+  load(dialogue) {
+    if (!dialogue) {
       throw new Error('No dialogue supplied');
     }
 
-    let nodes = data;
+    let nodes;
 
-    if (typeof data === 'string') {
-      nodes = (0, _convertYarn.default)(data);
+    if (typeof dialogue === 'string') {
+      nodes = (0, _convertYarnToJs.default)(dialogue);
+    } else {
+      nodes = dialogue;
     }
 
     nodes.forEach(node => {
@@ -3168,9 +3168,8 @@ class Runner {
 
       if (yarnNode === undefined) {
         throw new Error("Node \"".concat(startNode, "\" does not exist"));
-      }
+      } // Parse the entire node
 
-      this.visited[startNode] = true; // Parse the entire node
 
       const parserNodes = Array.from(_parser.default.parse(yarnNode.body));
 
@@ -3191,7 +3190,6 @@ class Runner {
 
   *evalNodes(nodes, metadata) {
     let shortcutNodes = [];
-    let prevnode = null;
     let textRun = '';
     const filteredNodes = nodes.filter(Boolean); // Yield the individual user-visible results
     // Need to accumulate all adjacent selectables
@@ -3199,20 +3197,8 @@ class Runner {
 
     for (let nodeIdx = 0; nodeIdx < filteredNodes.length; nodeIdx += 1) {
       const node = filteredNodes[nodeIdx];
-      const nextNode = filteredNodes[nodeIdx + 1];
-
-      if (prevnode instanceof nodeTypes.Shortcut && !(node instanceof nodeTypes.Shortcut)) {
-        // Last shortcut in the series, so yield the shortcuts.
-        const result = yield* this.handleShortcuts(shortcutNodes, metadata);
-
-        if (result && (result.stop || result.jump)) {
-          return result;
-        }
-
-        shortcutNodes = [];
-      } // Text and the output of Inline Expressions
+      const nextNode = filteredNodes[nodeIdx + 1]; // Text and the output of Inline Expressions
       // are combined to deliver a TextNode.
-
 
       if (node instanceof nodeTypes.Text || node instanceof nodeTypes.Expression) {
         textRun += this.evaluateExpressionOrLiteral(node).toString();
@@ -3222,10 +3208,20 @@ class Runner {
         } else {
           yield new _results.default.TextResult(textRun, node.hashtags, metadata);
           textRun = '';
-        } // Other nodes are more straightforward:
-
+        }
       } else if (node instanceof nodeTypes.Shortcut) {
         shortcutNodes.push(node);
+
+        if (!(nextNode instanceof nodeTypes.Shortcut)) {
+          // Last shortcut in the series, so yield the shortcuts.
+          const result = yield* this.handleShortcuts(shortcutNodes, metadata);
+
+          if (result && (result.stop || result.jump)) {
+            return result;
+          }
+
+          shortcutNodes = [];
+        }
       } else if (node instanceof nodeTypes.Assignment) {
         this.evaluateAssignment(node);
       } else if (node instanceof nodeTypes.Conditional) {
@@ -3240,35 +3236,23 @@ class Runner {
             return result;
           }
         }
+      } else if (node instanceof _nodes.default.JumpCommandNode) {
+        // ignore the rest of this outer loop and
+        // tell parent loops to ignore following nodes.
+        // Recursive call here would cause stack overflow
+        return {
+          jump: node.destination
+        };
+      } else if (node instanceof _nodes.default.StopCommandNode) {
+        // ignore the rest of this outer loop and
+        // tell parent loops to ignore following nodes
+        return {
+          stop: true
+        };
       } else {
-        // Command
-        if (node.type === 'JumpCommandNode') {
-          // ignore the rest of this outer loop and
-          // tell parent loops to ignore following nodes.
-          // Recursive call here would cause stack overflow
-          return {
-            jump: node.destination
-          };
-        }
-
-        if (node.type === 'StopCommandNode') {
-          // ignore the rest of this outer loop and
-          // tell parent loops to ignore following nodes
-          return {
-            stop: true
-          };
-        }
-
         const command = this.evaluateExpressionOrLiteral(node.command);
         yield new _results.default.CommandResult(command, node.hashtags, metadata);
       }
-
-      prevnode = node;
-    } // The last node might be a shortcut
-
-
-    if (shortcutNodes.length > 0) {
-      return yield* this.handleShortcuts(shortcutNodes, metadata);
     }
 
     return undefined;
@@ -3446,7 +3430,7 @@ class Runner {
       VariableNode: a => {
         return this.variables.get(a.variableName);
       },
-      FunctionResultNode: a => {
+      FunctionCallNode: a => {
         return this.evaluateFunctionCall(a);
       },
       InlineExpressionNode: a => {
@@ -3784,15 +3768,7 @@ class YarnBound {
     this.history = [];
     this.locale = locale;
     const runner = new _index.default.Runner();
-    runner.noEscape = true; // To make template string dialogues more convenient, we will allow and strip
-    // uniform leading whitespace. The header delimiter will set the baseline.
-
-    if (typeof dialogue === 'string') {
-      const lines = dialogue.split('\n');
-      const baselineWhitespace = lines.find(line => line.trim() === '---').match(/\s*/)[0];
-      dialogue = lines.map(line => line.replace(baselineWhitespace, '')).join('\n');
-    }
-
+    runner.noEscape = true;
     runner.load(dialogue);
 
     if (variableStorage) {

@@ -21,16 +21,6 @@ export default class YarnBound {
     const runner = new bondage.Runner()
     runner.noEscape = true
 
-    // To make template string dialogues more convenient, we will allow and strip
-    // uniform leading whitespace. The header delimiter will set the baseline.
-    if (typeof dialogue === 'string') {
-      const lines = dialogue.split('\n')
-      const baselineWhitespace = lines.find(line => line.trim() === '---')
-        .match(/\s*/)[0]
-      dialogue = lines.map((line) => line.replace(baselineWhitespace, ''))
-        .join('\n')
-    }
-
     runner.load(dialogue)
 
     if (variableStorage) {

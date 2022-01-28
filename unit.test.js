@@ -19,22 +19,17 @@ describe('constructor', () => {
       .toHaveBeenCalledWith(dialogue)
   })
 
-  test('should strip leading whitespace up to the header delimiter and load a dialogue into the runner', () => {
+  test('should load a dialogue into the runner', () => {
     const dialogueWithLeadingWhitespace = `
       title:Start
       ---
       text
       ===
     `
-    const dialogueWithNoLeadingWhitespace = `
-title:Start
----
-text
-===
-    `
+
     new YarnBound({ dialogue: dialogueWithLeadingWhitespace })
     expect(bondage.Runner.prototype.load)
-      .toHaveBeenCalledWith(dialogueWithNoLeadingWhitespace)
+      .toHaveBeenCalledWith(dialogueWithLeadingWhitespace)
   })
 
   test('should set the variable storage if provided', () => {
