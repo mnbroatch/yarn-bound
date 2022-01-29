@@ -3767,22 +3767,22 @@ class YarnBound {
     this.currentResult = null;
     this.history = [];
     this.locale = locale;
-    const runner = new _index.default.Runner();
-    runner.noEscape = true;
-    runner.load(dialogue);
+    this.runner = new _index.default.Runner();
+    this.runner.noEscape = true;
+    this.runner.load(dialogue);
 
     if (variableStorage) {
       variableStorage.display = variableStorage.display || variableStorage.get;
-      runner.setVariableStorage(variableStorage);
+      this.runner.setVariableStorage(variableStorage);
     }
 
     if (functions) {
       Object.entries(functions).forEach(entry => {
-        runner.registerFunction(...entry);
+        this.registerFunction(...entry);
       });
     }
 
-    this.generator = runner.run(startAt);
+    this.generator = this.runner.run(startAt);
     this.advance();
   }
 
@@ -3836,6 +3836,10 @@ class YarnBound {
 
     this.currentResult = next;
     this.bufferedNode = buffered;
+  }
+
+  registerFunction(name, func) {
+    this.runner.registerFunction(name, func);
   }
 
 }

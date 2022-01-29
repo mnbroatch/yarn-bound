@@ -72,6 +72,7 @@ That's all there is to the basic operation!
 
 **functions**: *object* - An object containing custom functions to run when they are called in a yarn expression.
   - As the Yarn docs mention, these should not have side effects. They may execute at unexpected times.
+  - You can also use `runner.registerFunction(key, func)` after initialization.
 
 **variableStorage**: *object* - A custom storage object with `get()` and `set()` functions (a `new Map()`, for instance.)
   - Unless you have a specific need you can omit this and use the built-in default.

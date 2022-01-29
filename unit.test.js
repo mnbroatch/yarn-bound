@@ -39,13 +39,26 @@ describe('constructor', () => {
       .toHaveBeenCalledWith(variableStorage)
   })
 
-  test('should register provided functions', () => {
+  test('should register initially provided functions', () => {
     const functions = {
       functionOne: () => {},
       functionTwo: () => {}
     }
     new YarnBound({ functions })
     Object.entries(functions).forEach(([key, func]) => {
+      expect(bondage.Runner.prototype.registerFunction)
+        .toHaveBeenCalledWith(key, func)
+    })
+  })
+
+  test('can register functions after initialization', () => {
+    const functions = {
+      functionOne: () => {},
+      functionTwo: () => {}
+    }
+    const runner = new YarnBound({})
+    Object.entries(functions).forEach(([key, func]) => {
+      runner.registerFunction(key, func)
       expect(bondage.Runner.prototype.registerFunction)
         .toHaveBeenCalledWith(key, func)
     })
