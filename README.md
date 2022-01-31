@@ -173,12 +173,12 @@ const dialogue = `
   title: WhereAreYou
   ---
   Where are you?
-    -> Home
-      Nice.
-      <<doSomething home>>
-    -> Work
-      Rough.
-      <<doSomething work>>
+  -> Home
+    Nice.
+    <<doSomething home>>
+  -> Work
+    Rough.
+    <<doSomething work>>
   That's it!
   ===
 `
