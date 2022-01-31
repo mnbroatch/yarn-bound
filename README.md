@@ -5,7 +5,7 @@
 YarnBound attempts to be the simplest way to use the Yarn language in the context of a javascript application. It is a wrapper around a specific [forked version of bondage.js](https://github.com/mnbroatch/bondage.js), where effort has been made to comply with the [Yarn 2.0 spec](https://github.com/YarnSpinnerTool/YarnSpinner/blob/9275277f50a6acbe8438b29596acc8527cf5581a/Documentation/Yarn-Spec.md).
 
 Quality-of-life features on top of bondage.js:
-  - A simpler API 
+  - A simpler API
   - History of previous Results
   - Option to return text and a subsequent options block together as one result
   - Option to run a custom command handler function instead of returning a CommandResult
@@ -166,19 +166,19 @@ Let's start with this code:
 
 ```javascript
 import YarnBound from 'yarn-bound';
- 
+
 // empty lines and uniform leading whitespace is trimmed
 // so you can write your nodes in template strings neatly.
-const dialogue = ` 
+const dialogue = `
   title: WhereAreYou
   ---
   Where are you?
-    -> Home
-      Nice.
-      <<doSomething home>>
-    -> Work
-      Rough.
-      <<doSomething work>>
+  -> Home
+    Nice.
+    <<doSomething home>>
+  -> Work
+    Rough.
+    <<doSomething work>>
   That's it!
   ===
 `
@@ -203,7 +203,7 @@ and `runner.currentResult` will be an OptionsResult with an options array with t
 runner.advance(0)
 ```
 
-Now, `runner.currentNode` is a CommandResult where `command` is "doSomething home".
+Now, `runner.currentResult` is a CommandResult where `command` is "doSomething home".
 
 ```javascript
 runner.advance()
