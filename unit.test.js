@@ -90,9 +90,11 @@ describe('constructor', () => {
 describe('jump', () => {
 
   test('should jump the generator to the node with the provided "jumpTo" title', () => {
+    jest.spyOn(YarnBound.prototype, 'advance')
     const jumpTo = 'someJumpNode'
     const yarnbound = new YarnBound({})
     yarnbound.jump(jumpTo)
+    expect(YarnBound.prototype.advance).toHaveBeenCalled()
     expect(bondage.Runner.prototype.run).toHaveBeenCalledWith(jumpTo)
   })
 
