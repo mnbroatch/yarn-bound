@@ -60,6 +60,8 @@ runner.advance(2)
 runner.currentResult // is now the Result after the selected option
 ```
 
+You can also call `jump()` with the `title` of a node to jump directly to that node. This allows for external control over the story flow.
+
 That's all there is to the basic operation!
 
 
