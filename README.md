@@ -217,6 +217,79 @@ If `combineTextAndOptionsResults` was true, the first value for `runner.currentR
 
 If a `handleCommand` function was supplied, it would be called and we would skip straight from the OptionsResult to the last TextResult.
 
+### Minimal full parser
+
+This short script uses YarnBound to implement an interactive command
+line user interface for Yarn files.
+
+```
+YarnBound = require('yarn-bound');
+
+const yarnData = `
+title: start
+---
+Hello stranger, what brings you into town?
+-> What do you do here?
+    <<jump do>>
+-> Thanks, bye.
+    <<jump bye>>
+
+===
+title: do
+---
+Why, I'm the town merchant, of course. Anything you need to buy or sell, you just come talk to me.
+-> Got it.
+  <<jump start>>
+
+===
+title: bye
+---
+Goodbye then!
+<<stop>>
+===
+`;
+
+const runner = new YarnBound({
+  dialogue: yarnData,
+  startAt: 'start',
+})
+
+let options = false;
+
+process.stdin.on('data', (e) => {
+  const input = parseInt(e.toString().substring(0, 1));
+
+  if (options && typeof options[input] !== 'undefined') {
+    runner.advance(input);
+    loop();
+  }
+});
+
+const loop = () => {
+  const result = runner.currentResult;
+
+  if (result instanceof YarnBound.TextResult){
+    console.log(`\n${result.text}`);
+    runner.advance();
+    setImmediate(loop);
+  } else if (result instanceof YarnBound.OptionsResult){
+    for (let i = 0; i < result.options.length; i++) {
+      if (result.options[i].isAvailable) {
+        console.log(`${i} ${result.options[i].text}`);
+      }
+    }
+
+    options = result.options;
+  } else {
+    // When the dialogue ends, "result" seems to be undefined. Same when
+    // dialogue ends on the <<stop>> command
+    process.exit();
+  }
+};
+
+loop();
+
+```
 
 # Functions
 
