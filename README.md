@@ -11,8 +11,6 @@ Quality-of-life features on top of bondage.js:
   - Option to run a custom command handler function instead of returning a CommandResult
   - include an `isDialogueEnd` property with the last Result in a dialogue
 
-A live demo is [on the author's web site](https://matthewbroatch.com/)
-
 Bondage.js also does not support
   - `Character: some text` annotation
   - `[b]Markup[/b]`
