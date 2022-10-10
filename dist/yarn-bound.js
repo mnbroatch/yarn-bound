@@ -3787,6 +3787,7 @@ class YarnBound {
 
   jump(startAt) {
     this.generator = this.runner.run(startAt);
+    this.bufferedNode = null;
     this.advance();
   }
 

@@ -205,10 +205,10 @@ function processSelectAttribute (properties) {
 
 function processPluralAttribute (properties, locale) {
   return properties[(new Intl.PluralRules(locale)).select(properties.value)]
-    .replaceAll('%', properties.value)
+    .replace(/%/g, properties.value)
 }
 
 function processOrdinalAttribute (properties, locale) {
   return properties[(new Intl.PluralRules(locale, { type: 'ordinal' })).select(properties.value)]
-    .replaceAll('%', properties.value)
+    .replace(/%/g, properties.value)
 }
