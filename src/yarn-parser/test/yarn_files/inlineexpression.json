@@ -1,0 +1,72 @@
+[
+  {
+    "title": "SimpleInlineExpComment",
+    "tags": "Tag",
+    "body": "{$firstvar}//ignoreme"
+  },
+  {
+    "title": "SimpleInlineExpHashtag",
+    "tags": "Tag",
+    "body": "{$firstvar}#someHashtag"
+  },
+  {
+    "title": "SimpleInlineExp",
+    "tags": "Tag",
+    "body": "{$firstvar}"
+  },
+  {
+    "title": "SequentialInlineExpressions",
+    "tags": "Tag",
+    "body": "{$firstvar}{$secondvar}"
+  },
+  {
+    "title": "NonSequentialInlineExpressions",
+    "tags": "Tag",
+    "body": "{$firstvar}textbetween{$secondvar}"
+  },
+  {
+    "title": "OptionInlineExpression",
+    "tags": "Tag",
+    "body": "This is a test line\n-> Fir\\st {$firstvar} choice\n\tThis is Option1's {$firstvar} text\n-> Second choice"
+  },
+  {
+    "title": "ConditionalOptionInlineExpression",
+    "tags": "Tag",
+    "body": "This is a test line\n-> First {$firstvar} choice<<if true == true>>\n\tThis is Option1's {$firstvar} text\n-> Second choice"
+  },
+  {
+    "title": "InlineExpSentence",
+    "tags": "Tag",
+    "body": "This is a {$firstvar}."
+  },
+  {
+    "title": "InlineExpAddSentence",
+    "tags": "Tag",
+    "body": "This is a {$firstvar + 1} sentence."
+  },
+  {
+    "title": "InlineExpEquality",
+    "tags": "Tag",
+    "body": "<<set $testvar = 1>>\nThis is a {$testvar == 1} sentence."
+  },
+  {
+    "title": "InlineExpFunctionResult",
+    "tags": "Tag",
+    "body": "The results are {testfunc(\"frank\",2)}."
+  },
+  {
+    "title": "InlineExpFunctionResultExp",
+    "tags": "Tag",
+    "body": "The results are {testfunc() + 1}."
+  },
+  {
+    "title": "InlineExpArithmetic",
+    "tags": "Tag",
+    "body": "The results are { 2 * 4 + 2 } and { 2 * (4 + 2) } and { -(4 + (21 % 6) * 2 - (3 + 1) * 2) / -2 }."
+  },
+  {
+    "title": "InlineExpVariable",
+    "tags": "Tag",
+    "body": "<<set $testvar = 1>>\nThe results are { -$testvar } and { true } and { $testvar != 5 } and { $testvar <= 5 } and { $testvar > 0 } and { true ^ false }."
+  }
+]

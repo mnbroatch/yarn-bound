@@ -1,0 +1,54 @@
+[
+	{
+		"title": "BasicCommandsComment",
+		"body": "<<command>>text in between commands<<command with \"space\">>// This is a comment {$ignore} <<if $ignore>> #ignore"
+	},
+	{
+		"title": "BasicCommandsHashtag",
+		"body": "<<command>>text in between commands<<command with \"space\">>#someHashtag"
+	},
+	{
+		"title": "BasicCommands",
+		"body": "<<command>>text in between commands<<command with \"space\">>"
+	},
+	{
+		"title": "ExpressionArgumentCommand",
+		"body": "<<command {$testvar1} {$testvar2} apple {$testvar3}>>"
+	},
+	{
+		"title": "ComplexCommands",
+		"body": "<<command>>text in between commands\n<<command \"with\" \"space\">>"
+	},
+        {
+		"title": "Option1",
+		"body": "Prompt1\n-> Option 1\n\t<< jump Option2>>\nThis shouldn't show"
+	},
+        {
+		"title": "Option2",
+		"body": "Prompt2\n-> Option 2\n\t<<jump StopCommand>>\nThis shouldn't show"
+	},
+        {
+		"title": "StopCommand",
+		"body": "First line\n<<stop>>\nThis shouldn't show"
+	},
+	{
+		"title": "NumberFunction",
+		"body": "<<set $apples to 4>>\n{$apples}\n<<set $apples to addOne($apples)>>\n{$apples}\n"
+	},
+	{
+		"title": "FunctionConditional",
+		"body": "First line\n<<if testfunc(\"firstarg\")>>\nThis shouldn't show\n<<elseif testfunc(\"firstarg\", \"secondarg\")>>\nThis should show\n<<endif>>\nAfter both"
+	},
+	{
+		"title": "VisitedFunction",
+		"body": "<<if visited(\"VisitedFunctionStart\")>>\nyou have visited VisitedFunctionStart!\n<<endif>>\n<<if visited(\"SomeOtherNode\")>>\nYou have not visited SomeOtherNode!\n<<endif>>"
+	},
+	{
+		"title": "VisitedFunctionStart",
+		"body": "Hello\n<<jump VisitedFunction>>"
+	},
+	{
+		"title": "NotVisitedFunction",
+		"body": "Hello\n<<if not visited(\"VisitedFunctionStart\")>>\nyou have not visited VisitedFunctionStart!\n<<endif>>"
+	}
+]

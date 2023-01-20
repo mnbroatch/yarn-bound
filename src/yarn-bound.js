@@ -1,4 +1,4 @@
-import bondage from '@mnbroatch/bondage/src/index.js'
+import yarnParser from './yarn-parser/src/index'
 import parseLine from './line-parser'
 
 export default class YarnBound {
@@ -13,12 +13,12 @@ export default class YarnBound {
   }) {
     this.handleCommand = handleCommand
     this.combineTextAndOptionsResults = combineTextAndOptionsResults
-    this.bondage = bondage
+    this.yarnParser = yarnParser
     this.bufferedNode = null
     this.currentResult = null
     this.history = []
     this.locale = locale
-    this.runner = new bondage.Runner()
+    this.runner = new yarnParser.Runner()
     this.runner.noEscape = true
 
     this.runner.load(dialogue)
@@ -56,7 +56,7 @@ export default class YarnBound {
     // We either return the command as normal or, if a handler
     // is supplied, use that and don't bother the consuming app
     if (this.handleCommand) {
-      while (next instanceof bondage.CommandResult) {
+      while (next instanceof yarnParser.CommandResult) {
         this.handleCommand(next)
         next = this.generator.next().value
       }
@@ -64,13 +64,13 @@ export default class YarnBound {
 
     // Lookahead for combining text + options, and for end of dialogue.
     // Can't look ahead of option nodes (what would you look ahead at?)
-    if (!(next instanceof bondage.OptionsResult)) {
+    if (!(next instanceof yarnParser.OptionsResult)) {
       const upcoming = this.generator.next()
       buffered = upcoming.value
       if (
-        next instanceof bondage.TextResult &&
+        next instanceof yarnParser.TextResult &&
         this.combineTextAndOptionsResults &&
-          buffered instanceof bondage.OptionsResult
+          buffered instanceof yarnParser.OptionsResult
       ) {
         next = Object.assign(buffered, next)
         buffered = null
@@ -83,9 +83,9 @@ export default class YarnBound {
       this.history.push(this.currentResult)
     }
 
-    if (next instanceof bondage.TextResult) {
+    if (next instanceof yarnParser.TextResult) {
       parseLine(next, this.locale)
-    } else if (next instanceof bondage.OptionsResult) {
+    } else if (next instanceof yarnParser.OptionsResult) {
       if (next.text) {
         parseLine(next, this.locale)
       }

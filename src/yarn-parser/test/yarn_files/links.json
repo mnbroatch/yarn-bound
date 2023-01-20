@@ -1,0 +1,88 @@
+[
+	{
+		"title": "OneNode",
+		"tags": "Tag",
+		"body": "This is a test line"
+	},
+	{
+		"title": "OneNodeEscapeCurlyBrace",
+		"tags": "Tag",
+		"body": "This is a \\{test\\} line"
+	},
+	{
+		"title": "OneNodeEscapeTwoCurlyBraces",
+		"tags": "Tag",
+		"body": "This is a \\{\\{test\\} line"
+	},
+	{
+		"title": "OneNodeEscapeHashtag",
+		"tags": "Tag",
+		"body": "This is a \\#test line"
+	},
+	{
+		"title": "ThreeLineEscape",
+		"tags": "Tag",
+		"body": "This is a test lin\\e\nThis is another test line\nYet another test line"
+	},
+	{
+		"title": "TwoLines",
+		"tags": "Tag",
+		"body": "This is a test line\nThis is another test line"
+	},
+	{
+		"title": "OneNodeMetadata",
+		"tags": "Tag",
+		"someProp": "Hello",
+		"body": "This is a test line"
+	},
+	{
+		"title": "OneNodeComment",
+		"tags": "Tag",
+		"body": "This is a test line// This is a comment {$ignore} <<if $ignore>> #ignore"
+	},
+	{
+		"title": "OneNodeWholeLineComment",
+		"tags": "Tag",
+		"body": "This is a test line\n// This is a comment {$ignore} <<if $ignore>> #ignore\nHello"
+	},
+	{
+		"title": "OneNodeHashtag",
+		"tags": "Tag",
+		"body": "This is a test line#someHashtag#someOtherHashtag #lastHashtag//#ignore"
+	},
+	{
+		"title": "ThreeNodes",
+		"tags": "",
+		"body": "This is a test line\nThis is another test line\n-> First choice\n\t<<jump Option1>>\n-> Second choice\n\t<<jump Option2>>"
+	},
+	{
+		"title": "OneNodeEscapeHashtagComment",
+		"tags": "",
+		"body": "This is a test line\\#escaped\\//#lastHashtag//#ignore"
+	},
+	{
+		"title": "Option1",
+		"tags": "",
+		"body": "This is Option1's test line"
+	},
+	{
+		"title": "Option2",
+		"tags": "",
+		"body": "This is Option2's test line"
+	},
+	{
+		"title": "OneJumpPassthrough",
+		"tags": "",
+		"body": "First test line\n<<jump Option1>>"
+	},
+		{
+		"title": "TwoJumpPassthrough",
+		"tags": "",
+		"body": "Real First test line\n<<jump OneJumpPassthrough>>"
+	},
+	{
+		"title": "LinkAfterShortcuts",
+		"tags": "",
+		"body": "First test line\n-> Shortcut 1\n\tThis is the first shortcut\n-> Shortcut 2\n\tThis is the second shortcut\n-> First link\n\t<<Option1>>\n-> Second link\n\t<<Option2>>"
+	}
+]

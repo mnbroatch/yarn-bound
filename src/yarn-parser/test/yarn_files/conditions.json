@@ -1,0 +1,67 @@
+[
+	{
+		"title": "Start",
+		"tags": "Tag",
+		"body": "What are you?\n-> A troll\n    <<set $troll to true >>\n-> A nice person\n    <<set $troll to false >>\n<<jump Objective>>"
+	},
+	{
+		"title": "BasicIf",
+		"tags": "Tag",
+		"body": "<<set $testvar = 321>>\nText before\n<<if $testvar == 321>>\nInside if\nInside if2<<endif>>Text after"
+	},
+	{
+		"title": "BasicIfElse",
+		"tags": "Tag",
+		"body": "<<set $testvar = 321>>\nText before\n<<if $testvar == 123>>\nInside if\n<<else>>\nInside else\n<<endif>>\nText after"
+	},
+	{
+		"title": "BasicIfElseIf",
+		"tags": "Tag",
+		"body": "<<set $testvar = 321>>\nText before\n<<if $testvar == 123>>\nInside if\n<<elseif $testvar == 321>>\nInside elseif\n<<endif>>\nText after"
+	},
+	{
+		"title": "BasicIfElseIfElse",
+		"tags": "Tag",
+		"body": "<<set $testvar = 321>>\nText before\n<<if $testvar == 123>>\nInside if\n<<elseif $testvar == 1>>\nInside elseif\n<<else>>\nInside else\n<<endif>>\nText after"
+	},
+	{
+		"title": "ConditionalOption",
+		"tags": "Tag",
+		"body": "<<set $haskey to true>>\nText before\n-> Cond Option<<if $haskey == true>>\n\t<<jump Objective>>\nText after\n"
+	},
+	{
+		"title": "IfNotFunction",
+		"tags": "Tag",
+		"body": "<<if not returnFalse()>>\nInside if\n<<endif>>\nText after\n"
+	},
+	{
+		"title": "OptionAfterSuccessConditional",
+		"tags": "Tag",
+		"body": "<<set $haskey to true>>\nText before\n<<if $haskey == true>>\nInside if\n<<endif>>\nText after\n-> FinalOption\n\t<<jump Objective>>"
+	},
+	{
+		"title": "TextAfterJumpAfterOption",
+		"tags": "Tag",
+		"body": "Text before\nInside if\n-> Give key\n\t<<jump give_key>>\nText after\n"
+	},
+	{
+		"title": "OptionAfterOptionWithinConditional",
+		"tags": "Tag",
+		"body": "<<set $haskey to true>>\nText before\n<<if $haskey == true>>\nInside if\n-> Give key\n\t<<jump give_key>>\n-> You keep the key.\n\tThe troll is displeased.\n<<endif>>\nText after\n-> FinalOption\n\t<<jump Objective>>"
+	},
+	{
+		"title": "ArithmeticExpressionConditional",
+		"tags": "Tag",
+		"body": "<<set $testvar1 to 100>>\n<<set $haskey1 to true>>\n<<set $haskey2 to false>>\n<<if ($haskey1 == true || $haskey2 == true) && $testvar1 >= 80>>\nInside if\n<<elseif $testvar1 < 50>>\nHello there\n<<endif>>\nText after\n<<set $testvar1 to 70>>\n<<if ($haskey1 == true || $haskey2 == true) && $testvar1 >= 80>>\nInside if2\n<<elseif $testvar1 < 50>>\nHello there\n<<endif>>\nFinal text"
+	},	
+	{
+		"title": "Objective",
+		"tags": "Tag",
+		"body": "You reach the objective."
+	},
+	{
+		"title": "give_key",
+		"tags": "Tag",
+		"body": "You give the key to the troll."
+	}
+]

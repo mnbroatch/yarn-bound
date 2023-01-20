@@ -1,8 +1,8 @@
 /* eslint-env jest */
 
 import YarnBound from './src/index'
-import bondage from '@mnbroatch/bondage/src/index'
-const { OptionsResult } = bondage
+import yarnParser from './src/yarn-parser/src/index'
+const { OptionsResult } = yarnParser
 
 describe('functional test', () => {
   const dialogue = `

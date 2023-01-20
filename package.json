@@ -1,41 +1,44 @@
 {
-  "name": "yarn-bound",
-  "version": "0.3.0",
-  "description": "Quality of life wrapper around bondage.js",
-  "main": "dist/yarn-bound.js",
+  "name": "bondage",
+  "version": "5.0.0",
+  "description": "Yarn parser for Javascript",
+  "main": "dist/bondage.js",
   "scripts": {
     "test": "jest --verbose false",
     "test:coverage": "jest --coverage --verbose false",
     "lint": "eslint .",
-    "build": "webpack",
+    "build": "jison-es src/yarn-parser/src/parser/grammar.json -o src/yarn-parser/src/parser/compiled-parser.js && webpack",
     "prepublish": "npm run build"
   },
-  "author": "Matthew Broatch",
   "license": "ISC",
   "devDependencies": {
+    "@babel/eslint-parser": "^7.16.5",
     "@babel/preset-env": "^7.16.7",
     "babel-jest": "^27.4.4",
     "babel-loader": "",
     "babel-plugin-add-module-exports": "^1.0.4",
     "core-js": "^3.20.2",
-    "eslint": "",
-    "eslint-config-standard": "^16.0.3",
+    "eslint": "^8.32.0",
+    "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.3.0",
     "jest": "^27.4.3",
+    "jison-es": "^0.4.18",
     "regenerator-runtime": "^0.13.9",
     "standard": "^16.0.4",
     "webpack": "^5.65.0",
     "webpack-cli": "^4.9.1"
   },
-  "dependencies": {
-    "@mnbroatch/bondage": "^4.0.3"
-  },
+  "contributors": [
+    "j hayley",
+    "alforno",
+    "Matthew Broatch"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mnbroatch/yarn-bound.git"
+    "url": "git+https://github.com/jhayley/bondage.js.git"
   },
   "bugs": {
-    "url": "https://github.com/mnbroatch/yarn-bound/issues"
+    "url": "https://github.com/hylyh/bondage.js/issues"
   },
-  "homepage": "https://github.com/mnbroatch/yarn-bound#readme"
+  "homepage": "https://github.com/hylyh/bondage.js#readme"
 }

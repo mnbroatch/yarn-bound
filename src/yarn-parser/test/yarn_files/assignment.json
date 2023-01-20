@@ -1,0 +1,72 @@
+[
+  {
+    "title": "Numeric",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $testvar = -123.4>>\nTest Line After"
+  },
+  {
+    "title": "NumericExpression",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $testvar = (1 + 2) * -3 + 4.3>>\nTest Line After"
+  },
+	{
+    "title": "ExponentExpression",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $testvar = 2 ** 2>>\nTest Line After"
+  },
+  {
+    "title": "String",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $testvar = \"Variable String\">>\nTest Line After"
+  },
+  {
+    "title": "StringExpression",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $testvar = \"Variable String\" + \" Appended\">>\nTest Line After"
+  },
+  {
+    "title": "Boolean",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $testvar = true>>\nTest Line After"
+  },
+  {
+    "title": "BooleanExpression",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $testvar = (true || false) && (false || !false)>>\nTest Line After"
+  },
+  {
+    "title": "Variable",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $firstvar = \"First variable string\">><<set $secondvar = $firstvar>>\nTest Line After"
+  },
+  {
+    "title": "VariableExpression",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $firstvar = 100>><<set $secondvar = -4.3 + $firstvar>>\nTest Line After"
+  },
+  {
+    "title": "VariableExpression2",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $firstvar = 100>><<set $secondvar = 200>><<set $firstvar = ($firstvar + $secondvar)>>\nTest Line After"
+  },
+  {
+    "title": "InlineExpression",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $firstvar = 100>>\nTest Line After with firstvar={$firstvar}"
+  },
+  {
+    "title": "AssignmentWithFunction",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $testvar to identity(false)>>\nTest Line2\n<<set $testvar to identity(true)>>"
+  },
+  {
+    "title": "AssignmentWithFunction2",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $testvar to visited(\"AssignmentWithFunction\")>>Test Line2<<jump AssignmentWithFunction>>"
+  },
+  {
+    "title": "AssignmentWithDivision",
+    "tags": "Tag",
+    "body": "Test Line\n<<set $testvar to 100 / 5>>\nTest Line2"
+  }
+]

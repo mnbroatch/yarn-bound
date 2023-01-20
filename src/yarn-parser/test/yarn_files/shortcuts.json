@@ -1,0 +1,52 @@
+[
+	{
+		"title": "NonNested",
+		"tags": "Tag",
+		"body": "This is a test line\n-> Option 1\n\tThis is the first option\n-> Option 2\n\tThis is the second option\nThis is after both options"
+	},
+	{
+		"title": "NonNestedHashtag",
+		"tags": "Tag",
+		"body": "-> Option 1#someHashtag#someOtherHashtag #lastHashtag//#ignore\n\tThis is the first option\n-> Option 2\n\tThis is the second option"
+	},
+	{
+		"title": "NonNestedComment",
+		"tags": "Tag",
+		"body": "-> Option 1// This is a comment {$ignore} <<if $ignore>> #ignore\n\tThis is the first option\n-> Option 2\n\tThis is the second option"
+	},
+	{
+		"title": "Nested",
+		"tags": "Tag",
+		"body": "text\n-> shortcut1a\n\tText1\n\t-> nestedshortcut1\n\t\tNestedText1\n\t-> nestedshortcut2\n\t\tNestedText2\n-> shortcut2a\n\tText2\nmore text"
+	},
+	{
+		"title": "Conditional",
+		"tags": "Tag",
+		"body": "This is a test line\n-> Option 1\n\tThis is the first option\n-> Option 2<<if 1 == 0>>\n\tThis is the second option\n-> Option 3\n\tThis is the third option\nThis is after both options"
+	},
+	{
+		"title": "ConditionalComment",
+		"tags": "Tag",
+		"body": "This is a test line\n-> Option 1\n\tThis is the first option\n-> Option 2<<if 1 == 0>>// I should be ignored\n\tThis is the second option\n-> Option 3\n\tThis is the third option\nThis is after both options"
+	},
+	{
+		"title": "ConditionalHashtag",
+		"tags": "Tag",
+		"body": "This is a test line\n-> Option 1\n\tThis is the first option\n-> Option 2<<if 1 == 0>>#someHashtag #someOtherHashtag\n\tThis is the second option\n-> Option 3\n\tThis is the third option\nThis is after both options"
+	},
+	{
+		"title": "EmptyFirstOption",
+		"tags": "Tag",
+		"body": "This is a test line\n-> Option 1\n-> Option 2\n\tThis is the second option\nThis is after both options"
+	},
+	{
+		"title": "EmptySecondOption",
+		"tags": "Tag",
+		"body": "This is a test line\n-> Option 1\n\tThis is the first option\n-> Option 2\nThis is after both options"
+	},
+	{
+		"title": "EmptyConditional",
+		"tags": "Tag",
+		"body": "This is a test line\n-> Option 1<<if true == true>>\n-> Option 2\nThis is after both options"
+	}
+]
