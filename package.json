@@ -7,7 +7,7 @@
     "test": "jest --verbose false",
     "test:coverage": "jest --coverage --verbose false",
     "lint": "eslint .",
-    "build": "jison-es src/yarn-parser/src/parser/grammar.json -o src/yarn-parser/src/parser/compiled-parser.js && webpack",
+    "build": "jison-es src/yarn-parser/parser/grammar.json -o src/yarn-parser/parser/compiled-parser.js && webpack",
     "prepublish": "npm run build"
   },
   "license": "ISC",

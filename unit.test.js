@@ -2,7 +2,7 @@
 /* eslint-disable no-new */
 
 import YarnBound from './src/index'
-import yarnParser from './src/yarn-parser/src/index'
+import yarnParser from './src/yarn-parser/index'
 
 jest.spyOn(yarnParser.Runner.prototype, 'load').mockImplementation()
 jest.spyOn(yarnParser.Runner.prototype, 'registerFunction').mockImplementation()

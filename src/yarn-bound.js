@@ -1,4 +1,4 @@
-import yarnParser from './yarn-parser/src/index'
+import yarnParser from './yarn-parser/index'
 import parseLine from './line-parser'
 
 export default class YarnBound {

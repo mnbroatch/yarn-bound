@@ -1,7 +1,7 @@
 /* eslint-env jest */
 
 import YarnBound from './src/index'
-import yarnParser from './src/yarn-parser/src/index'
+import yarnParser from './src/yarn-parser/index'
 const { OptionsResult } = yarnParser
 
 describe('functional test', () => {

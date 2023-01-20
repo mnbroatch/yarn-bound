@@ -5,7 +5,7 @@
 
 // TODO: Make less painful to look at
 
-import bondage from '../src/index';
+import bondage from '../index';
 import linksYarnData from './yarn_files/links.json';
 import shortcutsYarnData from './yarn_files/shortcuts.json';
 import assignmentYarnData from './yarn_files/assignment.json';

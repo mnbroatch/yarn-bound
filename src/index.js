@@ -1,5 +1,5 @@
 import YarnBound from './yarn-bound.js'
-import yarnParser from './yarn-parser/src/index'
+import yarnParser from './yarn-parser/index'
 const { OptionsResult, TextResult, CommandResult } = yarnParser
 
 YarnBound.OptionsResult = OptionsResult
