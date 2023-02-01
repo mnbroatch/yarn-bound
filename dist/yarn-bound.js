@@ -739,16 +739,10 @@ Object.defineProperty(exports, "__esModule", ({
 exports.Parser = Parser;
 exports.parser = void 0;
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+var o = function (k, v, o, l) {
+  for (o = o || {}, l = k.length; l--; o[k[l]] = v);
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var o = function o(k, v, _o, l) {
-  for (_o = _o || {}, l = k.length; l--; _o[k[l]] = v);
-
-  return _o;
+  return o;
 },
     $V0 = [1, 16],
     $V1 = [1, 17],
@@ -1064,15 +1058,15 @@ var parser = {
         break;
 
       case 35:
-        this.$ = _objectSpread(_objectSpread({}, $$[$0 - 1]), {}, {
+        this.$ = { ...$$[$0 - 1],
           hashtags: $$[$0]
-        });
+        };
         break;
 
       case 37:
-        this.$ = _objectSpread(_objectSpread({}, $$[$0 - 2]), {}, {
+        this.$ = { ...$$[$0 - 2],
           hashtags: $$[$0 - 1]
-        });
+        };
         break;
 
       case 39:
@@ -2355,7 +2349,7 @@ var parser = {
       lstack.length = lstack.length - n;
     }
 
-    _token_stack: var lex = function lex() {
+    _token_stack: var lex = function () {
       var token;
       token = lexer.lex() || EOF;
 
@@ -3034,12 +3028,6 @@ var _nodes = _interopRequireDefault(__webpack_require__(748));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 const nodeTypes = _nodes.default.types;
 
 class Runner {
@@ -3172,9 +3160,8 @@ class Runner {
 
 
       const parserNodes = Array.from(_parser.default.parse(yarnNode.body));
-
-      const metadata = _objectSpread({}, yarnNode);
-
+      const metadata = { ...yarnNode
+      };
       delete metadata.body;
       const result = yield* this.evalNodes(parserNodes, metadata);
       jumpTo = result && result.jump;
@@ -3499,12 +3486,6 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports["default"] = parseLine;
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 // mutates node, processing [markup /] and `character:`
 function parseLine(node, locale) {
   node.markup = [];
@@ -3542,10 +3523,9 @@ function parseMarkup(node, locale) {
     const [wholeMatch, charBefore, contents, charAfter] = match;
     const hasLeadingSpace = /\s/.test(charBefore);
     const hasTrailingSpace = /\s/.test(charAfter);
-
-    const attribute = _objectSpread(_objectSpread({}, parseAttributeContents(contents, locale)), {}, {
+    const attribute = { ...parseAttributeContents(contents, locale),
       position: resultText.length + index + charBefore.length
-    });
+    };
 
     if (!noMarkup || attribute.name === 'nomarkup') {
       const isReplacementTag = attribute.name === 'select' || attribute.name === 'plural' || attribute.name === 'ordinal';
@@ -3666,7 +3646,9 @@ function parseAttributeContents(contents, locale) {
 
     if (propertyAssignments) {
       properties = propertyAssignments.reduce((acc, propAss) => {
-        return _objectSpread(_objectSpread({}, acc), parsePropertyAssignment(propAss));
+        return { ...acc,
+          ...parsePropertyAssignment(propAss)
+        };
       }, {});
     }
 
