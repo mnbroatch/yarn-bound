@@ -3450,9 +3450,11 @@ class YarnBound {
       handleCommand,
       combineTextAndOptionsResults,
       locale,
+      pauseCommand = 'pause',
       startAt = 'Start'
     } = _ref;
     this.handleCommand = handleCommand;
+    this.pauseCommand = pauseCommand;
     this.combineTextAndOptionsResults = combineTextAndOptionsResults;
     this.bondage = _index.default;
     this.bufferedNode = null;
@@ -3488,7 +3490,7 @@ class YarnBound {
     // We either return the command as normal or, if a handler
     // is supplied, use that and don't bother the consuming app
     if (this.handleCommand) {
-      while (next instanceof _index.default.CommandResult) {
+      while (next instanceof _index.default.CommandResult && next.command !== this.pauseCommand) {
         this.handleCommand(next);
         next = this.generator.next().value;
       }
@@ -3496,7 +3498,8 @@ class YarnBound {
 
     // Lookahead for combining text + options, and for end of dialogue.
     // Can't look ahead of option nodes (what would you look ahead at?)
-    if (!(next instanceof _index.default.OptionsResult)) {
+    // Don't look ahead if on pause node
+    if (!(next instanceof _index.default.OptionsResult) && next.command !== this.pauseCommand) {
       const upcoming = this.generator.next();
       buffered = upcoming.value;
       if (next instanceof _index.default.TextResult && this.combineTextAndOptionsResults && buffered instanceof _index.default.OptionsResult) {
