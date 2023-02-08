@@ -3499,7 +3499,7 @@ class YarnBound {
     // Lookahead for combining text + options, and for end of dialogue.
     // Can't look ahead of option nodes (what would you look ahead at?)
     // Don't look ahead if on pause node
-    if (!(next instanceof _index.default.OptionsResult) && next.command !== this.pauseCommand) {
+    if (!(next instanceof _index.default.OptionsResult) && !(next && next.command === this.pauseCommand)) {
       const upcoming = this.generator.next();
       buffered = upcoming.value;
       if (next instanceof _index.default.TextResult && this.combineTextAndOptionsResults && buffered instanceof _index.default.OptionsResult) {
