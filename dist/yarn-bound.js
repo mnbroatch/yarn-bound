@@ -299,12 +299,13 @@ class Lexer {
    * reset - Reset the lexer location, text and line number. Nothing fancy.
    */
   reset() {
+    const firstColumn = this.getFirstColumn();
     // Locations, used by both the lexer and the Jison parser.
     this.yytext = '';
     this.yylloc = {
-      first_column: 1,
+      first_column: firstColumn,
       first_line: 1,
-      last_column: 1,
+      last_column: firstColumn,
       last_line: 1
     };
     this.yylineno = 1;
@@ -334,16 +335,23 @@ class Lexer {
     }
     return this.lexNextTokenOnCurrentLine();
   }
+
+  // if indentation doesn't matter, strip it.
+  getFirstColumn() {
+    const currentLine = this.getCurrentLine();
+    return !currentLine || this.shouldTrackNextIndentation ? 1 : currentLine.match(/^(\s*)/g)[0].length + 1;
+  }
   advanceLine() {
     this.yylineno += 1;
-    const currentLine = this.getCurrentLine().replace(/\t/, '    ');
+    const currentLine = this.getCurrentLine();
+    const firstColumn = this.getFirstColumn();
     this.lines[this.yylineno - 1] = currentLine;
     this.previousLevelOfIndentation = this.getLastRecordedIndentation()[0];
     this.yytext = '';
     this.yylloc = {
-      first_column: 1,
+      first_column: firstColumn,
       first_line: this.yylineno,
-      last_column: 1,
+      last_column: firstColumn,
       last_line: this.yylineno
     };
   }
@@ -444,7 +452,7 @@ class Lexer {
     // Delete carriage return while keeping a similar semantic.
     this.originalText = text.replace(/(\r\n)/g, '\n').replace(/\r/g, '\n').replace(/[\n\r]+$/, '');
     // Transform the input into an array of lines.
-    this.lines = this.originalText.split('\n');
+    this.lines = this.originalText.split('\n').map(line => line.replace(/\t/, '    '));
     this.reset();
   }
 
@@ -903,6 +911,7 @@ var parser = {
         this.$ = [$$[$0]];
         break;
       case 3:
+      case 19:
         this.$ = $$[$0 - 1].concat($$[$0]);
         break;
       case 5:
@@ -931,9 +940,6 @@ var parser = {
         break;
       case 16:
         this.$ = new yy.EscapedCharacterNode($$[$0], this._$);
-        break;
-      case 19:
-        this.$ = $$[$0 - 1].concat($$[$0]);
         break;
       case 20:
         this.$ = [$$[$0].substring(1)];
