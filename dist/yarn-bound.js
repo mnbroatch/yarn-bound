@@ -2993,8 +2993,9 @@ class Runner {
         // ignore the rest of this outer loop and
         // tell parent loops to ignore following nodes.
         // Recursive call here would cause stack overflow
+        const destination = node.destination instanceof _nodes.default.InlineExpressionNode ? this.evaluateExpressionOrLiteral(node.destination) : node.destination;
         return {
-          jump: node.destination
+          jump: destination
         };
       } else if (node instanceof _nodes.default.StopCommandNode) {
         // ignore the rest of this outer loop and
