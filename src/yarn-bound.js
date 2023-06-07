@@ -67,9 +67,11 @@ export default class YarnBound {
 
     // Lookahead for combining text + options, and for end of dialogue.
     // Can't look ahead of option nodes (what would you look ahead at?)
+    // Can't look ahead of command nodes (they can affect future state)
     // Don't look ahead if on pause node
     if (
       !(next instanceof bondage.OptionsResult) &&
+      !(next instanceof bondage.CommandResult) &&
       !(next && next.command === this.pauseCommand)
     ) {
       const upcoming = this.generator.next()
