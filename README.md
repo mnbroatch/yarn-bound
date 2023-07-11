@@ -17,7 +17,7 @@ Bondage.js also does not support
 
 because these are not language features (it's confusing). YarnBound adds these things.
 
-The only thing I know to be missing from the spec and non-unity-specific docs is the built-in `wait` command, because I can't tell what I would want it to do.
+The only thing I know to be missing from the spec and non-unity-specific docs (at time of Yarn 2.0's release) is the built-in `wait` command, because I can't tell what I would want it to do.
 
 
 # Usage
