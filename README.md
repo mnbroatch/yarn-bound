@@ -243,11 +243,9 @@ A simple react component can be found at: [react-dialogue-tree](https://github.c
 
 # Caveats
 
-The `isDialogueEnd` feature assumes your dialogue will terminate on a TextResult, rather than a CommandResult or OptionsResult. The property will be absent if:
-  - The dialogue terminates on an OptionsResult, or
-  - The dialogue terminates on a CommandResult and a `handleCommand` callback is supplied.
-    - Terminating on the `<<stop>>` command is fine
+The lookahead feature means that <<if ... >> statements will get evaluated 
 
+The `isDialogueEnd` property will be absent if the dialogue terminates on an OptionsResult.
 
 # Other included versions
 

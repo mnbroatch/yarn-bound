@@ -203,21 +203,42 @@ describe('advance', () => {
     test('should call the command handler for each command result', () => {
       const handleCommand = jest.fn()
       new YarnBound({ handleCommand })
-      expect(handleCommand).toHaveBeenNthCalledWith(1, { command: mockCommandName1 })
-      expect(handleCommand).toHaveBeenNthCalledWith(2, { command: mockCommandName2 })
+      expect(handleCommand).toHaveBeenNthCalledWith(1, mockCommandResult1)
+      expect(handleCommand).toHaveBeenNthCalledWith(2, mockCommandResult2)
     })
   })
 
   describe('when dialogue ends', () => {
-    beforeAll(() => {
+    test('should include an "isDialogueEnd" property on the last result if it is a text result', () => {
       bondage.Runner.prototype.run.mockImplementation(function * () {
         yield mockTextResult1
       })
-    })
-
-    test('should include an "isDialogueEnd" property on the currentResult', () => {
       const runner = new YarnBound({})
       expect(runner.currentResult).toEqual({ ...mockTextResult1, isDialogueEnd: true })
+    })
+
+    test('should include an "isDialogueEnd" property on the last result if it is a command result', () => {
+      bondage.Runner.prototype.run.mockImplementation(function * () {
+        yield mockTextResult1
+        yield mockCommandResult1
+      })
+      const runner = new YarnBound({})
+      expect(runner.currentResult).toEqual(mockTextResult1)
+      runner.advance()
+      expect(runner.currentResult).toEqual({ ...mockCommandResult1, isDialogueEnd: true })
+    })
+
+    test('should include an "isDialogueEnd" property on the last text result before only command results remain, if handleCommand is supplied', () => {
+      bondage.Runner.prototype.run.mockImplementation(function * () {
+        yield mockTextResult1
+        yield mockCommandResult1
+        yield mockCommandResult2
+      })
+      const handleCommand = jest.fn()
+      const runner = new YarnBound({ handleCommand })
+      expect(runner.currentResult).toEqual({ ...mockTextResult1, isDialogueEnd: true })
+      expect(handleCommand).toHaveBeenNthCalledWith(1, mockCommandResult1)
+      expect(handleCommand).toHaveBeenNthCalledWith(2, mockCommandResult2)
     })
   })
 })
