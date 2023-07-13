@@ -19,6 +19,7 @@ export default class YarnBound {
     this.bufferedNode = null
     this.currentResult = null
     this.history = []
+    this.commandQueue = []
     this.locale = locale
     this.runner = new bondage.Runner()
     this.runner.noEscape = true
@@ -45,6 +46,9 @@ export default class YarnBound {
   }
 
   advance (optionIndex) {
+    this.commandQueue.forEach(c => { c() })
+    this.commandQueue = []
+
     if (
       typeof optionIndex !== 'undefined' &&
         this.currentResult &&
@@ -56,12 +60,11 @@ export default class YarnBound {
     let next = this.bufferedNode || this.generator.next().value
     let buffered = null
 
-    // We either return the command as normal or, if a handler
-    // is supplied, use that and don't bother the consuming app
     if (this.handleCommand) {
       while (next instanceof bondage.CommandResult && next.command !== this.pauseCommand) {
         this.handleCommand(next)
-        next = this.generator.next().value
+        const nextIteratorResult = this.generator.next()
+        next = nextIteratorResult.value
       }
     }
 
@@ -72,8 +75,25 @@ export default class YarnBound {
       !(next instanceof bondage.OptionsResult) &&
       !(next && next.command === this.pauseCommand)
     ) {
-      const upcoming = this.generator.next()
+      let upcoming = this.generator.next()
+      // If we're not returning command nodes, the last non-command node should have
+      // isDialogueEnd. The queue lets us do extra looking ahead for that, without
+      // prematurely handling commands.
+      if (this.handleCommand) {
+        while (upcoming.value && upcoming.value instanceof bondage.CommandResult && upcoming.value.command !== this.pauseCommand) {
+          const upcomingValue = upcoming.value
+          this.commandQueue.push(() => { this.handleCommand(upcomingValue) })
+          upcoming = this.generator.next()
+          if (upcoming.done) {
+            this.commandQueue.forEach(c => { c() })
+            this.commandQueue = []
+            next = Object.assign(next, { isDialogueEnd: true })
+          }
+        }
+      }
+
       buffered = upcoming.value
+
       if (
         next instanceof bondage.TextResult &&
         this.combineTextAndOptionsResults &&
