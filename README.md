@@ -243,8 +243,6 @@ A simple react component can be found at: [react-dialogue-tree](https://github.c
 
 # Caveats
 
-The lookahead feature means that <<if ... >> statements will get evaluated 
-
 The `isDialogueEnd` property will be absent if the dialogue terminates on an OptionsResult.
 
 # Other included versions
