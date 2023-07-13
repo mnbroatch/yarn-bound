@@ -19,7 +19,6 @@ export default class YarnBound {
     this.bufferedNode = null
     this.currentResult = null
     this.history = []
-    this.commandQueue = []
     this.locale = locale
     this.runner = new bondage.Runner()
     this.runner.noEscape = true
@@ -46,8 +45,8 @@ export default class YarnBound {
   }
 
   advance (optionIndex) {
-    this.commandQueue.forEach(c => { c() })
-    this.commandQueue = []
+    this.runner.queuedOperations.forEach(c => { c() })
+    this.runner.queuedOperations = []
 
     if (
       typeof optionIndex !== 'undefined' &&
@@ -61,11 +60,13 @@ export default class YarnBound {
     let buffered = null
 
     if (this.handleCommand) {
+      this.runner.shouldQueueAssignments = true
       while (next instanceof bondage.CommandResult && next.command !== this.pauseCommand) {
         this.handleCommand(next)
         const nextIteratorResult = this.generator.next()
         next = nextIteratorResult.value
       }
+      this.runner.shouldQueueAssignments = false
     }
 
     // Lookahead for combining text + options, and for end of dialogue.
@@ -80,16 +81,18 @@ export default class YarnBound {
       // isDialogueEnd. The queue lets us do extra looking ahead for that, without
       // prematurely handling commands.
       if (this.handleCommand) {
+        this.runner.shouldQueueAssignments = true
         while (upcoming.value && upcoming.value instanceof bondage.CommandResult && upcoming.value.command !== this.pauseCommand) {
           const upcomingValue = upcoming.value
-          this.commandQueue.push(() => { this.handleCommand(upcomingValue) })
+          this.runner.queuedOperations.push(() => { this.handleCommand(upcomingValue) })
           upcoming = this.generator.next()
           if (upcoming.done) {
-            this.commandQueue.forEach(c => { c() })
-            this.commandQueue = []
+            this.runner.queuedOperations.forEach(c => { c() })
+            this.runner.queuedOperations = []
             next = Object.assign(next, { isDialogueEnd: true })
           }
         }
+        this.runner.shouldQueueAssignments = false
       }
 
       buffered = upcoming.value

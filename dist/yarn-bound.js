@@ -3491,26 +3491,53 @@ class YarnBound {
     this.advance();
   }
   advance(optionIndex) {
+    this.runner.queuedOperations.forEach(c => {
+      c();
+    });
+    this.runner.queuedOperations = [];
     if (typeof optionIndex !== 'undefined' && this.currentResult && this.currentResult.select) {
       this.currentResult.select(optionIndex);
     }
     let next = this.bufferedNode || this.generator.next().value;
     let buffered = null;
-
-    // We either return the command as normal or, if a handler
-    // is supplied, use that and don't bother the consuming app
     if (this.handleCommand) {
+      this.runner.shouldQueueAssignments = true;
       while (next instanceof _index.default.CommandResult && next.command !== this.pauseCommand) {
         this.handleCommand(next);
-        next = this.generator.next().value;
+        const nextIteratorResult = this.generator.next();
+        next = nextIteratorResult.value;
       }
+      this.runner.shouldQueueAssignments = false;
     }
 
     // Lookahead for combining text + options, and for end of dialogue.
     // Can't look ahead of option nodes (what would you look ahead at?)
     // Don't look ahead if on pause node
     if (!(next instanceof _index.default.OptionsResult) && !(next && next.command === this.pauseCommand)) {
-      const upcoming = this.generator.next();
+      let upcoming = this.generator.next();
+      // If we're not returning command nodes, the last non-command node should have
+      // isDialogueEnd. The queue lets us do extra looking ahead for that, without
+      // prematurely handling commands.
+      if (this.handleCommand) {
+        this.runner.shouldQueueAssignments = true;
+        while (upcoming.value && upcoming.value instanceof _index.default.CommandResult && upcoming.value.command !== this.pauseCommand) {
+          const upcomingValue = upcoming.value;
+          this.runner.queuedOperations.push(() => {
+            this.handleCommand(upcomingValue);
+          });
+          upcoming = this.generator.next();
+          if (upcoming.done) {
+            this.runner.queuedOperations.forEach(c => {
+              c();
+            });
+            this.runner.queuedOperations = [];
+            next = Object.assign(next, {
+              isDialogueEnd: true
+            });
+          }
+        }
+        this.runner.shouldQueueAssignments = false;
+      }
       buffered = upcoming.value;
       if (next instanceof _index.default.TextResult && this.combineTextAndOptionsResults && buffered instanceof _index.default.OptionsResult) {
         next = Object.assign(buffered, next);
