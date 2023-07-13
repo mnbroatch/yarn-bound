@@ -28,7 +28,7 @@
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {
-    "@mnbroatch/bondage": "^4.0.9"
+    "@mnbroatch/bondage": "^4.1.0"
   },
   "repository": {
     "type": "git",
