@@ -3195,7 +3195,7 @@ class Runner {
       },
       VariableNode: a => {
         const value = this.variables.get(a.variableName);
-        if (value === undefined) {
+        if (value === undefined && !this.lookahead) {
           throw new Error(`Attempted to access undefined variable "${a.variableName}"`);
         }
         return value;

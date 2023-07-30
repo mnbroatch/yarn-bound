@@ -140,4 +140,26 @@ describe('functional test', () => {
     runner.advance()
     expect(runner.currentResult.isDialogueEnd).toBe(true)
   })
+
+  test('Should respect a variable set externally before a check', () => {
+    const dialogue = `
+      title:Start
+      ---
+      Hello
+      <<if $a == 1>>
+        Goodbye {$a}
+      <<endif>>
+      ===
+    `
+
+    const handleCommand = jest.fn()
+    const runner = new YarnBound({ dialogue, handleCommand })
+    expect(runner.currentResult.text).toBe('Hello')
+    runner.runner.variables.set('a', 1)
+    runner.advance()
+
+    expect(runner.currentResult.text).toBe('Goodbye 1')
+    runner.advance()
+    expect(runner.currentResult.isDialogueEnd).toBe(true)
+  })
 })
