@@ -60,7 +60,8 @@ export default class YarnBound {
     if (
       next.done
     ) {
-      Object.assign(next.value, { isDialogueEnd: true })
+      next.value = Object.assign(next.value || {}, { isDialogueEnd: true })
+      return next
     }
 
     // Can't look ahead of options before we select one

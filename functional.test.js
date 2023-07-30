@@ -99,5 +99,49 @@ describe('functional test', () => {
     condition = true
     runner.advance()
     expect(runner.currentResult.text).toBe('It\'s true!')
+    runner.advance()
+    runner.advance()
+    runner.advance()
+    runner.advance()
+  })
+
+  test('Should handle the pause command correctly', () => {
+    const dialogue = `
+      title:Start
+      ---
+      <<set $a = 100>>
+      Hello {$a}
+      <<command1>>
+      <<set $a = 1>>
+      <<pause>>
+      <<command2 {$a}>>
+      <<if $a == 1>>
+        Goodbye {$a}
+        <<pause>>
+        <<if $a == 20>>
+          Nope!
+        <<endif>>
+      <<endif>>
+      ===
+    `
+
+    const handleCommand = jest.fn()
+    const runner = new YarnBound({ dialogue, handleCommand })
+    expect(runner.currentResult.text).toBe('Hello 100')
+    expect(handleCommand).not.toHaveBeenCalled()
+    runner.advance()
+
+    expect(handleCommand.mock.calls[0][0].command).toBe('command1')
+    expect(handleCommand).toHaveBeenCalledTimes(1)
+    expect(runner.currentResult.command).toBe('pause')
+    runner.advance()
+
+    expect(handleCommand.mock.calls[1][0].command).toBe('command2 1')
+    expect(runner.currentResult.text).toBe('Goodbye 1')
+    runner.advance()
+
+    expect(runner.currentResult.command).toBe('pause')
+    runner.advance()
+    expect(runner.currentResult.isDialogueEnd).toBe(true)
   })
 })

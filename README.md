@@ -278,7 +278,9 @@ Hello
 <<endif>>
 ```
 
-Note that you will have to call advance() again after reaching the pause command. Even if you have supplied a handleCommand function, `runner.currentResult` will be a CommandResult, with a command of "pause". Also note that if the `<<if $a == true>>` check evaluated to false, the `isDialogueEnd` flag would be on the "pause" CommandResult, not the "Hello" TextResult.
+Note that you will have to call advance() again after reaching the pause command. Even if you have supplied a handleCommand function, `runner.currentResult` will be a CommandResult, with a command of "pause".
+
+Also note, however, that a "pause" command at the end of a dialogue will never have the `isDialogueEnd` flag, as lookahead is disabled.
 
 
 # Other included versions
