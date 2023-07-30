@@ -4,14 +4,28 @@
 import YarnBound from './src/index'
 import bondage from '@mnbroatch/bondage/src/index'
 
+const getMockGenerator = (results) => function * () {
+  for (let i = 0, len = results.length; i < len; i++) {
+    yield Object.assign(
+      results[i],
+      {
+        getGeneratorHere: () => getMockGenerator(results.slice(i))()
+      }
+    )
+  }
+}
+
 jest.spyOn(bondage.Runner.prototype, 'load').mockImplementation()
 jest.spyOn(bondage.Runner.prototype, 'registerFunction').mockImplementation()
 jest.spyOn(bondage.Runner.prototype, 'setVariableStorage').mockImplementation()
-jest.spyOn(bondage.Runner.prototype, 'run').mockImplementation(function * () {
-  while (true) yield new bondage.TextResult('hello')
-})
+jest.spyOn(bondage.Runner.prototype, 'run')
 
 describe('constructor', () => {
+  beforeAll(() => {
+    bondage.Runner.prototype.run.mockImplementation(getMockGenerator([
+      new bondage.TextResult('hello')
+    ]))
+  })
   const dialogue = []
   test('should load a dialogue object into the runner', () => {
     new YarnBound({ dialogue })
@@ -77,7 +91,7 @@ describe('constructor', () => {
 
   test('should attach the generator to the instance', () => {
     const runner = new YarnBound({})
-    expect(runner.generator).toBe(bondage.Runner.prototype.run.mock.results[0].value)
+    expect(runner.generator).toEqual(bondage.Runner.prototype.run.mock.results[0].value)
   })
 
   test('should advance the generator', () => {
@@ -88,7 +102,6 @@ describe('constructor', () => {
 })
 
 describe('jump', () => {
-
   test('should jump the generator to the node with the provided "jumpTo" title', () => {
     jest.spyOn(YarnBound.prototype, 'advance')
     const jumpTo = 'someJumpNode'
@@ -97,7 +110,6 @@ describe('jump', () => {
     expect(YarnBound.prototype.advance).toHaveBeenCalled()
     expect(bondage.Runner.prototype.run).toHaveBeenCalledWith(jumpTo)
   })
-
 })
 
 describe('advance', () => {
@@ -112,14 +124,15 @@ describe('advance', () => {
     { text: 'bart' },
     { text: 'lisa' }
   ])
+
   describe('where next results are a TextResult followed by OptionsResult', () => {
     beforeAll(() => {
-      bondage.Runner.prototype.run.mockImplementation(function * () {
-        yield mockTextResult1
-        yield mockOptionsResult
-        yield mockTextResult2
-        yield mockTextResult3
-      })
+      bondage.Runner.prototype.run.mockImplementation(getMockGenerator([
+        mockTextResult1,
+        mockOptionsResult,
+        mockTextResult2,
+        mockTextResult3
+      ]))
     })
 
     test('should set currentResult to a the TextResult object', () => {
@@ -162,12 +175,12 @@ describe('advance', () => {
 
   describe('where next results are CommandResults followed by TextResults', () => {
     beforeAll(() => {
-      bondage.Runner.prototype.run.mockImplementation(function * () {
-        yield mockCommandResult1
-        yield mockCommandResult2
-        yield mockTextResult1
-        yield mockTextResult2
-      })
+      bondage.Runner.prototype.run.mockImplementation(getMockGenerator([
+        mockCommandResult1,
+        mockCommandResult2,
+        mockTextResult1,
+        mockTextResult2
+      ]))
     })
 
     test('should set currentResult to the command result if handleCommand is not supplied', () => {
@@ -210,18 +223,19 @@ describe('advance', () => {
 
   describe('when dialogue ends', () => {
     test('should include an "isDialogueEnd" property on the last result if it is a text result', () => {
-      bondage.Runner.prototype.run.mockImplementation(function * () {
-        yield mockTextResult1
-      })
+      bondage.Runner.prototype.run.mockImplementation(getMockGenerator([
+        mockTextResult1
+      ]))
+
       const runner = new YarnBound({})
       expect(runner.currentResult).toEqual({ ...mockTextResult1, isDialogueEnd: true })
     })
 
     test('should include an "isDialogueEnd" property on the last result if it is a command result', () => {
-      bondage.Runner.prototype.run.mockImplementation(function * () {
-        yield mockTextResult1
-        yield mockCommandResult1
-      })
+      bondage.Runner.prototype.run.mockImplementation(getMockGenerator([
+        mockTextResult1,
+        mockCommandResult1
+      ]))
       const runner = new YarnBound({})
       expect(runner.currentResult).toEqual(mockTextResult1)
       runner.advance()
@@ -229,16 +243,46 @@ describe('advance', () => {
     })
 
     test('should include an "isDialogueEnd" property on the last text result before only command results remain, if handleCommand is supplied', () => {
-      bondage.Runner.prototype.run.mockImplementation(function * () {
-        yield mockTextResult1
-        yield mockCommandResult1
-        yield mockCommandResult2
-      })
+      bondage.Runner.prototype.run.mockImplementation(getMockGenerator([
+        mockTextResult1,
+        mockCommandResult1,
+        mockCommandResult2
+      ]))
+      const handleCommand = jest.fn()
+      const runner = new YarnBound({ handleCommand })
+      expect(runner.currentResult).toEqual({ ...mockTextResult1, isDialogueEnd: true })
+    })
+
+    test('should handle trailing and leading commands', () => {
+      bondage.Runner.prototype.run.mockImplementation(getMockGenerator([
+        mockCommandResult1,
+        mockTextResult1,
+        mockCommandResult2
+      ]))
       const handleCommand = jest.fn()
       const runner = new YarnBound({ handleCommand })
       expect(runner.currentResult).toEqual({ ...mockTextResult1, isDialogueEnd: true })
       expect(handleCommand).toHaveBeenNthCalledWith(1, mockCommandResult1)
       expect(handleCommand).toHaveBeenNthCalledWith(2, mockCommandResult2)
+    })
+
+    test('should not handle commands prematurely', () => {
+      bondage.Runner.prototype.run.mockImplementation(getMockGenerator([
+        mockCommandResult1,
+        mockTextResult1,
+        mockCommandResult2,
+        mockTextResult2
+      ]))
+      const handleCommand = jest.fn()
+      const runner = new YarnBound({ handleCommand })
+      expect(runner.currentResult).toEqual({ ...mockTextResult1, isDialogueEnd: true })
+      expect(handleCommand).toHaveBeenCalledTimes(1)
+      expect(handleCommand).toHaveBeenCalledWith(mockCommandResult1)
+
+      runner.advance()
+
+      expect(handleCommand).toHaveBeenCalledTimes(2)
+      expect(handleCommand).toHaveBeenCalledWith(mockCommandResult2)
     })
   })
 })

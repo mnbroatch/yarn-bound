@@ -16,7 +16,6 @@ export default class YarnBound {
     this.pauseCommand = pauseCommand
     this.combineTextAndOptionsResults = combineTextAndOptionsResults
     this.bondage = bondage
-    this.bufferedNode = null
     this.currentResult = null
     this.history = []
     this.locale = locale
@@ -40,92 +39,122 @@ export default class YarnBound {
 
   jump (startAt) {
     this.generator = this.runner.run(startAt)
-    this.bufferedNode = null
     this.advance()
   }
 
-  advance (optionIndex) {
-    this.runner.queuedOperations.forEach(c => { c() })
-    this.runner.queuedOperations = []
+  handleConsecutiveOptionsNodes (shouldHandleCommand) {
+    let next = this.generator.next()
+    while (next.value instanceof bondage.CommandResult && next.value.command !== this.pauseCommand) {
+      if (shouldHandleCommand) {
+        this.handleCommand(next.value)
+      }
+      next = this.generator.next()
+    }
+    return next
+  }
+
+  // for combining text + options, and detecting dialogue end
+  lookahead () {
+    let next = this.generator.next()
 
     if (
+      next.done
+    ) {
+      Object.assign(next.value, { isDialogueEnd: true })
+    }
+
+    // Can't look ahead of options before we select one
+    if (
+      next.done ||
+      (next.value && next.value.command === this.pauseCommand) ||
+      next.value instanceof bondage.OptionsResult
+    ) {
+      return next
+    }
+
+    if (this.handleCommand && next.value instanceof bondage.CommandResult && next.value.command !== this.pauseCommand) {
+      this.handleCommand(next.value)
+      next = this.handleConsecutiveOptionsNodes(true)
+    }
+
+    this.runner.lookahead = true
+    let upcoming = this.generator.next()
+    if (this.handleCommand && upcoming.value instanceof bondage.CommandResult && upcoming.value.command !== this.pauseCommand) {
+      upcoming = this.handleConsecutiveOptionsNodes()
+
+      this.generator = next.value.getGeneratorHere()
+      this.runner.lookahead = false
+
+      // Only possible if dialogue starts/resumes on a CommandResult.
+      const rewoundNext = next.value instanceof bondage.CommandResult
+        ? this.handleConsecutiveOptionsNodes(true)
+        : this.generator.next()
+      if (!upcoming.value) {
+        // Handle trailing commands at end of dialogue
+        upcoming = this.handleConsecutiveOptionsNodes(true)
+        if (upcoming.value) {
+          // upcoming will only have a value if a conditional check's outcome changes
+          // due to handling a series of commands directly before the conditional.
+          // This edge case does cause commands to be handled prematurely
+          this.generator = upcoming.value.getGeneratorHere()
+        } else {
+          Object.assign(rewoundNext.value, { isDialogueEnd: true })
+        }
+      }
+      return rewoundNext
+    } else if (
+      next.value instanceof bondage.TextResult &&
+      this.combineTextAndOptionsResults &&
+      upcoming.value instanceof bondage.OptionsResult
+    ) {
+      this.generator = next.value.getGeneratorHere()
+      this.runner.lookahead = false
+
+      const rewoundNext = this.generator.next()
+      const rewoundUpcoming = this.generator.next()
+      Object.assign(rewoundUpcoming.value, rewoundNext.value)
+      return rewoundUpcoming
+    } else {
+      this.generator = next.value.getGeneratorHere()
+      this.runner.lookahead = false
+
+      const rewoundNext = this.generator.next()
+      if (!upcoming.value) {
+        Object.assign(rewoundNext.value, { isDialogueEnd: true })
+      }
+      return rewoundNext
+    }
+  }
+
+  advance (optionIndex) {
+    if (
       typeof optionIndex !== 'undefined' &&
-        this.currentResult &&
-        this.currentResult.select
+      this.currentResult &&
+      this.currentResult.select
     ) {
       this.currentResult.select(optionIndex)
     }
 
-    let next = this.bufferedNode || this.generator.next().value
-    let buffered = null
+    const next = this.lookahead()
 
-    if (this.handleCommand) {
-      this.runner.shouldQueueAssignments = true
-      while (next instanceof bondage.CommandResult && next.command !== this.pauseCommand) {
-        this.handleCommand(next)
-        const nextIteratorResult = this.generator.next()
-        next = nextIteratorResult.value
-      }
-      this.runner.shouldQueueAssignments = false
-    }
+    ;[
+      next.value.text && next.value,
+      ...(next.value.options || [])
+    ]
+      .filter(Boolean)
+      .forEach(node => parseLine(node, this.locale))
 
-    // Lookahead for combining text + options, and for end of dialogue.
-    // Can't look ahead of option nodes (what would you look ahead at?)
-    // Don't look ahead if on pause node
     if (
-      !(next instanceof bondage.OptionsResult) &&
-      !(next && next.command === this.pauseCommand)
+      this.currentResult &&
+      !(
+        this.handleCommand &&
+        this.currentResult instanceof bondage.CommandResult
+      )
     ) {
-      let upcoming = this.generator.next()
-      // If we're not returning command nodes, the last non-command node should have
-      // isDialogueEnd. The queue lets us do extra looking ahead for that, without
-      // prematurely handling commands.
-      if (this.handleCommand) {
-        this.runner.shouldQueueAssignments = true
-        while (upcoming.value && upcoming.value instanceof bondage.CommandResult && upcoming.value.command !== this.pauseCommand) {
-          const upcomingValue = upcoming.value
-          this.runner.queuedOperations.push(() => { this.handleCommand(upcomingValue) })
-          upcoming = this.generator.next()
-          if (upcoming.done) {
-            this.runner.queuedOperations.forEach(c => { c() })
-            this.runner.queuedOperations = []
-            next = Object.assign(next, { isDialogueEnd: true })
-          }
-        }
-        this.runner.shouldQueueAssignments = false
-      }
-
-      buffered = upcoming.value
-
-      if (
-        next instanceof bondage.TextResult &&
-        this.combineTextAndOptionsResults &&
-          buffered instanceof bondage.OptionsResult
-      ) {
-        next = Object.assign(buffered, next)
-        buffered = null
-      } else if (next && upcoming.done) {
-        next = Object.assign(next, { isDialogueEnd: true })
-      }
-    }
-
-    if (this.currentResult) {
       this.history.push(this.currentResult)
     }
 
-    if (next instanceof bondage.TextResult) {
-      parseLine(next, this.locale)
-    } else if (next instanceof bondage.OptionsResult) {
-      if (next.text) {
-        parseLine(next, this.locale)
-      }
-      next.options.forEach((option) => {
-        parseLine(option, this.locale)
-      })
-    }
-
-    this.currentResult = next
-    this.bufferedNode = buffered
+    this.currentResult = next.value
   }
 
   registerFunction (name, func) {

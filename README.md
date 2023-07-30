@@ -243,7 +243,43 @@ A simple react component can be found at: [react-dialogue-tree](https://github.c
 
 # Caveats
 
-The `isDialogueEnd` property will be absent if the dialogue terminates on an OptionsResult.
+When a handleCommand function is supplied, ending a dialogue with a command or set of commands can cause unexpected behavior. Any commands at the end of the dialogue will be handled upon reaching the last non-command result (usually, a command will only be handled when advancing past the previous non-command result). This is furthermore a problem when ending the dialogue with a command inside a conditional:
+
+#### Dialogue Ending With Conditional
+
+The lookahead feature won't handle commands or set variables, so a dialogue like this will behave inconsistently:
+
+```
+<<set $a = false>>
+Hello
+<<set $a = true>>
+<<some command>>
+<<if $a == true>>
+  Goodbye
+<<endif>>
+```
+
+When processing the "Hello" TextResult, the lookahead feature will detect the end of the dialogue because it will see `if $a == true` evaluate to false, since it hasn't.
+
+Thinking that the dialogue is over, it will try to handle any trailing commands, actually doing the variable setting and this time reaching the  `if $a == true` block.
+
+YarnBound will correct itself and not include the `isDialogueEnd` flag prematurely, but any side effects performed by setting the variable and handling the command will have already happened. This can cause bugs!
+
+It is suggested to avoid this pattern. But if you must use it, or prevent lookahead for any other reason, there is a special `<<pause>>` command you can use:
+
+```
+<<set $a = false>>
+Hello
+<<set $a = true>>
+<<some command>>
+<<pause>>
+<<if $a == true>>
+  Goodbye
+<<endif>>
+```
+
+Note that you will have to call advance() again after reaching the pause command. Even if you have supplied a handleCommand function, `runner.currentResult` will be a CommandResult, with a command of "pause". Also note that if the `<<if $a == true>>` check evaluated to false, the `isDialogueEnd` flag would be on the "pause" CommandResult, not the "Hello" TextResult.
+
 
 # Other included versions
 

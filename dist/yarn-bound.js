@@ -2815,17 +2815,16 @@ var _parser = _interopRequireDefault(__webpack_require__(173));
 var _results = _interopRequireDefault(__webpack_require__(34));
 var _defaultVariableStorage = _interopRequireDefault(__webpack_require__(131));
 var _convertYarnToJs = _interopRequireDefault(__webpack_require__(144));
-var _nodes = _interopRequireDefault(__webpack_require__(748));
+var _nodes2 = _interopRequireDefault(__webpack_require__(748));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-const nodeTypes = _nodes.default.types;
+const nodeTypes = _nodes2.default.types;
 class Runner {
   constructor() {
     this.noEscape = false;
-    this.shouldQueueAssignments = false;
+    this.lookahead = false;
     this.yarnNodes = {};
     this.variables = new _defaultVariableStorage.default();
     this.functions = {};
-    this.queuedOperations = [];
   }
 
   /**
@@ -2918,26 +2917,31 @@ class Runner {
   }
 
   /**
-   * Generator to return each sequential dialog result starting from the given node
-   * @param {string} [startNode] - The name of the yarn node to begin at
+   * Generator to run a dialogue, starting at a specified node.
+   * @param {string} [nodeName] - The name of the yarn node to begin at
    */
-  *run(startNode) {
-    let jumpTo = startNode;
-    while (jumpTo) {
-      const yarnNode = this.yarnNodes[jumpTo];
-      if (yarnNode === undefined) {
-        throw new Error(`Node "${startNode}" does not exist`);
-      }
-
-      // Parse the entire node
-      const parserNodes = Array.from(_parser.default.parse(yarnNode.body));
-      const metadata = {
-        ...yarnNode
-      };
-      delete metadata.body;
-      const result = yield* this.evalNodes(parserNodes, metadata);
-      jumpTo = result && result.jump;
+  *run(nodeName) {
+    const {
+      parserNodes,
+      metadata
+    } = this.getParserNodes(nodeName);
+    return yield* this.evalNodes(parserNodes, metadata);
+  }
+  getParserNodes(nodeName) {
+    const yarnNode = this.yarnNodes[nodeName];
+    if (yarnNode === undefined) {
+      throw new Error(`Node "${nodeName}" does not exist`);
     }
+    // Parse the entire node
+    const parserNodes = Array.from(_parser.default.parse(yarnNode.body));
+    const metadata = {
+      ...yarnNode
+    };
+    delete metadata.body;
+    return {
+      parserNodes,
+      metadata
+    };
   }
 
   /**
@@ -2946,86 +2950,94 @@ class Runner {
    * @param {Node[]} nodes
    * @param {YarnNode[]} metadata
    */
-  *evalNodes(nodes, metadata) {
-    let shortcutNodes = [];
-    let textRun = '';
-    const filteredNodes = nodes.filter(Boolean);
+  evalNodes(nodes, metadata) {
+    var _this = this;
+    let shortcutNodes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+    let textRunNodes = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
+    return function* () {
+      const filteredNodes = nodes.filter(Boolean);
 
-    // Yield the individual user-visible results
-    // Need to accumulate all adjacent selectables
-    // into one list (hence some of the weirdness here)
-    for (let nodeIdx = 0; nodeIdx < filteredNodes.length; nodeIdx += 1) {
-      const node = filteredNodes[nodeIdx];
-      const nextNode = filteredNodes[nodeIdx + 1];
+      // Yield the individual user-visible results
+      let result;
+      // Need unique copies to make a special duplicate generator
+      // for lookahead, rewind, or other funky stuff
+      const _textRunNodes = [...textRunNodes];
+      const _shortcutNodes = [...shortcutNodes];
+      const _nodes = [...nodes];
+      const getGeneratorHere = () => {
+        return _this.evalNodes(_nodes, metadata, _shortcutNodes, _textRunNodes);
+      };
+      const node = filteredNodes[0];
+      const nextNode = filteredNodes[1];
 
       // Text and the output of Inline Expressions
       // are combined to deliver a TextNode.
       if (node instanceof nodeTypes.Text || node instanceof nodeTypes.Expression) {
-        textRun += this.evaluateExpressionOrLiteral(node).toString();
+        textRunNodes.push(node);
         if (nextNode && node.lineNum === nextNode.lineNum && (nextNode instanceof nodeTypes.Text || nextNode instanceof nodeTypes.Expression)) {
           // Same line, with another text equivalent to add to the
           // text run further on in the loop, so don't yield.
         } else {
-          yield new _results.default.TextResult(textRun, node.hashtags, metadata);
-          textRun = '';
+          const text = textRunNodes.reduce((acc, node) => acc + _this.evaluateExpressionOrLiteral(node).toString(), '');
+          textRunNodes = [];
+          const textResult = Object.assign(new _results.default.TextResult(text, node.hashtags, metadata), {
+            getGeneratorHere
+          });
+          if (filteredNodes.length === 1) {
+            return textResult;
+          } else {
+            yield textResult;
+          }
         }
       } else if (node instanceof nodeTypes.Shortcut) {
+        // Need to accumulate all adjacent selectables into one list
         shortcutNodes.push(node);
         if (!(nextNode instanceof nodeTypes.Shortcut)) {
           // Last shortcut in the series, so yield the shortcuts.
-          const result = yield* this.handleShortcuts(shortcutNodes, metadata);
-          if (result && (result.stop || result.jump)) {
-            return result;
-          }
-          shortcutNodes = [];
+          return yield* _this.handleShortcuts(shortcutNodes, metadata, filteredNodes.slice(1), getGeneratorHere);
         }
       } else if (node instanceof nodeTypes.Assignment) {
-        const cb = () => {
-          this.evaluateAssignment(node);
-        };
-        if (this.shouldQueueAssignments) {
-          // Undocumented because it's not user friendly; for supporting lookahead
-          this.queuedOperations.push(cb);
-        } else {
-          cb();
+        if (!_this.lookahead) {
+          _this.evaluateAssignment(node);
         }
       } else if (node instanceof nodeTypes.Conditional) {
         // Get the results of the conditional
-        const evalResult = this.evaluateConditional(node);
+        const evalResult = _this.evaluateConditional(node);
         if (evalResult) {
-          // Run the remaining results
-          const result = yield* this.evalNodes(evalResult, metadata);
-          if (result && (result.stop || result.jump)) {
-            return result;
-          }
+          // Run the results if applicable
+          return yield* _this.evalNodes([...evalResult, ...filteredNodes.slice(1)], metadata, shortcutNodes, textRunNodes);
         }
-      } else if (node instanceof _nodes.default.JumpCommandNode) {
-        // ignore the rest of this outer loop and
-        // tell parent loops to ignore following nodes.
-        // Recursive call here would cause stack overflow
-        const destination = node.destination instanceof _nodes.default.InlineExpressionNode ? this.evaluateExpressionOrLiteral(node.destination) : node.destination;
-        return {
-          jump: destination
-        };
-      } else if (node instanceof _nodes.default.StopCommandNode) {
-        // ignore the rest of this outer loop and
-        // tell parent loops to ignore following nodes
-        return {
-          stop: true
-        };
+      } else if (node instanceof _nodes2.default.JumpCommandNode) {
+        const destination = node.destination instanceof _nodes2.default.InlineExpressionNode ? _this.evaluateExpressionOrLiteral(node.destination) : node.destination;
+        const {
+          parserNodes,
+          metadata
+        } = _this.getParserNodes(destination);
+        return yield* _this.evalNodes(parserNodes, metadata);
+      } else if (node instanceof _nodes2.default.StopCommandNode) {
+        return;
       } else {
-        const command = this.evaluateExpressionOrLiteral(node.command);
-        yield new _results.default.CommandResult(command, node.hashtags, metadata);
+        const command = _this.evaluateExpressionOrLiteral(node.command);
+        const commandResult = Object.assign(new _results.default.CommandResult(command, node.hashtags, metadata), {
+          getGeneratorHere
+        });
+        if (filteredNodes.length === 1) {
+          return commandResult;
+        } else {
+          yield commandResult;
+        }
       }
-    }
-    return undefined;
+      if (filteredNodes.length > 1) {
+        return yield* _this.evalNodes(filteredNodes.slice(1), metadata, shortcutNodes, textRunNodes);
+      }
+    }();
   }
 
   /**
    * yield a shortcut result then handle the subsequent selection
    * @param {any[]} selections
    */
-  *handleShortcuts(selections, metadata) {
+  *handleShortcuts(selections, metadata, restNodes, getGeneratorHere) {
     // Multiple options to choose from (or just a single shortcut)
     // Tag any conditional dialog options that result to false,
     // the consuming app does the actual filtering or whatever
@@ -3040,18 +3052,22 @@ class Runner {
         text
       });
     });
-    const optionsResult = new _results.default.OptionsResult(transformedSelections, metadata);
+    const optionsResult = Object.assign(new _results.default.OptionsResult(transformedSelections, metadata), {
+      getGeneratorHere
+    });
     yield optionsResult;
-    if (typeof optionsResult.selected === 'number') {
-      const selectedOption = transformedSelections[optionsResult.selected];
-      if (selectedOption.content) {
-        // Recursively go through the nodes nested within
-        return yield* this.evalNodes(selectedOption.content, metadata);
-      }
-    } else {
+    if (typeof optionsResult.selected !== 'number') {
       throw new Error('No option selected before resuming dialogue');
     }
-    return undefined;
+    const selectedOption = transformedSelections[optionsResult.selected];
+    if (selectedOption.content) {
+      // Recursively go through the nodes nested within
+      return yield* this.evalNodes([...selectedOption.content, ...restNodes], metadata);
+    } else {
+      if (restNodes.length) {
+        return yield* this.evalNodes(restNodes, metadata);
+      }
+    }
   }
 
   /**
@@ -3105,6 +3121,9 @@ class Runner {
       return node.reduce((acc, n) => {
         return acc + this.evaluateExpressionOrLiteral(n).toString();
       }, '');
+    }
+    if (typeof node !== 'object') {
+      return node;
     }
     const nodeHandlers = {
       UnaryMinusExpressionNode: a => {
@@ -3175,7 +3194,11 @@ class Runner {
         return a.booleanLiteral === 'true';
       },
       VariableNode: a => {
-        return this.variables.get(a.variableName);
+        const value = this.variables.get(a.variableName);
+        if (value === undefined) {
+          throw new Error(`Attempted to access undefined variable "${a.variableName}"`);
+        }
+        return value;
       },
       FunctionCallNode: a => {
         return this.evaluateFunctionCall(a);
@@ -3467,7 +3490,6 @@ class YarnBound {
     this.pauseCommand = pauseCommand;
     this.combineTextAndOptionsResults = combineTextAndOptionsResults;
     this.bondage = _index.default;
-    this.bufferedNode = null;
     this.currentResult = null;
     this.history = [];
     this.locale = locale;
@@ -3487,82 +3509,89 @@ class YarnBound {
   }
   jump(startAt) {
     this.generator = this.runner.run(startAt);
-    this.bufferedNode = null;
     this.advance();
   }
-  advance(optionIndex) {
-    this.runner.queuedOperations.forEach(c => {
-      c();
-    });
-    this.runner.queuedOperations = [];
-    if (typeof optionIndex !== 'undefined' && this.currentResult && this.currentResult.select) {
-      this.currentResult.select(optionIndex);
-    }
-    let next = this.bufferedNode || this.generator.next().value;
-    let buffered = null;
-    if (this.handleCommand) {
-      this.runner.shouldQueueAssignments = true;
-      while (next instanceof _index.default.CommandResult && next.command !== this.pauseCommand) {
-        this.handleCommand(next);
-        const nextIteratorResult = this.generator.next();
-        next = nextIteratorResult.value;
+  handleConsecutiveOptionsNodes(shouldHandleCommand) {
+    let next = this.generator.next();
+    while (next.value instanceof _index.default.CommandResult && next.value.command !== this.pauseCommand) {
+      if (shouldHandleCommand) {
+        this.handleCommand(next.value);
       }
-      this.runner.shouldQueueAssignments = false;
+      next = this.generator.next();
+    }
+    return next;
+  }
+
+  // for combining text + options, and detecting dialogue end
+  lookahead() {
+    let next = this.generator.next();
+    if (next.done) {
+      Object.assign(next.value, {
+        isDialogueEnd: true
+      });
     }
 
-    // Lookahead for combining text + options, and for end of dialogue.
-    // Can't look ahead of option nodes (what would you look ahead at?)
-    // Don't look ahead if on pause node
-    if (!(next instanceof _index.default.OptionsResult) && !(next && next.command === this.pauseCommand)) {
-      let upcoming = this.generator.next();
-      // If we're not returning command nodes, the last non-command node should have
-      // isDialogueEnd. The queue lets us do extra looking ahead for that, without
-      // prematurely handling commands.
-      if (this.handleCommand) {
-        this.runner.shouldQueueAssignments = true;
-        while (upcoming.value && upcoming.value instanceof _index.default.CommandResult && upcoming.value.command !== this.pauseCommand) {
-          const upcomingValue = upcoming.value;
-          this.runner.queuedOperations.push(() => {
-            this.handleCommand(upcomingValue);
+    // Can't look ahead of options before we select one
+    if (next.done || next.value && next.value.command === this.pauseCommand || next.value instanceof _index.default.OptionsResult) {
+      return next;
+    }
+    if (this.handleCommand && next.value instanceof _index.default.CommandResult && next.value.command !== this.pauseCommand) {
+      this.handleCommand(next.value);
+      next = this.handleConsecutiveOptionsNodes(true);
+    }
+    this.runner.lookahead = true;
+    let upcoming = this.generator.next();
+    if (this.handleCommand && upcoming.value instanceof _index.default.CommandResult && upcoming.value.command !== this.pauseCommand) {
+      upcoming = this.handleConsecutiveOptionsNodes();
+      this.generator = next.value.getGeneratorHere();
+      this.runner.lookahead = false;
+
+      // Only possible if dialogue starts/resumes on a CommandResult.
+      const rewoundNext = next.value instanceof _index.default.CommandResult ? this.handleConsecutiveOptionsNodes(true) : this.generator.next();
+      if (!upcoming.value) {
+        // Handle trailing commands at end of dialogue
+        upcoming = this.handleConsecutiveOptionsNodes(true);
+        if (upcoming.value) {
+          // upcoming will only have a value if a conditional check's outcome changes
+          // due to handling a series of commands directly before the conditional.
+          // This edge case does cause commands to be handled prematurely
+          this.generator = upcoming.value.getGeneratorHere();
+        } else {
+          Object.assign(rewoundNext.value, {
+            isDialogueEnd: true
           });
-          upcoming = this.generator.next();
-          if (upcoming.done) {
-            this.runner.queuedOperations.forEach(c => {
-              c();
-            });
-            this.runner.queuedOperations = [];
-            next = Object.assign(next, {
-              isDialogueEnd: true
-            });
-          }
         }
-        this.runner.shouldQueueAssignments = false;
       }
-      buffered = upcoming.value;
-      if (next instanceof _index.default.TextResult && this.combineTextAndOptionsResults && buffered instanceof _index.default.OptionsResult) {
-        next = Object.assign(buffered, next);
-        buffered = null;
-      } else if (next && upcoming.done) {
-        next = Object.assign(next, {
+      return rewoundNext;
+    } else if (next.value instanceof _index.default.TextResult && this.combineTextAndOptionsResults && upcoming.value instanceof _index.default.OptionsResult) {
+      this.generator = next.value.getGeneratorHere();
+      this.runner.lookahead = false;
+      const rewoundNext = this.generator.next();
+      const rewoundUpcoming = this.generator.next();
+      Object.assign(rewoundUpcoming.value, rewoundNext.value);
+      return rewoundUpcoming;
+    } else {
+      this.generator = next.value.getGeneratorHere();
+      this.runner.lookahead = false;
+      const rewoundNext = this.generator.next();
+      if (!upcoming.value) {
+        Object.assign(rewoundNext.value, {
           isDialogueEnd: true
         });
       }
+      return rewoundNext;
     }
-    if (this.currentResult) {
+  }
+  advance(optionIndex) {
+    if (typeof optionIndex !== 'undefined' && this.currentResult && this.currentResult.select) {
+      this.currentResult.select(optionIndex);
+    }
+    const next = this.lookahead();
+    [next.value.text && next.value, ...(next.value.options || [])].filter(Boolean).forEach(node => (0, _lineParser.default)(node, this.locale));
+    if (this.currentResult && !(this.handleCommand && this.currentResult instanceof _index.default.CommandResult)) {
       this.history.push(this.currentResult);
     }
-    if (next instanceof _index.default.TextResult) {
-      (0, _lineParser.default)(next, this.locale);
-    } else if (next instanceof _index.default.OptionsResult) {
-      if (next.text) {
-        (0, _lineParser.default)(next, this.locale);
-      }
-      next.options.forEach(option => {
-        (0, _lineParser.default)(option, this.locale);
-      });
-    }
-    this.currentResult = next;
-    this.bufferedNode = buffered;
+    this.currentResult = next.value;
   }
   registerFunction(name, func) {
     this.runner.registerFunction(name, func);
