@@ -70,4 +70,34 @@ describe('functional test', () => {
     expect(runner.currentResult.text).toBe('Goodbye 1')
     expect(runner.currentResult.isDialogueEnd).toBe(true)
   })
+
+  test('Should handle function calls and conditionals', () => {
+    let condition = false
+    const runner = new YarnBound({
+      dialogue: `
+        title: Start
+        ---
+        Jim: Hi there. I'll set the condition to true.
+        <<SetConditionToTrue>>
+        <<if conditionIsTrue()>>
+        Jim: It's true!
+        <<else>>
+        Jim: It's false.
+        <<endif>>
+        ===
+    `,
+      functions: {
+        conditionIsTrue: () => {
+          return condition
+        }
+      }
+    })
+
+    expect(runner.currentResult.text).toBe('Hi there. I\'ll set the condition to true.')
+    runner.advance()
+    expect(runner.currentResult.command).toBe('SetConditionToTrue')
+    condition = true
+    runner.advance()
+    expect(runner.currentResult.text).toBe('It\'s true!')
+  })
 })
