@@ -99,10 +99,6 @@ describe('functional test', () => {
     condition = true
     runner.advance()
     expect(runner.currentResult.text).toBe('It\'s true!')
-    runner.advance()
-    runner.advance()
-    runner.advance()
-    runner.advance()
   })
 
   test('Should handle the pause command correctly', () => {
