@@ -1,6 +1,6 @@
 {
   "name": "yarn-bound",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Quality of life wrapper around bondage.js",
   "main": "dist/yarn-bound.js",
   "scripts": {
