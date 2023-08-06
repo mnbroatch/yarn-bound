@@ -167,7 +167,7 @@ Let's start with this code:
 ```javascript
 import YarnBound from 'yarn-bound';
 
-// empty lines and uniform leading whitespace is trimmed
+// empty lines and uniform leading whitespace are trimmed
 // so you can write your nodes in template strings neatly.
 const dialogue = `
   title: WhereAreYou
