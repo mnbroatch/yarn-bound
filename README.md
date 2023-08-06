@@ -145,7 +145,7 @@ A Command Result looks like this:
 }
 ```
 
-It could also have a `isDialogueEnd` property on it. Command properties are handled and skipped through when a `handleCommand` function is supplied.
+It could also have a `isDialogueEnd` property on it. Command Results are handled and skipped through when a `handleCommand` function is supplied.
 
 Every Result contains `metadata` which includes node header tags including `title`, and also any file tags.
 
