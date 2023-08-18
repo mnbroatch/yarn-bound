@@ -145,7 +145,7 @@ A Command Result looks like this:
 }
 ```
 
-It could also have a `isDialogueEnd` property on it (though that may not be useful if you're using a command handler!)
+It could also have a `isDialogueEnd` property on it. Command Results are handled and skipped through when a `handleCommand` function is supplied.
 
 Every Result contains `metadata` which includes node header tags including `title`, and also any file tags.
 
@@ -167,7 +167,7 @@ Let's start with this code:
 ```javascript
 import YarnBound from 'yarn-bound';
 
-// empty lines and uniform leading whitespace is trimmed
+// empty lines and uniform leading whitespace are trimmed
 // so you can write your nodes in template strings neatly.
 const dialogue = `
   title: WhereAreYou
