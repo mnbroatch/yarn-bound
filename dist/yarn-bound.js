@@ -12,7 +12,7 @@ return /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 144:
+/***/ 897:
 /***/ ((module, exports) => {
 
 
@@ -94,7 +94,7 @@ module.exports = exports.default;
 
 /***/ }),
 
-/***/ 131:
+/***/ 163:
 /***/ ((module, exports) => {
 
 
@@ -116,13 +116,12 @@ class DefaultVariableStorage {
     return this.data[name];
   }
 }
-var _default = DefaultVariableStorage;
-exports["default"] = _default;
+var _default = exports["default"] = DefaultVariableStorage;
 module.exports = exports.default;
 
 /***/ }),
 
-/***/ 167:
+/***/ 947:
 /***/ ((module, exports, __webpack_require__) => {
 
 
@@ -131,19 +130,18 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-var _runner = _interopRequireDefault(__webpack_require__(159));
-var _results = _interopRequireDefault(__webpack_require__(34));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _runner = _interopRequireDefault(__webpack_require__(333));
+var _results = _interopRequireDefault(__webpack_require__(377));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 _runner.default.OptionsResult = _results.default.OptionsResult;
 _runner.default.TextResult = _results.default.TextResult;
 _runner.default.CommandResult = _results.default.CommandResult;
-var _default = _runner.default;
-exports["default"] = _default;
+var _default = exports["default"] = _runner.default;
 module.exports = exports.default;
 
 /***/ }),
 
-/***/ 367:
+/***/ 172:
 /***/ ((module, exports, __webpack_require__) => {
 
 
@@ -152,8 +150,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-var _tokens = _interopRequireDefault(__webpack_require__(197));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _tokens = _interopRequireDefault(__webpack_require__(958));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * A LexState object represents one of the states in which the lexer can be.
  */
@@ -235,13 +233,12 @@ class LexerState {
     return this;
   }
 }
-var _default = LexerState;
-exports["default"] = _default;
+var _default = exports["default"] = LexerState;
 module.exports = exports.default;
 
 /***/ }),
 
-/***/ 525:
+/***/ 160:
 /***/ ((module, exports, __webpack_require__) => {
 
 
@@ -252,8 +249,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-var _states = _interopRequireDefault(__webpack_require__(404));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _states = _interopRequireDefault(__webpack_require__(434));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 // As opposed to the original C# implemntation which, tokenize the entire input, before emiting
 // a list of tokens, this parser will emit a token each time `lex()` is called. This change
 // accomodates the Jison parser. Given the lexer is not entirely context-free
@@ -493,13 +490,12 @@ class Lexer {
     return this.yylloc.last_column > this.getCurrentLine().length;
   }
 }
-var _default = Lexer;
-exports["default"] = _default;
+var _default = exports["default"] = Lexer;
 module.exports = exports.default;
 
 /***/ }),
 
-/***/ 404:
+/***/ 434:
 /***/ ((module, exports, __webpack_require__) => {
 
 
@@ -508,8 +504,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-var _lexerState = _interopRequireDefault(__webpack_require__(367));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _lexerState = _interopRequireDefault(__webpack_require__(172));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * @return {Object}  all states in which the lexer can be with their associated transitions.
  */
@@ -535,15 +531,14 @@ function makeStates() {
     inlineExpressionInShortcut: new _lexerState.default().addTransition('EndInlineExp', 'shortcutOption').addTransition('Number').addTransition('String').addTransition('LeftParen').addTransition('RightParen').addTransition('EqualTo').addTransition('EqualToOrAssign').addTransition('NotEqualTo').addTransition('GreaterThanOrEqualTo').addTransition('GreaterThan').addTransition('LessThanOrEqualTo').addTransition('LessThan').addTransition('Add').addTransition('UnaryMinus').addTransition('Minus').addTransition('Exponent').addTransition('Multiply').addTransition('Divide').addTransition('Modulo').addTransition('And').addTransition('Or').addTransition('Xor').addTransition('Not').addTransition('Variable').addTransition('Comma').addTransition('True').addTransition('False').addTransition('Null').addTransition('Identifier').addTextRule('Text', 'base')
   };
 }
-var _default = {
+var _default = exports["default"] = {
   makeStates: makeStates
 };
-exports["default"] = _default;
 module.exports = exports.default;
 
 /***/ }),
 
-/***/ 197:
+/***/ 958:
 /***/ ((module, exports) => {
 
 
@@ -678,13 +673,12 @@ const Tokens = {
   EndInlineExp: /}/ // }
 };
 /* eslint-enable key-spacing */
-var _default = Tokens;
-exports["default"] = _default;
+var _default = exports["default"] = Tokens;
 module.exports = exports.default;
 
 /***/ }),
 
-/***/ 348:
+/***/ 358:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -752,7 +746,7 @@ var o = function (k, v, o, l) {
   $VP = [26, 46, 51, 60, 61, 62, 63, 64, 65, 66, 67, 68, 70, 78],
   $VQ = [51, 70],
   $VR = [8, 9, 18, 19, 23, 34, 77];
-var parser = {
+var parser = exports.parser = {
   trace: function trace() {},
   yy: {},
   symbols_: {
@@ -2353,7 +2347,6 @@ var parser = {
     return true;
   }
 };
-exports.parser = parser;
 function Parser() {
   this.yy = {};
 }
@@ -2363,7 +2356,7 @@ parser.Parser = Parser;
 
 /***/ }),
 
-/***/ 748:
+/***/ 950:
 /***/ ((module, exports) => {
 
 
@@ -2380,7 +2373,7 @@ class Literal {}
 class Expression {}
 class FunctionCall {}
 class Command {}
-var _default = {
+var _default = exports["default"] = {
   types: {
     Text,
     Shortcut,
@@ -2686,12 +2679,11 @@ var _default = {
     }
   }
 };
-exports["default"] = _default;
 module.exports = exports.default;
 
 /***/ }),
 
-/***/ 173:
+/***/ 476:
 /***/ ((module, exports, __webpack_require__) => {
 
 
@@ -2700,10 +2692,10 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-var _nodes = _interopRequireDefault(__webpack_require__(748));
-var _lexer = _interopRequireDefault(__webpack_require__(525));
-var _compiledParser = __webpack_require__(348);
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _nodes = _interopRequireDefault(__webpack_require__(950));
+var _lexer = _interopRequireDefault(__webpack_require__(160));
+var _compiledParser = __webpack_require__(358);
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 _compiledParser.parser.lexer = new _lexer.default();
 _compiledParser.parser.yy = _nodes.default;
 _compiledParser.parser.yy.declarations = {};
@@ -2722,13 +2714,12 @@ _compiledParser.parser.yy.registerDeclaration = function registerDeclaration(var
     };
   }
 };
-var _default = _compiledParser.parser;
-exports["default"] = _default;
+var _default = exports["default"] = _compiledParser.parser;
 module.exports = exports.default;
 
 /***/ }),
 
-/***/ 34:
+/***/ 377:
 /***/ ((module, exports) => {
 
 
@@ -2806,18 +2797,17 @@ class OptionsResult extends Result {
     this.selected = index;
   }
 }
-var _default = {
+var _default = exports["default"] = {
   Result,
   TextResult,
   CommandResult,
   OptionsResult
 };
-exports["default"] = _default;
 module.exports = exports.default;
 
 /***/ }),
 
-/***/ 159:
+/***/ 333:
 /***/ ((module, exports, __webpack_require__) => {
 
 
@@ -2826,12 +2816,12 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-var _parser = _interopRequireDefault(__webpack_require__(173));
-var _results = _interopRequireDefault(__webpack_require__(34));
-var _defaultVariableStorage = _interopRequireDefault(__webpack_require__(131));
-var _convertYarnToJs = _interopRequireDefault(__webpack_require__(144));
-var _nodes2 = _interopRequireDefault(__webpack_require__(748));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _parser = _interopRequireDefault(__webpack_require__(476));
+var _results = _interopRequireDefault(__webpack_require__(377));
+var _defaultVariableStorage = _interopRequireDefault(__webpack_require__(163));
+var _convertYarnToJs = _interopRequireDefault(__webpack_require__(897));
+var _nodes2 = _interopRequireDefault(__webpack_require__(950));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const nodeTypes = _nodes2.default.types;
 class Runner {
   constructor() {
@@ -3229,18 +3219,17 @@ class Runner {
     return handler(node instanceof nodeTypes.Expression ? this.evaluateExpressionOrLiteral(node.expression || node.expression1) : node, node.expression2 ? this.evaluateExpressionOrLiteral(node.expression2) : node);
   }
 }
-var _default = {
+var _default = exports["default"] = {
   Runner,
   TextResult: _results.default.TextResult,
   CommandResult: _results.default.CommandResult,
   OptionsResult: _results.default.OptionsResult
 };
-exports["default"] = _default;
 module.exports = exports.default;
 
 /***/ }),
 
-/***/ 352:
+/***/ 954:
 /***/ ((module, exports, __webpack_require__) => {
 
 
@@ -3249,9 +3238,9 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-var _yarnBound = _interopRequireDefault(__webpack_require__(424));
-var _index = _interopRequireDefault(__webpack_require__(167));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _yarnBound = _interopRequireDefault(__webpack_require__(523));
+var _index = _interopRequireDefault(__webpack_require__(947));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const {
   OptionsResult,
   TextResult,
@@ -3260,13 +3249,12 @@ const {
 _yarnBound.default.OptionsResult = OptionsResult;
 _yarnBound.default.TextResult = TextResult;
 _yarnBound.default.CommandResult = CommandResult;
-var _default = _yarnBound.default;
-exports["default"] = _default;
+var _default = exports["default"] = _yarnBound.default;
 module.exports = exports.default;
 
 /***/ }),
 
-/***/ 279:
+/***/ 384:
 /***/ ((module, exports) => {
 
 
@@ -3477,7 +3465,7 @@ module.exports = exports.default;
 
 /***/ }),
 
-/***/ 424:
+/***/ 523:
 /***/ ((module, exports, __webpack_require__) => {
 
 
@@ -3486,9 +3474,9 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports["default"] = void 0;
-var _index = _interopRequireDefault(__webpack_require__(167));
-var _lineParser = _interopRequireDefault(__webpack_require__(279));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _index = _interopRequireDefault(__webpack_require__(947));
+var _lineParser = _interopRequireDefault(__webpack_require__(384));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 class YarnBound {
   constructor(_ref) {
     let {
@@ -3649,7 +3637,7 @@ module.exports = exports.default;
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__(352);
+/******/ 	var __webpack_exports__ = __webpack_require__(954);
 /******/ 	
 /******/ 	return __webpack_exports__;
 /******/ })()
